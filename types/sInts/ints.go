@@ -15,3 +15,7 @@ func Get64(str string) int64 {
 
 	return v
 }
+
+func ToString(v int64) string {
+	return strconv.FormatInt(v, 10)
+}

@@ -1,8 +1,21 @@
 package sFloats
 
-import "math"
+import (
+	"math"
+	"strconv"
+)
 
-func Get64(f float64) float64 {
+func Get64(str string) float64 {
+	v, _ := strconv.ParseFloat(str, 64)
+
+	return GetValid(v)
+}
+
+func ToString(v float64) string {
+	return strconv.FormatFloat(v, 'f', -1, 64)
+}
+
+func GetValid(f float64) float64 {
 	if math.IsNaN(f) || math.IsInf(f, 0) {
 		return 0
 	}
