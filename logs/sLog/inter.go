@@ -1,6 +1,10 @@
 package sLog
 
-import sZap "github.com/yasseldg/go-simple/logs/sZap"
+import (
+	"sync"
+
+	sZap "github.com/yasseldg/go-simple/logs/sZap"
+)
 
 type Logger interface {
 	SetLevel(string)
@@ -27,41 +31,46 @@ const (
 	LevelDebug = Level("debug")
 )
 
-var logger Logger
+var (
+	_onceCandle sync.Once
+	_logger     Logger
+)
 
 func SetLogger(l Logger) {
-	logger = l
+	_onceCandle.Do(func() {
+		_logger = l
+	})
 }
 
 func SetByName(name Name, level Level, timeformat string) func() error {
 	switch name {
 	default:
-		zap, sync := sZap.New(timeformat, string(level))
-		logger = zap
-		return sync
+		zap, clean := sZap.New(timeformat, string(level))
+		SetLogger(zap)
+		return clean
 	}
 }
 
 func Fatal(template string, args ...interface{}) {
-	logger.Fatal(template, args...)
+	_logger.Fatal(template, args...)
 }
 
 func Error(template string, args ...interface{}) {
-	logger.Error(template, args...)
+	_logger.Error(template, args...)
 }
 
 func Panic(template string, args ...interface{}) {
-	logger.Panic(template, args...)
+	_logger.Panic(template, args...)
 }
 
 func Warn(template string, args ...interface{}) {
-	logger.Warn(template, args...)
+	_logger.Warn(template, args...)
 }
 
 func Info(template string, args ...interface{}) {
-	logger.Info(template, args...)
+	_logger.Info(template, args...)
 }
 
 func Debug(template string, args ...interface{}) {
-	logger.Debug(template, args...)
+	_logger.Debug(template, args...)
 }
