@@ -12,7 +12,7 @@ func (c Candle) LogReturn() float64 {
 	if c.Close == 0 || c.Open == 0 {
 		return 0
 	}
-	return sFloats.Get64(math.Log(c.Close / c.Open))
+	return sFloats.GetValid(math.Log(c.Close / c.Open))
 }
 
 func (o OHLC) String(prec int) string {
