@@ -1,4 +1,4 @@
-package sFilter
+package rFilter
 
 // int
 func (f *Filters) Int(field string, value int) *Filters {

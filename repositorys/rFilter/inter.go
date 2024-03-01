@@ -1,7 +1,9 @@
-package sFilter
+package rFilter
 
 type Inter interface {
 	Log(msg string)
+
+	Clone() Inter
 
 	Append(key string, value interface{})
 

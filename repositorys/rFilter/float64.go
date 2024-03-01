@@ -1,4 +1,4 @@
-package sFilter
+package rFilter
 
 // float64
 func (f *Filters) Float64(field string, value float64) *Filters {

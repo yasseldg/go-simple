@@ -1,4 +1,4 @@
-package sFilter
+package rFilter
 
 import (
 	"github.com/yasseldg/go-simple/logs/sLog"
