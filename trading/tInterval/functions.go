@@ -63,3 +63,18 @@ func startOfNextMonth(ts int64) int64 {
 	}
 	return time.Date(y, m+1, 1, 0, 0, 0, 0, time.UTC).Unix()
 }
+
+func GetIntervals(intervals []string) Intervals {
+	_intervals := Intervals{}
+
+	for _, interval := range intervals {
+		_interval := Get(interval)
+		if _interval.IsDefault() {
+			continue
+		}
+
+		_intervals = append(_intervals, _interval)
+	}
+
+	return _intervals
+}

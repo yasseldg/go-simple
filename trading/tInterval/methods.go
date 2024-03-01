@@ -2,7 +2,11 @@ package tInterval
 
 import "fmt"
 
-type Interval string
+type (
+	Interval string
+
+	Intervals []Interval
+)
 
 const (
 	Interval_1m  = Interval("1m")
