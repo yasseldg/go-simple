@@ -1,4 +1,4 @@
-package sFilter
+package rFilter
 
 // ----- Strings Filters
 

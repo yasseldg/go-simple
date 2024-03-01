@@ -1,4 +1,4 @@
-package sMongo
+package rMongo
 
 import (
 	"fmt"
@@ -40,7 +40,7 @@ func (db *Database) setCollection(coll_name string, conn *Connection) (Collectio
 		conn:   fmt.Sprintf("%s .. %s", conn.Host, conn.Environment),
 
 		pipeline: *Pipelines(),
-		filter:   *Filters(),
+		filter:   NewFilter(),
 		sort:     *Sorts(),
 		limit:    0,
 	}

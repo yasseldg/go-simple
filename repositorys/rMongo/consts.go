@@ -1,4 +1,4 @@
-package sMongo
+package rMongo
 
 type Environment string
 

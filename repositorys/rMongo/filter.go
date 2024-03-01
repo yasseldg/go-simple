@@ -1,8 +1,10 @@
-package sMongo
+package rMongo
 
 import (
+	"fmt"
+
 	"github.com/yasseldg/go-simple/logs/sLog"
-	"github.com/yasseldg/go-simple/repositorys/sFilter"
+	"github.com/yasseldg/go-simple/repositorys/rFilter"
 
 	"go.mongodb.org/mongo-driver/bson"
 )
@@ -10,14 +12,24 @@ import (
 // Implementing uFilter interface
 
 type Filter struct {
-	*sFilter.Filters // Embedding filters by adding behaviors to the filter
-	fields           bson.D
+	fields bson.D
 }
 
-func Filters() *Filter {
-	f := &Filter{fields: bson.D{}}
-	f.Filters = sFilter.New(f)
-	return f
+func NewFilter() rFilter.Filters {
+	return *rFilter.New(&Filter{fields: bson.D{}})
+}
+
+func (f Filter) Clone() rFilter.Inter {
+	return &Filter{fields: f.fields}
+}
+
+func getFilter(filter rFilter.Filters) (*Filter, error) {
+	f, ok := filter.Inter.(*Filter)
+	if !ok {
+		return nil, fmt.Errorf("filter is not rMongo.Filter")
+	}
+
+	return f, nil
 }
 
 func (f Filter) Fields() bson.D {

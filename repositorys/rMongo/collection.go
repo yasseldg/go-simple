@@ -1,9 +1,10 @@
-package sMongo
+package rMongo
 
 import (
 	"context"
 
 	"github.com/yasseldg/go-simple/logs/sLog"
+	"github.com/yasseldg/go-simple/repositorys/rFilter"
 
 	"github.com/yasseldg/mgm/v4"
 )
@@ -16,7 +17,7 @@ type Collection struct {
 	conn   string
 
 	pipeline Pipeline
-	filter   Filter
+	filter   rFilter.Filters
 	sort     Sort
 	limit    int64
 }
@@ -57,7 +58,7 @@ func (c *Collection) Pipeline(p Pipeline) *Collection {
 	return c
 }
 
-func (c *Collection) Filters(f Filter) *Collection {
+func (c *Collection) Filters(f rFilter.Filters) *Collection {
 	c.filter = f
 	return c
 }

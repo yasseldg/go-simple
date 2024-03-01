@@ -1,6 +1,8 @@
-package sMongo
+package rMongo
 
 import (
+	"github.com/yasseldg/go-simple/repositorys/rFilter"
+
 	"github.com/yasseldg/mgm/v4"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -46,10 +48,15 @@ func (c *Collection) LastTs(tsFrom, tsTo int64) int64 {
 }
 
 func (c Collection) GetTss() ([]int64, error) {
-	c.pipeline = *pipelineTss(c.filter, c.sort, c.limit)
+	p, err := pipelineTss(c.filter, c.sort, c.limit)
+	if err != nil {
+		return nil, err
+	}
+
+	c.pipeline = *p
 
 	var docs []TsModel
-	err := c.Agregates(&docs)
+	err = c.Agregates(&docs)
 	if err != nil {
 		return nil, err
 	}
@@ -62,11 +69,17 @@ func (c Collection) GetTss() ([]int64, error) {
 	return tss, nil
 }
 
-func pipelineTss(filter Filter, sort Sort, limit int64) *Pipeline {
+func pipelineTss(filter rFilter.Filters, sort Sort, limit int64) (*Pipeline, error) {
+
+	f, err := getFilter(filter)
+	if err != nil {
+		return nil, err
+	}
+
 	p := Pipelines()
-	p.Append("$match", filter.Fields)
+	p.Append("$match", f.Fields)
 	p.Append("$sort", sort.Fields)
 	p.Append("$limit", limit)
 	p.Append("$project", bson.D{{"ts", 1}, {"_id", 0}})
-	return p
+	return p, nil
 }

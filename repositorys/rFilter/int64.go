@@ -1,4 +1,4 @@
-package sFilter
+package rFilter
 
 // int64
 func (f *Filters) Int64(field string, value int64) *Filters {

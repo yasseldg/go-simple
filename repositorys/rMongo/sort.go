@@ -1,4 +1,4 @@
-package sMongo
+package rMongo
 
 import (
 	"github.com/yasseldg/go-simple/logs/sLog"

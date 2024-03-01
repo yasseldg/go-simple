@@ -11,8 +11,8 @@ func Get64(str string) float64 {
 	return GetValid(v)
 }
 
-func ToString(v float64) string {
-	return strconv.FormatFloat(v, 'f', -1, 64)
+func ToString(v float64, prec int) string {
+	return strconv.FormatFloat(v, 'f', prec, 64)
 }
 
 func GetValid(f float64) float64 {
