@@ -2,6 +2,7 @@ package rMongo
 
 import (
 	"github.com/yasseldg/go-simple/repositorys/rFilter"
+	"github.com/yasseldg/go-simple/repositorys/rSort"
 
 	"github.com/yasseldg/mgm/v4"
 
@@ -69,16 +70,21 @@ func (c Collection) GetTss() ([]int64, error) {
 	return tss, nil
 }
 
-func pipelineTss(filter rFilter.Filters, sort Sort, limit int64) (*Pipeline, error) {
+func pipelineTss(filter rFilter.Filters, sort rSort.Sorts, limit int64) (*Pipeline, error) {
 
 	f, err := getFilter(filter)
 	if err != nil {
 		return nil, err
 	}
 
+	s, err := getSort(sort)
+	if err != nil {
+		return nil, err
+	}
+
 	p := Pipelines()
-	p.Append("$match", f.Fields)
-	p.Append("$sort", sort.Fields)
+	p.Append("$match", f.getFields)
+	p.Append("$sort", s.getFields)
 	p.Append("$limit", limit)
 	p.Append("$project", bson.D{{"ts", 1}, {"_id", 0}})
 	return p, nil

@@ -65,7 +65,7 @@ func (c Collection) Count() (int64, error) {
 		return 0, fmt.Errorf("sMongo: %s.Count(): %s", c.prefix, err)
 	}
 
-	count, err := c.collection.SimpleCount(f.Fields(), options.Count())
+	count, err := c.collection.SimpleCount(f.getFields(), options.Count())
 	if err != nil {
 		sLog.Error("sMongo: %s.SimpleCount(filter, opts): %s  ..  opts: %#v", c.prefix, err, options.Count())
 		return 0, err
@@ -76,7 +76,12 @@ func (c Collection) Count() (int64, error) {
 // Find
 func (c Collection) Find(objs interface{}) error {
 
-	opts := options.Find().SetSort(c.sort.Fields())
+	s, err := getSort(c.sort)
+	if err != nil {
+		return fmt.Errorf("sMongo: %s.FindOne(): %s", c.prefix, err)
+	}
+
+	opts := options.Find().SetSort(s.getFields())
 	if c.limit > 0 {
 		opts.SetLimit(c.limit)
 	}
@@ -86,7 +91,7 @@ func (c Collection) Find(objs interface{}) error {
 		return fmt.Errorf("sMongo: %s.Find(): %s", c.prefix, err)
 	}
 
-	err = c.collection.SimpleFind(objs, f.Fields(), opts)
+	err = c.collection.SimpleFind(objs, f.getFields(), opts)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			sLog.Debug("sMongo: %s.SimpleFind(objs, filter, opts): %s", c.prefix, err)
@@ -106,8 +111,13 @@ func (c Collection) FindOne(obj mgm.Model) error {
 		return fmt.Errorf("sMongo: %s.FindOne(): %s", c.prefix, err)
 	}
 
-	opts := options.FindOne().SetSort(c.sort.Fields())
-	err = c.collection.First(f.Fields(), obj, opts)
+	s, err := getSort(c.sort)
+	if err != nil {
+		return fmt.Errorf("sMongo: %s.FindOne(): %s", c.prefix, err)
+	}
+
+	opts := options.FindOne().SetSort(s.getFields())
+	err = c.collection.First(f.getFields(), obj, opts)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			sLog.Debug("sMongo: %s.First(filters, obj, &opts): %s", c.prefix, err)
