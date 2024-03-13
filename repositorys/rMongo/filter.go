@@ -19,25 +19,18 @@ func NewFilter() rFilter.Filters {
 	return *rFilter.New(&Filter{fields: bson.D{}})
 }
 
+// implementing interface rFilter.Inter
+
 func (f Filter) Clone() rFilter.Inter {
 	return &Filter{fields: f.fields}
 }
 
-func getFilter(filter rFilter.Filters) (*Filter, error) {
-	f, ok := filter.Inter.(*Filter)
-	if !ok {
-		return nil, fmt.Errorf("filter is not rMongo.Filter")
-	}
-
-	return f, nil
-}
-
-func (f Filter) Fields() bson.D {
-	return f.fields
+func (f Filter) String() string {
+	return fmt.Sprintf("Filter Mongo: %v", f.fields)
 }
 
 func (f Filter) Log(msg string) {
-	sLog.Debug("%s: Filter Mongo: %v", msg, f.fields)
+	sLog.Debug("%s: %s", msg, f.String())
 }
 
 func (f *Filter) Append(field string, value interface{}) {
@@ -86,4 +79,19 @@ func (f *Filter) GteLt(field string, value_1, value_2 interface{}) {
 
 func (f *Filter) GteLte(field string, value_1, value_2 interface{}) {
 	f.Append(field, bson.D{{Key: "$gte", Value: value_1}, {Key: "$lte", Value: value_2}})
+}
+
+// private methods
+
+func (f Filter) getFields() bson.D {
+	return f.fields
+}
+
+func getFilter(filter rFilter.Filters) (*Filter, error) {
+	f, ok := filter.Inter.(*Filter)
+	if !ok {
+		return nil, fmt.Errorf("filter is not rMongo.Filter")
+	}
+
+	return f, nil
 }

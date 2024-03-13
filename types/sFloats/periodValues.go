@@ -27,6 +27,13 @@ func NewPeriodValues(period int) *PeriodValues {
 	}
 }
 
+func (pv *PeriodValues) Period() int {
+	pv.mu.Lock()
+	defer pv.mu.Unlock()
+
+	return pv.period
+}
+
 func (pv *PeriodValues) Values() []float64 {
 	pv.mu.Lock()
 	defer pv.mu.Unlock()
@@ -127,8 +134,29 @@ func (pv *PeriodValues) deepCopy() *PeriodValues {
 }
 
 func (pv *PeriodValues) Mean() float64 {
-	if len(pv.values) < pv.period {
-		return 0
+	pv.mu.Lock()
+	defer pv.mu.Unlock()
+
+	if pv.filled {
+		return stat.Mean(pv.values, nil)
 	}
-	return stat.Mean(pv.values, nil)
+	return 0
+}
+
+func (pv *PeriodValues) MeanStdDev() (mean, std float64) {
+	pv.mu.Lock()
+	defer pv.mu.Unlock()
+
+	if pv.filled {
+		return stat.MeanStdDev(pv.values, nil)
+	}
+	return 0, 0
+}
+
+func (pv *PeriodValues) Sum() float64 {
+	sum := 0.0
+	for _, v := range pv.values {
+		sum += v
+	}
+	return sum
 }

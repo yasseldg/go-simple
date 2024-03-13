@@ -5,6 +5,7 @@ import (
 
 	"github.com/yasseldg/go-simple/logs/sLog"
 	"github.com/yasseldg/go-simple/repositorys/rFilter"
+	"github.com/yasseldg/go-simple/repositorys/rSort"
 
 	"github.com/yasseldg/mgm/v4"
 )
@@ -18,7 +19,7 @@ type Collection struct {
 
 	pipeline Pipeline
 	filter   rFilter.Filters
-	sort     Sort
+	sort     rSort.Sorts
 	limit    int64
 }
 type CollectionsMap map[string]*Collection
@@ -63,7 +64,7 @@ func (c *Collection) Filters(f rFilter.Filters) *Collection {
 	return c
 }
 
-func (c *Collection) Sorts(s Sort) *Collection {
+func (c *Collection) Sorts(s rSort.Sorts) *Collection {
 	c.sort = s
 	return c
 }

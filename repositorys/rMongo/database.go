@@ -41,7 +41,7 @@ func (db *Database) setCollection(coll_name string, conn *Connection) (Collectio
 
 		pipeline: *Pipelines(),
 		filter:   NewFilter(),
-		sort:     *Sorts(),
+		sort:     NewSort(),
 		limit:    0,
 	}
 

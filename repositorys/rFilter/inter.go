@@ -1,9 +1,9 @@
 package rFilter
 
 type Inter interface {
-	Log(msg string)
-
 	Clone() Inter
+	String() string
+	Log(msg string)
 
 	Append(key string, value interface{})
 

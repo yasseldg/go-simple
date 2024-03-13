@@ -5,7 +5,7 @@ import (
 )
 
 type Filters struct {
-	Inter Inter
+	Inter
 }
 
 func New(inter Inter) *Filters {
