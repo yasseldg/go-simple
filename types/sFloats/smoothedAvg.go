@@ -1,6 +1,11 @@
 package sFloats
 
-import "sync"
+import (
+	"fmt"
+	"sync"
+
+	"github.com/yasseldg/go-simple/logs/sLog"
+)
 
 type SmoothedAverage struct {
 	mu sync.Mutex
@@ -18,6 +23,17 @@ func NewSmoothedAverage(period int) *SmoothedAverage {
 		period: period,
 		filled: period,
 	}
+}
+
+func (sa *SmoothedAverage) String() string {
+	return fmt.Sprintf("period: %d  ..  value: %f  ..  filled: %d", sa.period, sa.value, sa.filled)
+}
+
+func (sa *SmoothedAverage) Log() {
+	sa.mu.Lock()
+	defer sa.mu.Unlock()
+
+	sLog.Info("SmoothedAverage: %s", sa.String())
 }
 
 // AddPos adds a value to the average

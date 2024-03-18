@@ -1,6 +1,7 @@
 package tIndicator
 
 import (
+	"fmt"
 	"sync"
 
 	"github.com/yasseldg/go-simple/logs/sLog"
@@ -17,7 +18,6 @@ type RSI struct {
 	loss sFloats.SmoothedAverage
 	gain sFloats.SmoothedAverage
 
-	sum   float64
 	close float64
 }
 
@@ -28,6 +28,25 @@ func NewRSI(period int) *RSI {
 		loss: *sFloats.NewSmoothedAverage(period),
 		gain: *sFloats.NewSmoothedAverage(period),
 	}
+}
+
+func (rsi *RSI) Period() int {
+	return rsi.gain.Period()
+}
+
+func (rsi *RSI) Filled() bool {
+	return rsi.gain.Filled()
+}
+
+func (rsi *RSI) String() string {
+	return fmt.Sprintf("calc: %f  ..  gain: %f  ..  loss: %f", rsi.calc(), rsi.gain.Value(), rsi.loss.Value())
+}
+
+func (rsi *RSI) Log() {
+	rsi.mu.Lock()
+	defer rsi.mu.Unlock()
+
+	sLog.Info("RSI: %s", rsi.String())
 }
 
 func (rsi *RSI) Add(close float64) {
@@ -68,6 +87,8 @@ func (rsi *RSI) add(close float64) {
 		rsi.gain.AddPos(0)
 		rsi.loss.AddNeg(delta)
 	}
+
+	rsi.close = close
 }
 
 func (rsi *RSI) calc() float64 {
@@ -85,8 +106,8 @@ func (rsi *RSI) calc() float64 {
 type RSIcandle struct {
 	RSI
 
-	c    int
-	prev tCandle.Candle
+	c      int
+	candle tCandle.Candle
 }
 
 func NewRSIcandle(period int) *RSIcandle {
@@ -95,11 +116,22 @@ func NewRSIcandle(period int) *RSIcandle {
 	}
 }
 
+func (rsi *RSIcandle) String() string {
+	return fmt.Sprintf("c: %d: %s  ..  %s", rsi.c, sTime.ForLog(rsi.candle.Ts, 0), rsi.RSI.String())
+}
+
 func (rsi *RSIcandle) Log() {
 	rsi.mu.Lock()
 	defer rsi.mu.Unlock()
 
-	sLog.Info("RSI: %d: %s  ..  %f  ..  %f  ..  %f  ..  %f", rsi.c, sTime.ForLog(rsi.prev.Ts, 0), rsi.calc(), rsi.gain.Value(), rsi.loss.Value(), rsi.sum)
+	sLog.Info("RSI: %s", rsi.String())
+}
+
+func (rsi *RSIcandle) Candle() tCandle.Candle {
+	rsi.mu.Lock()
+	defer rsi.mu.Unlock()
+
+	return rsi.candle
 }
 
 func (rsi *RSIcandle) Add(candle tCandle.Candle) {
@@ -113,5 +145,5 @@ func (rsi *RSIcandle) Add(candle tCandle.Candle) {
 	rsi.add(candle.Close)
 
 	rsi.c++
-	rsi.prev = candle
+	rsi.candle = candle
 }
