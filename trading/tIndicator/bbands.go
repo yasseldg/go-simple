@@ -41,6 +41,13 @@ func (bb *BBands) Add(close float64) {
 	bb.add(close)
 }
 
+func (bb *BBands) Filled() bool {
+	bb.mu.Lock()
+	defer bb.mu.Unlock()
+
+	return bb.closes.Filled()
+}
+
 func (bb *BBands) Get() (mean, upper, lower float64) {
 	bb.mu.Lock()
 	defer bb.mu.Unlock()
@@ -110,4 +117,8 @@ func (bb *BBcandle) Add(candle tCandle.Candle) {
 
 	bb.c++
 	bb.prev = candle
+}
+
+func (bb *BBcandle) Filled() bool {
+	return bb.BBands.Filled()
 }

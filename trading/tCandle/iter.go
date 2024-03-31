@@ -13,13 +13,17 @@ type Iter struct {
 
 	next_ts int64
 
-	Item  Candle
+	item  Candle
 	items Candles
 }
 
 func NewIter(filter rFilter.Filters, coll rMongo.Collection) (Iter, error) {
 
-	return Iter{Iter: rIter.NewIter(filter, coll)}, nil
+	return Iter{Iter: rIter.New(filter, coll)}, nil
+}
+
+func (iter *Iter) Item() Candle {
+	return iter.item
 }
 
 func (iter *Iter) Next() bool {
@@ -28,7 +32,7 @@ func (iter *Iter) Next() bool {
 	}
 
 	if len(iter.items) > 0 {
-		iter.Item = iter.items[0]
+		iter.item = iter.items[0]
 		iter.items = iter.items[1:]
 		return true
 	}
@@ -39,7 +43,7 @@ func (iter *Iter) Next() bool {
 	// sLog.Debug("next: filter: %v", filter)
 
 	var items Candles
-	err := iter.Coll.Filters(filter).Find(&items)
+	err := iter.Coll().Filters(filter).Find(&items)
 	if err != nil {
 		iter.SetError(fmt.Errorf("next: coll.Find: %s", err))
 		return false

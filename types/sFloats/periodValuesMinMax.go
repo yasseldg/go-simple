@@ -11,15 +11,13 @@ import (
 type PeriodValuesMinMax struct {
 	*PeriodValues
 
-	min_max bool
-	min     float64
-	max     float64
+	min float64
+	max float64
 }
 
-func NewPeriodValuesMinMax(period int, min_max bool) *PeriodValuesMinMax {
+func NewPeriodValuesMinMax(period int) *PeriodValuesMinMax {
 	return &PeriodValuesMinMax{
 		PeriodValues: NewPeriodValues(period),
-		min_max:      min_max,
 	}
 }
 
@@ -111,7 +109,6 @@ func (pv *PeriodValuesMinMax) DeepCopy() *PeriodValuesMinMax {
 
 	return &PeriodValuesMinMax{
 		PeriodValues: pv.PeriodValues.deepCopy(),
-		min_max:      pv.min_max,
 		min:          pv.min,
 		max:          pv.max,
 	}

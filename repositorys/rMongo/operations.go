@@ -23,18 +23,6 @@ func (c Collection) Create(obj mgm.Model) bool {
 	return true
 }
 
-// CreateMany
-// func CreateMany[T mgm.Model](models []T, coll Collection) bool {
-// 	if len(models) > 0 {
-// 		err := mgm.CreateMany(models, coll.collection)
-// 		if err != nil {
-// 			sLog.Error("sMongo: %s.CreateMany(objs): %s  ..  objs: %#v", coll.prefix, err, models)
-// 			return false
-// 		}
-// 	}
-// 	return true
-// }
-
 // Update
 func (c Collection) Update(obj mgm.Model) bool {
 

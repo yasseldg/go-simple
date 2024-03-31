@@ -8,18 +8,22 @@ import (
 //  Iter
 
 type Iter struct {
-	Coll   rMongo.Collection
+	coll   rMongo.Collection
 	filter rFilter.Filters
 
 	empty bool
 	err   error
 }
 
-func NewIter(filter rFilter.Filters, coll rMongo.Collection) Iter {
+func New(filter rFilter.Filters, coll rMongo.Collection) Iter {
 	return Iter{
-		Coll:   coll,
+		coll:   coll,
 		filter: filter,
 	}
+}
+
+func (i Iter) Coll() *rMongo.Collection {
+	return &i.coll
 }
 
 func (i Iter) Next() bool {
