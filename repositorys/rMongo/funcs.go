@@ -32,3 +32,14 @@ func GetIDs(objs []mgm.DefaultModel) []primitive.ObjectID {
 	}
 	return objIds
 }
+
+// CreateMany
+func CreateMany[T []mgm.Model](models T, coll Collection) error {
+	if len(models) > 0 {
+		err := coll.Mgm().CreateMany(models)
+		if err != nil {
+			return fmt.Errorf("%s.CreateMany(objs): %s  ..  objs: %#v", coll.Prefix(), err, models)
+		}
+	}
+	return nil
+}

@@ -35,6 +35,10 @@ func (c Collection) Prefix() string {
 	return c.prefix
 }
 
+func (c Collection) Mgm() *mgm.Collection {
+	return c.collection
+}
+
 func (c Collection) Log() {
 	sLog.Info("Mongo Collection: %s  ..  %s \n", c.conn, c.prefix)
 }
