@@ -9,7 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-// Implementing uSort interface
+// Implementing rSort interface
 
 type Sort struct {
 	fields bson.D
@@ -57,8 +57,18 @@ func (s Sort) getFields() bson.D {
 func getSort(sort rSort.Sorts) (*Sort, error) {
 	s, ok := sort.Inter.(*Sort)
 	if !ok {
-		return nil, fmt.Errorf("filter is not rMongo.Filter")
+		return nil, fmt.Errorf("sort is not rMongo.Sort")
 	}
 
 	return s, nil
+}
+
+func GetFields(sort rSort.Sorts) bson.D {
+	s, err := getSort(sort)
+	if err != nil {
+		sLog.Error("GetSort(sort): %s", err)
+		return nil
+	}
+
+	return s.getFields()
 }

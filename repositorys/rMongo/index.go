@@ -46,11 +46,11 @@ func (c *Collection) createIndex(fields interface{}, unique bool) {
 	for count < 15 {
 		index, err := c.collection.Indexes().CreateOne(ctx, mod)
 		if err == nil {
-			sLog.Info("sMongo: Index %s%s created \n", c.prefix, index)
+			sLog.Info("Mongo: Index %s.%s created \n", c.prefix, index)
 			return
 		}
 
-		sLog.Error("sMongo: %sCreateIndex(): %s", c.prefix, err)
+		sLog.Error("Mongo: %s.CreateIndex(): %s", c.prefix, err)
 
 		time.Sleep(5 * time.Second)
 		count++
