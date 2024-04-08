@@ -81,6 +81,12 @@ func (f *Filter) GteLte(field string, value_1, value_2 interface{}) {
 	f.Append(field, bson.D{{Key: "$gte", Value: value_1}, {Key: "$lte", Value: value_2}})
 }
 
+//  Own methods
+
+func (f *Filter) Id(id interface{}) {
+	f.Append("_id", GetID(id))
+}
+
 // private methods
 
 func (f Filter) getFields() bson.D {

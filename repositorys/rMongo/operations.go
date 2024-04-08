@@ -12,37 +12,33 @@ import (
 )
 
 // Create
-func (c Collection) Create(obj mgm.Model) bool {
+func (c Collection) Create(obj mgm.Model) error {
 
-	err := c.collection.Create(obj)
-
+	err := c.collection.CreateWithCtx(mgm.Ctx(), obj)
 	if err != nil {
-		sLog.Error("sMongo: %sCreate(obj): %s  ..  obj: %#v", c.prefix, err, obj)
-		return false
+		return fmt.Errorf("%s err: %s  ..  obj: %#v", c.prefix, err, obj)
 	}
-	return true
+	return nil
 }
 
 // Update
-func (c Collection) Update(obj mgm.Model) bool {
+func (c Collection) Update(obj mgm.Model) error {
 
-	err := c.collection.Update(obj)
+	err := c.collection.UpdateWithCtx(mgm.Ctx(), obj)
 	if err != nil {
-		sLog.Error("sMongo: %s.Update(&obj): %s  ..  obj: %#v", c.prefix, err, obj)
-		return false
+		return fmt.Errorf("%s err: %s  ..  obj: %#v", c.prefix, err, obj)
 	}
-	return true
+	return nil
 }
 
 // Upsert
-func (c Collection) Upsert(obj mgm.Model, field string) bool {
+func (c Collection) Upsert(obj mgm.Model, field string) error {
 
-	err := c.collection.Update(obj, options.Update().SetUpsert(true))
+	err := c.collection.UpdateWithCtx(mgm.Ctx(), obj, options.Update().SetUpsert(true))
 	if err != nil {
-		sLog.Error("sMongo: %s.Upsert(&obj): %s  ..  obj: %#v", c.prefix, err, obj)
-		return false
+		return fmt.Errorf("%s err: %s  ..  obj: %#v", c.prefix, err, obj)
 	}
-	return true
+	return nil
 }
 
 // Count
@@ -50,12 +46,12 @@ func (c Collection) Count() (int64, error) {
 
 	f, err := getFilter(c.filter)
 	if err != nil {
-		return 0, fmt.Errorf("sMongo: %s.Count(): %s", c.prefix, err)
+		return 0, fmt.Errorf("mongo: %s.Count(): %s", c.prefix, err)
 	}
 
-	count, err := c.collection.SimpleCount(f.getFields(), options.Count())
+	count, err := c.collection.SimpleCountWithCtx(mgm.Ctx(), f.getFields(), options.Count())
 	if err != nil {
-		sLog.Error("sMongo: %s.SimpleCount(filter, opts): %s  ..  opts: %#v", c.prefix, err, options.Count())
+		sLog.Error("Mongo: %s.SimpleCount(filter, opts): %s  ..  opts: %#v", c.prefix, err, options.Count())
 		return 0, err
 	}
 	return count, nil
@@ -66,7 +62,7 @@ func (c Collection) Find(objs interface{}) error {
 
 	s, err := getSort(c.sort)
 	if err != nil {
-		return fmt.Errorf("sMongo: %s.FindOne(): %s", c.prefix, err)
+		return fmt.Errorf("mongo: %s.FindOne(): %s", c.prefix, err)
 	}
 
 	opts := options.Find().SetSort(s.getFields())
@@ -76,16 +72,16 @@ func (c Collection) Find(objs interface{}) error {
 
 	f, err := getFilter(c.filter)
 	if err != nil {
-		return fmt.Errorf("sMongo: %s.Find(): %s", c.prefix, err)
+		return fmt.Errorf("mongo: %s.Find(): %s", c.prefix, err)
 	}
 
-	err = c.collection.SimpleFind(objs, f.getFields(), opts)
+	err = c.collection.SimpleFindWithCtx(mgm.Ctx(), objs, f.getFields(), opts)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			sLog.Debug("sMongo: %s.SimpleFind(objs, filter, opts): %s", c.prefix, err)
+			sLog.Debug("Mongo: %s.SimpleFind(objs, filter, opts): %s", c.prefix, err)
 			return err
 		}
-		sLog.Error("sMongo: %s.SimpleFind(objs, filter, opts): %s  ..  filter: %#v  ..  opts: %#v", c.prefix, err, c.filter, opts)
+		sLog.Error("Mongo: %s.SimpleFind(objs, filter, opts): %s  ..  filter: %#v  ..  opts: %#v", c.prefix, err, c.filter, opts)
 		return err
 	}
 	return nil
@@ -96,22 +92,22 @@ func (c Collection) FindOne(obj mgm.Model) error {
 
 	f, err := getFilter(c.filter)
 	if err != nil {
-		return fmt.Errorf("sMongo: %s.FindOne(): %s", c.prefix, err)
+		return fmt.Errorf("mongo: %s.FindOne(): %s", c.prefix, err)
 	}
 
 	s, err := getSort(c.sort)
 	if err != nil {
-		return fmt.Errorf("sMongo: %s.FindOne(): %s", c.prefix, err)
+		return fmt.Errorf("mongo: %s.FindOne(): %s", c.prefix, err)
 	}
 
 	opts := options.FindOne().SetSort(s.getFields())
-	err = c.collection.First(f.getFields(), obj, opts)
+	err = c.collection.FirstWithCtx(mgm.Ctx(), f.getFields(), obj, opts)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			sLog.Debug("sMongo: %s.First(filters, obj, &opts): %s", c.prefix, err)
+			sLog.Debug("Mongo: %s.First(filters, obj, &opts): %s", c.prefix, err)
 			return err
 		}
-		sLog.Error("sMongo: %s.First(filters, obj, &opts): %s  ..  filter: %#v  ..  opts: %#v", c.prefix, err, c.filter, opts)
+		sLog.Error("Mongo: %s.First(filters, obj, &opts): %s  ..  filter: %#v  ..  opts: %#v", c.prefix, err, c.filter, opts)
 		return err
 	}
 	return nil
@@ -120,13 +116,13 @@ func (c Collection) FindOne(obj mgm.Model) error {
 // FindById
 func (c Collection) FindById(id interface{}, obj mgm.Model) error {
 
-	err := c.collection.FindByID(id, obj)
+	err := c.collection.FindByIDWithCtx(mgm.Ctx(), id, obj)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			sLog.Debug("sMongo: %sFindByID(id, obj): %s", c.prefix, err)
+			sLog.Debug("Mongo: %s.FindByID(id, obj): %s", c.prefix, err)
 			return err
 		}
-		sLog.Error("sMongo: %sFindByID(id, obj): %s  ..  id: %s", c.prefix, err, id)
+		sLog.Error("Mongo: %s.FindByID(id, obj): %s  ..  id: %s", c.prefix, err, id)
 		return err
 	}
 	return nil

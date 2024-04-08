@@ -16,6 +16,8 @@ func (f *Filters) Clone() *Filters {
 	return &Filters{Inter: f.Inter.Clone()}
 }
 
+// ----- Ts Filters
+
 // Field like Ts, $gte: ts_from  $lt: ts_to
 func (f *Filters) TsField(ts_from, ts_to int64, field string) *Filters {
 	if ts_from > 0 {
@@ -32,8 +34,6 @@ func (f *Filters) TsField(ts_from, ts_to int64, field string) *Filters {
 	}
 	return f
 }
-
-// ----- Ts Filters
 
 // Set Ts, $gte: ts_from  $lt: ts_to
 func (f *Filters) Ts(ts_from, ts_to int64) *Filters {
@@ -54,7 +54,7 @@ func (f *Filters) NotStates(states ...string) *Filters { f.String_nin("st", stat
 // ----- Trading Filters
 
 func (f *Filters) Sides(sides ...tSide.Side) *Filters {
-	ints := make([]int, len(sides))
+	ints := []int{}
 	for _, side := range sides {
 		ints = append(ints, int(side))
 	}
