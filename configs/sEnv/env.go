@@ -3,6 +3,7 @@ package sEnv
 import (
 	"os"
 
+	"github.com/yasseldg/go-simple/types/sFloats"
 	"github.com/yasseldg/go-simple/types/sInts"
 	"github.com/yasseldg/go-simple/types/sStrings"
 
@@ -44,6 +45,15 @@ func GetSliceInt(env_name string, defaults ...int) (res []int) {
 			res = append(res, sInts.Get(v))
 		}
 		return
+	}
+	return defaults
+}
+
+// GetFloat64
+func GetFloat64(env_name string, defaults float64) float64 {
+	env, ok := os.LookupEnv(env_name)
+	if ok {
+		return sFloats.Get64(env)
 	}
 	return defaults
 }

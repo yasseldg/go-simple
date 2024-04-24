@@ -32,12 +32,12 @@ const (
 )
 
 var (
-	_onceCandle sync.Once
-	_logger     Logger
+	_once   sync.Once
+	_logger Logger
 )
 
 func SetLogger(l Logger) {
-	_onceCandle.Do(func() {
+	_once.Do(func() {
 		_logger = l
 	})
 }
