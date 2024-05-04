@@ -30,3 +30,58 @@ func GetWithPercent(value, percent float64, adding bool) float64 {
 	}
 	return -((percent / 100) - 1) * value
 }
+
+func GetPrecFloat(value float64, prec int) float64 {
+	pow := math.Pow10(prec)
+	return math.Round(value*pow) / pow
+}
+
+func GetTruncFloat(value float64, prec int) float64 {
+	pow := math.Pow10(prec)
+	return float64(int64(value*pow)) / pow
+}
+
+// trunc a float value an add a plus value at prec decimal
+func GetTruncFloatPlus(value float64, prec, plus int) float64 {
+	pow := math.Pow10(prec)
+	truncated := float64(int64(value*pow)) / pow
+	return truncated + float64(plus)/pow
+}
+
+// ComparePrecFloat, "v1>v2: >0",  "v1<v2: <0",  "v1=v2: 0"
+func ComparePrecFloat(v1, v2 float64, prec int) float64 {
+	return GetPrecFloat(v1, prec) - GetPrecFloat(v2, prec)
+}
+
+// CompareTruncFloat, "v1>v2: >0",  "v1<v2: <0",  "v1=v2: 0"
+func CompareTruncFloat(v1, v2 float64, prec int) float64 {
+	return GetTruncFloat(v1, prec) - GetTruncFloat(v2, prec)
+}
+
+func CompareFloats(v1, v2 float64, prec int) int {
+	epsilon := 1.0 / math.Pow(10.0, float64(prec))
+
+	diff := v1 - v2
+	if math.Abs(diff) < epsilon {
+		return 0 // v1 == v2 (within precision)
+	}
+	if diff > 0 {
+		return 1 // v1 > v2
+	}
+	return -1 // v1 < v2
+}
+
+func GetDiffPercent(fromValue, toValue float64) float64 {
+
+	return ((toValue / fromValue) - 1) * 100
+}
+
+func GetDiffPercentAbs(fromValue, toValue float64) float64 {
+
+	return math.Abs(GetDiffPercent(fromValue, toValue))
+}
+
+func GetDiffAbs(fromValue, toValue float64) float64 {
+
+	return math.Abs(fromValue - toValue)
+}
