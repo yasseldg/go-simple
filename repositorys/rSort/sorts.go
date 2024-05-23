@@ -12,6 +12,11 @@ func (f *Sorts) Clone() *Sorts {
 	return &Sorts{Inter: f.Inter.Clone()}
 }
 
+func (s *Sorts) IdAsc() *Sorts {
+	s.Inter.Asc("_id")
+	return s
+}
+
 func (s *Sorts) TsAsc() *Sorts {
 	s.Inter.Asc("ts")
 	return s
