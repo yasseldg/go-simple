@@ -5,6 +5,16 @@ import (
 	"sync"
 )
 
+type InterAverage interface {
+	String() string
+
+	Add(float64)
+	Calc() float64
+	Value() float64
+	Qty() int
+	Reset()
+}
+
 type Average struct {
 	mu sync.Mutex
 
@@ -26,7 +36,7 @@ func (a *Average) String() string {
 }
 
 func (a *Average) calc() float64 {
-	return a.value / float64(a.qty)
+	return GetValid(a.value / float64(a.qty))
 }
 
 func (a *Average) Add(v float64) {

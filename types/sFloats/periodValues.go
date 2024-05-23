@@ -10,6 +10,15 @@ import (
 
 // ---- PeriodValues
 
+type InterPeriodValues interface {
+	Period() int
+	Values() []float64
+	Filled() bool
+	ToFill() int
+	Log(qty int)
+	Add(value float64)
+}
+
 type PeriodValues struct {
 	mu sync.Mutex
 
@@ -28,9 +37,6 @@ func NewPeriodValues(period int) *PeriodValues {
 }
 
 func (pv *PeriodValues) Period() int {
-	pv.mu.Lock()
-	defer pv.mu.Unlock()
-
 	return pv.period
 }
 

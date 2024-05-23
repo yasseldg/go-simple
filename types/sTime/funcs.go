@@ -3,6 +3,8 @@ package sTime
 import (
 	"fmt"
 	"time"
+
+	"github.com/yasseldg/go-simple/logs/sLog"
 )
 
 func Since(duration time.Duration) string {
@@ -33,4 +35,18 @@ func Since(duration time.Duration) string {
 	}
 
 	return s
+}
+
+func TimeControl(f func(), name string) {
+	t := time.Now()
+
+	msg := fmt.Sprintf("Time Control ( %s )", name)
+
+	sLog.Info(msg)
+
+	f()
+
+	fmt.Println()
+
+	sLog.Info(fmt.Sprintf("%s elapsed %s \n", msg, Since(time.Since(t))))
 }

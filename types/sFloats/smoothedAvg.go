@@ -7,6 +7,17 @@ import (
 	"github.com/yasseldg/go-simple/logs/sLog"
 )
 
+type InterSmoothedAverage interface {
+	String() string
+	Log()
+
+	AddPos(v float64)
+	AddNeg(v float64)
+	Filled() bool
+	Value() float64
+	Period() int
+}
+
 type SmoothedAverage struct {
 	mu sync.Mutex
 
