@@ -8,7 +8,7 @@ import (
 )
 
 type Accu struct {
-	rAccu.Accu
+	rAccu.Inter
 }
 
 type mgmCandle struct {
@@ -19,9 +19,11 @@ type mgmCandle struct {
 
 func NewAccu(coll rMongo.Collection, limit int) (Accu, error) {
 
-	return Accu{Accu: rAccu.New(coll, limit)}, nil
+	return Accu{
+		Inter: rAccu.New(coll, limit),
+	}, nil
 }
 
 func (iter *Accu) Add(candle *Candle) {
-	iter.Accu.Add(&mgmCandle{Candle: *candle})
+	iter.Inter.Add(&mgmCandle{Candle: *candle})
 }
