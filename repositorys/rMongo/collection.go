@@ -2,6 +2,7 @@ package rMongo
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/yasseldg/go-simple/logs/sLog"
 	"github.com/yasseldg/go-simple/repositorys/rFilter"
@@ -39,8 +40,12 @@ func (c Collection) Mgm() *mgm.Collection {
 	return c.collection
 }
 
+func (c Collection) String() string {
+	return fmt.Sprintf("coll: %s  ..  %s", c.conn, c.prefix)
+}
+
 func (c Collection) Log() {
-	sLog.Info("Mongo Collection: %s  ..  %s \n", c.conn, c.prefix)
+	sLog.Info("Mongo: %s", c.String())
 }
 
 func (c *Collection) Drop(indexes ...Index) error {

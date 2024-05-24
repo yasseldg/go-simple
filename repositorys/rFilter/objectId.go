@@ -16,3 +16,8 @@ func (f *Filters) ObjectId_in(field string, values ...sId.ObjectId) *Filters {
 	f.Inter.In(field, values)
 	return f
 }
+
+func (f *Filters) ObjectId_gt(field string, value interface{}) *Filters {
+	f.Inter.Gt(field, value)
+	return f
+}

@@ -7,8 +7,12 @@ import (
 	"github.com/yasseldg/go-simple/files/fIter"
 )
 
+type InterIter interface {
+	fIter.Inter
+}
+
 type Iter struct {
-	fIter.Iter
+	fIter.Inter
 
 	reader *csv.Reader
 	comma  rune
@@ -18,12 +22,14 @@ type Iter struct {
 }
 
 func NewIter(file_path string, limit int, comma rune) (Iter, error) {
-
-	return Iter{Iter: fIter.NewIter(file_path, limit), comma: comma}, nil
+	return Iter{
+		Inter: fIter.New(file_path, limit),
+		comma: comma,
+	}, nil
 }
 
 func (iter *Iter) Next() bool {
-	if !iter.Iter.Next() {
+	if !iter.Inter.Next() {
 		return false
 	}
 
@@ -40,7 +46,7 @@ func (iter *Iter) Next() bool {
 	}
 
 	if len(items) == 0 {
-		iter.Iter.SetEmpty(true)
+		iter.Inter.SetEmpty(true)
 		iter.CloseFile()
 		return false
 	}

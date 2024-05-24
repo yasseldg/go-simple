@@ -8,18 +8,18 @@ import (
 )
 
 type FanOut struct {
-	in   <-chan Candle
-	outs map[string]chan<- Candle
+	in   <-chan Inter
+	outs map[string]chan<- Inter
 
 	active bool
 	done   chan bool
 }
 type FanOuts []*FanOut
 
-func NewFanOut(in <-chan Candle) FanOut {
+func NewFanOut(in <-chan Inter) FanOut {
 	return FanOut{
 		in:   in,
-		outs: make(map[string]chan<- Candle),
+		outs: make(map[string]chan<- Inter),
 		done: make(chan bool),
 	}
 }
@@ -31,7 +31,7 @@ func (f *FanOut) Log() {
 	}
 }
 
-func (f *FanOut) Add(topic string, out chan<- Candle) error {
+func (f *FanOut) Add(topic string, out chan<- Inter) error {
 	if _, ok := f.outs[topic]; ok {
 		return fmt.Errorf("topic %s already exists", topic)
 	}

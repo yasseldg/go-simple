@@ -1,12 +1,16 @@
 package rFilter
 
 type Inter interface {
+	InterComp
+
 	Clone() Inter
 	String() string
 	Log(msg string)
 
 	Append(key string, value interface{})
+}
 
+type InterComp interface {
 	In(key string, values ...interface{})
 	Nin(key string, values ...interface{})
 

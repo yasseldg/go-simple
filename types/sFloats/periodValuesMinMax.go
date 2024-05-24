@@ -15,9 +15,9 @@ type PeriodValuesMinMax struct {
 	max float64
 }
 
-func NewPeriodValuesMinMax(period int) *PeriodValuesMinMax {
+func NewPeriodValuesMinMax(periods int) *PeriodValuesMinMax {
 	return &PeriodValuesMinMax{
-		PeriodValues: NewPeriodValues(period),
+		PeriodValues: NewPeriodValues(periods),
 	}
 }
 
@@ -36,7 +36,7 @@ func (pv *PeriodValuesMinMax) Max() float64 {
 }
 
 func (pv *PeriodValuesMinMax) Log(qty int) {
-	msg := fmt.Sprintf("PeriodValues.Log: periods: %-5d  ..  len: %-5d  ..  min: %f  ..  max: %f", pv.period, len(pv.values), pv.min, pv.max)
+	msg := fmt.Sprintf("PeriodValues.Log: periods: %-5d  ..  len: %-5d  ..  min: %f  ..  max: %f", pv.periods, len(pv.values), pv.min, pv.max)
 	if len(pv.values) < 1 {
 		sLog.Warn(msg)
 		return
@@ -45,7 +45,7 @@ func (pv *PeriodValuesMinMax) Log(qty int) {
 		sLog.Warn("%s  ..  values: %v ", msg, pv.values)
 		return
 	}
-	sLog.Warn("PeriodValues.Log: periods: %-5d  ..  len: %-5d  ..  firsts: %v  ..  lasts: %v", pv.period, len(pv.values), pv.values[:3], pv.values[len(pv.values)-3:])
+	sLog.Warn("PeriodValues.Log: periods: %-5d  ..  len: %-5d  ..  firsts: %v  ..  lasts: %v", pv.periods, len(pv.values), pv.values[:3], pv.values[len(pv.values)-3:])
 }
 
 func (pv *PeriodValuesMinMax) Add(value float64) {

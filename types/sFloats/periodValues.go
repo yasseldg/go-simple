@@ -10,28 +10,43 @@ import (
 
 // ---- PeriodValues
 
+type InterPeriodValues interface {
+	Log(qty int)
+
+	Filled() bool
+	ToFill() int
+	Values() []float64
+	Periods() int
+
+	Add(value float64)
+
+	Fill(value float64) bool
+	// DeepCopy() InterPeriodValues
+	Mean() float64
+	MeanStdDev() (mean, std float64)
+	Sum() float64
+}
+
 type PeriodValues struct {
 	mu sync.Mutex
 
-	period int
-	values []float64
+	periods int
+	values  []float64
 
 	filled bool
 }
 
-func NewPeriodValues(period int) *PeriodValues {
+func NewPeriodValues(periods int) *PeriodValues {
 	return &PeriodValues{
-		mu:     sync.Mutex{},
-		period: period,
-		values: make([]float64, 0, period),
+		mu: sync.Mutex{},
+
+		periods: periods,
+		values:  make([]float64, 0, periods),
 	}
 }
 
-func (pv *PeriodValues) Period() int {
-	pv.mu.Lock()
-	defer pv.mu.Unlock()
-
-	return pv.period
+func (pv *PeriodValues) Periods() int {
+	return pv.periods
 }
 
 func (pv *PeriodValues) Values() []float64 {
@@ -52,7 +67,7 @@ func (pv *PeriodValues) ToFill() int {
 	pv.mu.Lock()
 	defer pv.mu.Unlock()
 
-	return pv.period - len(pv.values)
+	return pv.periods - len(pv.values)
 }
 
 func (pv *PeriodValues) Log(qty int) {
@@ -60,14 +75,14 @@ func (pv *PeriodValues) Log(qty int) {
 	defer pv.mu.Unlock()
 
 	if len(pv.values) < 1 {
-		sLog.Info("PeriodValues.Log: periods: %-5d  ..  len: %-5d", pv.period, len(pv.values))
+		sLog.Info("PeriodValues.Log: periods: %-5d  ..  len: %-5d", pv.periods, len(pv.values))
 		return
 	}
 	if len(pv.values) < qty {
-		sLog.Info("PeriodValues.Log: periods: %-5d  ..  len: %-5d  ..  values: %v ", pv.period, len(pv.values), pv.values)
+		sLog.Info("PeriodValues.Log: periods: %-5d  ..  len: %-5d  ..  values: %v ", pv.periods, len(pv.values), pv.values)
 		return
 	}
-	sLog.Info("PeriodValues.Log: periods: %-5d  ..  len: %-5d  ..  firsts: %v  ..  lasts: %v", pv.period, len(pv.values), pv.values[:3], pv.values[len(pv.values)-3:])
+	sLog.Info("PeriodValues.Log: periods: %-5d  ..  len: %-5d  ..  firsts: %v  ..  lasts: %v", pv.periods, len(pv.values), pv.values[:3], pv.values[len(pv.values)-3:])
 }
 
 func (pv *PeriodValues) Add(value float64) {
@@ -85,7 +100,7 @@ func (pv *PeriodValues) Add(value float64) {
 func (pv *PeriodValues) add(value float64) {
 	pv.values = append(pv.values, value)
 
-	if len(pv.values) >= pv.period {
+	if len(pv.values) >= pv.periods {
 		pv.filled = true
 	}
 }
@@ -105,7 +120,7 @@ func (pv *PeriodValues) fill(value float64) bool {
 		return false
 	}
 
-	if len(pv.values) >= pv.period {
+	if len(pv.values) >= pv.periods {
 		pv.filled = true
 		return false
 	}
@@ -127,9 +142,9 @@ func (pv *PeriodValues) deepCopy() *PeriodValues {
 	copy(newValues, pv.values)
 
 	return &PeriodValues{
-		mu:     sync.Mutex{},
-		period: pv.period, // Los valores de tipo int se copian por valor
-		values: newValues,
+		mu:      sync.Mutex{},
+		periods: pv.periods, // Los valores de tipo int se copian por valor
+		values:  newValues,
 	}
 }
 

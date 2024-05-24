@@ -1,63 +1,58 @@
 package tIndicator
 
 import (
-	"math"
+	"fmt"
 	"sync"
 
-	"github.com/yasseldg/go-simple/logs/sLog"
 	"github.com/yasseldg/go-simple/trading/tCandle"
-	"github.com/yasseldg/go-simple/types/sFloats"
 	"github.com/yasseldg/go-simple/types/sTime"
 )
 
 // ATR (Average True Range)
 
-type ATR struct {
+type InterATR interface {
+	String() string
+	Log()
+
+	Count() int
+	Periods() int
+	Filled() bool
+	Get() float64
+	Prev() tCandle.Inter
+
+	Add(candle tCandle.Inter)
+}
+
+type BaseATR struct {
 	mu sync.Mutex
 
-	prev tCandle.Candle
-
-	trs sFloats.SmoothedAverage
+	prev tCandle.Inter
 
 	c int
 }
 
-func NewATR(period int) *ATR {
-	return &ATR{
+func newBaseATR() *BaseATR {
+	return &BaseATR{
 		mu: sync.Mutex{},
 
-		trs: *sFloats.NewSmoothedAverage(period),
+		prev: new(tCandle.Candle),
 	}
 }
 
-func (atr *ATR) Log() {
+func (atr *BaseATR) String() string {
+	return fmt.Sprintf("%d: %s", atr.c, sTime.ForLog(atr.prev.Ts(), 0))
+}
+
+func (atr *BaseATR) Count() int {
 	atr.mu.Lock()
 	defer atr.mu.Unlock()
 
-	sLog.Info("ATR %d: %s  ..  %f", atr.c, sTime.ForLog(atr.prev.Ts, 0), atr.trs.Value())
+	return atr.c
 }
 
-// Add adds a candle to the ATR
-func (atr *ATR) Add(candle tCandle.Candle) {
+func (atr *BaseATR) Prev() tCandle.Inter {
 	atr.mu.Lock()
 	defer atr.mu.Unlock()
 
-	atr.add(candle)
-}
-
-func (atr *ATR) add(candle tCandle.Candle) {
-	atr.c++
-
-	if atr.prev.Close > 0 {
-		atr.trs.AddPos(max(candle.High-candle.Low, math.Abs(candle.High-atr.prev.Close), math.Abs(candle.Low-atr.prev.Close)))
-	}
-
-	atr.prev = candle
-}
-
-func (atr *ATR) Get() float64 {
-	atr.mu.Lock()
-	defer atr.mu.Unlock()
-
-	return atr.trs.Value()
+	return atr.prev
 }
