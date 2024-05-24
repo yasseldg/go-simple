@@ -11,33 +11,34 @@ type InterSmoothedAverage interface {
 	String() string
 	Log()
 
-	AddPos(v float64)
-	AddNeg(v float64)
 	Filled() bool
 	Value() float64
-	Period() int
+	Periods() int
+
+	AddPos(v float64)
+	AddNeg(v float64)
 }
 
 type SmoothedAverage struct {
 	mu sync.Mutex
 
-	period int
-	value  float64
+	periods int
+	value   float64
 
 	filled int
 }
 
-func NewSmoothedAverage(period int) *SmoothedAverage {
+func NewSmoothedAverage(periods int) *SmoothedAverage {
 	return &SmoothedAverage{
 		mu: sync.Mutex{},
 
-		period: period,
-		filled: period,
+		periods: periods,
+		filled:  periods,
 	}
 }
 
 func (sa *SmoothedAverage) String() string {
-	return fmt.Sprintf("period: %d  ..  value: %f  ..  filled: %d", sa.period, sa.value, sa.filled)
+	return fmt.Sprintf("periods: %d  ..  value: %f  ..  filled: %d", sa.periods, sa.value, sa.filled)
 }
 
 func (sa *SmoothedAverage) Log() {
@@ -57,9 +58,9 @@ func (sa *SmoothedAverage) AddPos(v float64) {
 		return
 	}
 
-	sa.value *= float64(sa.period - 1)
+	sa.value *= float64(sa.periods - 1)
 	sa.value += v
-	sa.value /= float64(sa.period)
+	sa.value /= float64(sa.periods)
 }
 
 // AddNeg subtracts a value from the average
@@ -72,9 +73,9 @@ func (sa *SmoothedAverage) AddNeg(v float64) {
 		return
 	}
 
-	sa.value *= float64(sa.period - 1)
+	sa.value *= float64(sa.periods - 1)
 	sa.value -= v
-	sa.value /= float64(sa.period)
+	sa.value /= float64(sa.periods)
 }
 
 func (sa *SmoothedAverage) fillPos(v float64) {
@@ -91,7 +92,7 @@ func (sa *SmoothedAverage) fill() {
 	sa.filled--
 
 	if sa.filled == 0 {
-		sa.value /= float64(sa.period)
+		sa.value /= float64(sa.periods)
 	}
 }
 
@@ -113,9 +114,9 @@ func (sa *SmoothedAverage) Value() float64 {
 	return sa.value
 }
 
-func (sa *SmoothedAverage) Period() int {
+func (sa *SmoothedAverage) Periods() int {
 	sa.mu.Lock()
 	defer sa.mu.Unlock()
 
-	return sa.period
+	return sa.periods
 }

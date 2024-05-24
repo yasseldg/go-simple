@@ -1,21 +1,38 @@
 package tIndicator
 
 import (
+	"fmt"
 	"sync"
 
 	"github.com/yasseldg/go-simple/logs/sLog"
-	"github.com/yasseldg/go-simple/trading/tCandle"
 	"github.com/yasseldg/go-simple/types/sFloats"
-	"github.com/yasseldg/go-simple/types/sTime"
 )
 
 //  BBands (Bollinger Bands)
+
+type interBBands interface {
+	String() string
+	Log()
+
+	Periods() int
+	Deviations() float64
+
+	Filled() bool
+	Get() (mean, upper, lower float64)
+	Calc(deviations float64) (mean, upper, lower float64)
+}
+
+type InterBBands interface {
+	interBBands
+
+	Add(close float64)
+}
 
 type BBands struct {
 	mu sync.Mutex
 
 	deviations float64
-	closes     sFloats.PeriodValues
+	closes     sFloats.InterPeriodValues
 
 	mean float64
 	std  float64
@@ -26,19 +43,31 @@ func NewBBands(period int, deviations float64) *BBands {
 		mu: sync.Mutex{},
 
 		deviations: deviations,
-		closes:     *sFloats.NewPeriodValues(period),
+		closes:     sFloats.NewPeriodValues(period),
 	}
 }
 
-func (bb *BBands) Add(close float64) {
+func (bb *BBands) String() string {
+
+	mean, upper, lower := bb.get()
+
+	return fmt.Sprintf("deviations: %f  ..  periods: %d  ..  std: %f  ..  upper: %f  ..  mean: %f  ..  lower: %f",
+		bb.deviations, bb.closes.Periods(), bb.std, upper, mean, lower)
+}
+
+func (bb *BBands) Log() {
 	bb.mu.Lock()
 	defer bb.mu.Unlock()
 
-	if close == 0 {
-		return
-	}
+	sLog.Info("BBands: %s", bb.String())
+}
 
-	bb.add(close)
+func (bb *BBands) Deviations() float64 {
+	return bb.deviations
+}
+
+func (bb *BBands) Periods() int {
+	return bb.closes.Periods()
 }
 
 func (bb *BBands) Filled() bool {
@@ -52,7 +81,7 @@ func (bb *BBands) Get() (mean, upper, lower float64) {
 	bb.mu.Lock()
 	defer bb.mu.Unlock()
 
-	return bb.calc(bb.deviations)
+	return bb.get()
 }
 
 func (bb *BBands) Calc(deviations float64) (mean, upper, lower float64) {
@@ -60,6 +89,17 @@ func (bb *BBands) Calc(deviations float64) (mean, upper, lower float64) {
 	defer bb.mu.Unlock()
 
 	return bb.calc(deviations)
+}
+
+func (bb *BBands) Add(close float64) {
+	bb.mu.Lock()
+	defer bb.mu.Unlock()
+
+	if close == 0 {
+		return
+	}
+
+	bb.add(close)
 }
 
 func (bb *BBands) add(close float64) {
@@ -72,6 +112,10 @@ func (bb *BBands) add(close float64) {
 	bb.mean, bb.std = bb.closes.MeanStdDev()
 }
 
+func (bb *BBands) get() (mean, upper, lower float64) {
+	return bb.calc(bb.deviations)
+}
+
 func (bb *BBands) calc(deviations float64) (mean, upper, lower float64) {
 	if !bb.closes.Filled() {
 		return 0, 0, 0
@@ -81,44 +125,4 @@ func (bb *BBands) calc(deviations float64) (mean, upper, lower float64) {
 	upper = bb.mean + (bb.std * deviations)
 	lower = bb.mean - (bb.std * deviations)
 	return
-}
-
-//  BBcandle is a BBands indicator for candles
-
-type BBcandle struct {
-	BBands
-
-	c    int
-	prev tCandle.Candle
-}
-
-func NewBBcandle(period int, deviations float64) *BBcandle {
-	return &BBcandle{
-		BBands: *NewBBands(period, deviations),
-	}
-}
-
-func (bb *BBcandle) Log() {
-	bb.mu.Lock()
-	defer bb.mu.Unlock()
-
-	sLog.Info("BBands: %d: %s  .. mean: %f  .. std: %f ", bb.c, sTime.ForLog(bb.prev.Ts, 0), bb.mean, bb.std)
-}
-
-func (bb *BBcandle) Add(candle tCandle.Candle) {
-	bb.mu.Lock()
-	defer bb.mu.Unlock()
-
-	if candle.Close == 0 {
-		return
-	}
-
-	bb.add(candle.Close)
-
-	bb.c++
-	bb.prev = candle
-}
-
-func (bb *BBcandle) Filled() bool {
-	return bb.BBands.Filled()
 }
