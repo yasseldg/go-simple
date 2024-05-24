@@ -5,10 +5,24 @@ import (
 	"sync"
 
 	"github.com/yasseldg/go-simple/logs/sLog"
-	"github.com/yasseldg/go-simple/trading/tCandle"
 	"github.com/yasseldg/go-simple/types/sFloats"
-	"github.com/yasseldg/go-simple/types/sTime"
 )
+
+type interRSI interface {
+	String() string
+	Log()
+
+	Periods() int
+
+	Filled() bool
+	Get() float64
+}
+
+type InterRSI interface {
+	interRSI
+
+	Add(close float64)
+}
 
 // RSI (Relative Strength Index)
 
@@ -30,14 +44,6 @@ func NewRSI(period int) *RSI {
 	}
 }
 
-func (rsi *RSI) Period() int {
-	return rsi.gain.Period()
-}
-
-func (rsi *RSI) Filled() bool {
-	return rsi.gain.Filled()
-}
-
 func (rsi *RSI) String() string {
 	return fmt.Sprintf("calc: %f  ..  gain: %f  ..  loss: %f", rsi.calc(), rsi.gain.Value(), rsi.loss.Value())
 }
@@ -49,15 +55,12 @@ func (rsi *RSI) Log() {
 	sLog.Info("RSI: %s", rsi.String())
 }
 
-func (rsi *RSI) Add(close float64) {
-	rsi.mu.Lock()
-	defer rsi.mu.Unlock()
+func (rsi *RSI) Periods() int {
+	return rsi.gain.Periods()
+}
 
-	if close == 0 {
-		return
-	}
-
-	rsi.add(close)
+func (rsi *RSI) Filled() bool {
+	return rsi.gain.Filled()
 }
 
 func (rsi *RSI) Get() float64 {
@@ -69,6 +72,17 @@ func (rsi *RSI) Get() float64 {
 	}
 
 	return rsi.calc()
+}
+
+func (rsi *RSI) Add(close float64) {
+	rsi.mu.Lock()
+	defer rsi.mu.Unlock()
+
+	if close == 0 {
+		return
+	}
+
+	rsi.add(close)
 }
 
 func (rsi *RSI) add(close float64) {
@@ -99,51 +113,4 @@ func (rsi *RSI) calc() float64 {
 	}
 
 	return 0
-}
-
-// RSIcandle is a RSI indicator for candles
-
-type RSIcandle struct {
-	RSI
-
-	c      int
-	candle tCandle.Candle
-}
-
-func NewRSIcandle(period int) *RSIcandle {
-	return &RSIcandle{
-		RSI: *NewRSI(period),
-	}
-}
-
-func (rsi *RSIcandle) String() string {
-	return fmt.Sprintf("c: %d: %s  ..  %s", rsi.c, sTime.ForLog(rsi.candle.Ts, 0), rsi.RSI.String())
-}
-
-func (rsi *RSIcandle) Log() {
-	rsi.mu.Lock()
-	defer rsi.mu.Unlock()
-
-	sLog.Info("RSI: %s", rsi.String())
-}
-
-func (rsi *RSIcandle) Candle() tCandle.Candle {
-	rsi.mu.Lock()
-	defer rsi.mu.Unlock()
-
-	return rsi.candle
-}
-
-func (rsi *RSIcandle) Add(candle tCandle.Candle) {
-	rsi.mu.Lock()
-	defer rsi.mu.Unlock()
-
-	if candle.Close == 0 {
-		return
-	}
-
-	rsi.add(candle.Close)
-
-	rsi.c++
-	rsi.candle = candle
 }
