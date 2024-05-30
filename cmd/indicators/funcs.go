@@ -11,7 +11,7 @@ import (
 )
 
 func Run(mongo *rMongo.Manager) {
-	indicator := get("SuperTrend")
+	indicator := get("SuperTrendIter")
 
 	run(indicator, mongo, "BYBIT_BTCUSDT", tInterval.Interval_D)
 }
@@ -35,6 +35,10 @@ func get(indicator string) Indicator {
 
 	case "SuperTrend":
 		return tIndicator.NewSuperTrend(10, 3, false)
+
+	case "SuperTrendIter":
+		testBBandSuperTrendIter()
+		return nil
 
 	default:
 		return nil
