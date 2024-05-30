@@ -38,12 +38,12 @@ type BBands struct {
 	std  float64
 }
 
-func NewBBands(period int, deviations float64) *BBands {
+func NewBBands(periods int, deviations float64) *BBands {
 	return &BBands{
 		mu: sync.Mutex{},
 
 		deviations: deviations,
-		closes:     sFloats.NewPeriodValues(period),
+		closes:     sFloats.NewPeriodValues(periods),
 	}
 }
 
