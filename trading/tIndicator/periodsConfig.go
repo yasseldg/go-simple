@@ -10,6 +10,8 @@ type InterPeriodsConfig interface {
 
 	Periods() int
 
+	Count() int
+
 	Reset()
 	Next() bool
 }
@@ -32,11 +34,14 @@ func (st *PeriodsConfig) Periods() int {
 	return int(st.periods.Value())
 }
 
-func (st *PeriodsConfig) Next() bool {
-
-	return st.periods.Next()
+func (st *PeriodsConfig) Count() int {
+	return st.periods.Count()
 }
 
 func (st *PeriodsConfig) Reset() {
 	st.periods.Reset()
+}
+
+func (st *PeriodsConfig) Next() bool {
+	return st.periods.Next()
 }

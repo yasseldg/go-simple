@@ -11,6 +11,8 @@ type InterBBConfig interface {
 	Deviations() float64
 	AtClose() bool
 
+	Count() int
+
 	Reset()
 	Next() bool
 }
@@ -39,6 +41,18 @@ func (bb *BBConfig) AtClose() bool {
 	return bb.at_close
 }
 
+func (bb *BBConfig) Count() int {
+	return bb.InterPeriodsConfig.Count() * bb.deviations.Count()
+}
+
+func (st *BBConfig) Reset() {
+	st.deviations.Reset()
+
+	st.InterPeriodsConfig.Reset()
+
+	st.InterPeriodsConfig.Next()
+}
+
 func (st *BBConfig) Next() bool {
 
 	if st.deviations.Next() {
@@ -52,12 +66,4 @@ func (st *BBConfig) Next() bool {
 	}
 
 	return false
-}
-
-func (st *BBConfig) Reset() {
-	st.deviations.Reset()
-
-	st.InterPeriodsConfig.Reset()
-
-	st.InterPeriodsConfig.Next()
 }
