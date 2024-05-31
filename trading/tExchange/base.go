@@ -20,3 +20,11 @@ func (e *Base) IsValid() bool {
 	// TODO: implement
 	return e.name != ""
 }
+
+func (e *Base) Clone() Inter {
+	return New(e.name)
+}
+
+func (e *Base) Model() InterModel {
+	return NewModel(e.name)
+}
