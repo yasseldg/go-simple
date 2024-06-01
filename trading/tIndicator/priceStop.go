@@ -56,30 +56,30 @@ func (ps *PriceStop) Add(candle tCandle.Candle) {
 }
 
 func (ps *PriceStop) long(candle tCandle.Candle) {
-	if ps.prev.Low > candle.Low {
-		ps.low = candle.Low
+	if ps.prev.Low() > candle.Low() {
+		ps.low = candle.Low()
 	}
 
-	if candle.Close > ps.high && ps.low > 0 {
+	if candle.Close() > ps.high && ps.low > 0 {
 		ps.stop = ps.low
 	}
 
-	if candle.High > ps.high {
-		ps.high = candle.High
+	if candle.High() > ps.high {
+		ps.high = candle.High()
 	}
 }
 
 func (ps *PriceStop) short(candle tCandle.Candle) {
-	if candle.Low < ps.low {
-		ps.low = candle.Low
+	if candle.Low() < ps.low {
+		ps.low = candle.Low()
 
 		if ps.stop > ps.high {
 			ps.stop = ps.high
 		}
 	}
 
-	if ps.prev.High < candle.High {
-		ps.high = candle.High
+	if ps.prev.High() < candle.High() {
+		ps.high = candle.High()
 	}
 }
 

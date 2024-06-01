@@ -43,15 +43,15 @@ type SuperTrend struct {
 	value float64
 }
 
-func NewSuperTrend(period int, multiplier float64, smoothed bool) *SuperTrend {
+func NewSuperTrend(periods int, multiplier float64, smoothed bool) *SuperTrend {
 	supertrend := &SuperTrend{
 		multiplier: multiplier,
 	}
 
 	if smoothed {
-		supertrend.InterATR = NewSmATR(period)
+		supertrend.InterATR = NewSmATR(periods)
 	} else {
-		supertrend.InterATR = NewAvgATR(period)
+		supertrend.InterATR = NewAvgATR(periods)
 	}
 
 	return supertrend

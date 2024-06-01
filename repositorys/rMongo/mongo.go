@@ -2,6 +2,7 @@ package rMongo
 
 import (
 	"fmt"
+	"sync"
 
 	"github.com/yasseldg/go-simple/configs/sEnv"
 	"github.com/yasseldg/go-simple/logs/sLog"
@@ -10,6 +11,8 @@ import (
 )
 
 type Manager struct {
+	mu sync.Mutex
+
 	clients ClientsMap
 }
 
@@ -17,7 +20,10 @@ func NewManager() Manager {
 	return Manager{clients: make(ClientsMap)}
 }
 
-func (m Manager) Log() {
+func (m *Manager) Log() {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+
 	println()
 	for conn_name, client := range m.clients {
 		for _, database := range client.databases {
@@ -29,6 +35,8 @@ func (m Manager) Log() {
 }
 
 func (m *Manager) GetColl(env, conn_name, db_name, coll_name string, indexes ...Index) (Collection, error) {
+	m.mu.Lock()
+	defer m.mu.Unlock()
 
 	client, err := m.getClient(env, conn_name)
 	if err != nil {

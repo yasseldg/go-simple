@@ -7,19 +7,22 @@ import (
 	"github.com/yasseldg/go-simple/repositorys/rFilter"
 	"github.com/yasseldg/go-simple/repositorys/rIter"
 	"github.com/yasseldg/go-simple/repositorys/rMongo"
+	"github.com/yasseldg/go-simple/types/sTime"
 )
 
 type InterIter interface {
 	rIter.Inter
 
 	Item() Inter
-	SetNextTs(int64)
+	SetTsFrom(int64)
+	SetTsTo(int64)
 }
 
 type Iter struct {
 	rIter.Inter
 
-	next_ts int64
+	ts_from int64
+	ts_to   int64
 
 	item  Inter
 	items Candles
@@ -31,7 +34,7 @@ func NewIter(filter rFilter.Filters, coll rMongo.Collection) (*Iter, error) {
 }
 
 func (iter *Iter) String(name string) string {
-	return fmt.Sprintf("%s next_ts: %d", iter.Inter.String(name), iter.next_ts)
+	return fmt.Sprintf("%s ts_from: %s  ..  ts_to: %s", iter.Inter.String(name), sTime.ForLog(iter.ts_from, 0), sTime.ForLog(iter.ts_to, 0))
 }
 
 func (iter *Iter) Log(name string) {
@@ -54,9 +57,9 @@ func (iter *Iter) Next() bool {
 	}
 
 	filter := iter.Filter()
-	filter.Ts(iter.next_ts, 0)
+	filter.Ts(iter.ts_from, iter.ts_to)
 
-	// sLog.Debug("next: filter: %v", filter)
+	// sLog.Warn("next: filter: %v", filter)
 
 	var items Candles
 	err := iter.Coll().Filters(filter).Find(&items)
@@ -73,11 +76,15 @@ func (iter *Iter) Next() bool {
 	// sLog.Warn("next: items: %d", items[0].UnixTs)
 
 	iter.items = items
-	iter.next_ts = items[len(items)-1].Ts() + 1
+	iter.ts_from = items[len(items)-1].Ts() + 1
 
 	return iter.Next()
 }
 
-func (iter *Iter) SetNextTs(next int64) {
-	iter.next_ts = next
+func (iter *Iter) SetTsFrom(ts_from int64) {
+	iter.ts_from = ts_from
+}
+
+func (iter *Iter) SetTsTo(ts_to int64) {
+	iter.ts_to = ts_to
 }

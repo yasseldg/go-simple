@@ -16,7 +16,7 @@ func Get(exchange tExchange.Inter, symbols ...string) (Inters, error) {
 	var inters Inters
 
 	for _, name := range symbols {
-		symbol := New(name, exchange)
+		symbol := New(exchange, name)
 		if !symbol.IsValid() {
 			errs = fmt.Sprintf(" %s %s, ", errs, name)
 			continue
