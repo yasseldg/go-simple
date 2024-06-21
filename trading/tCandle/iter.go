@@ -73,7 +73,7 @@ func (iter *Iter) Next() bool {
 		return false
 	}
 
-	// sLog.Warn("next: items: %d", items[0].UnixTs)
+	// sLog.Warn("next: items: %d", items[0].Ts())
 
 	iter.items = items
 	iter.ts_from = items[len(items)-1].Ts() + 1
