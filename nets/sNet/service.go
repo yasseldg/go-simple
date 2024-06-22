@@ -28,12 +28,13 @@ func NewService(env, file_path string) (*Service, error) {
 		file_path = fmt.Sprint(".env/services/", name, ".yaml")
 	}
 
-	conf := new(Service)
-	err := sEnv.LoadYaml(file_path, conf)
+	m := new(model)
+	err := sEnv.LoadYaml(file_path, m)
 	if err != nil {
 		return nil, fmt.Errorf("sNet: getConf: can't load env file %s: %s", file_path, err)
 	}
 
+	conf := m.Service()
 	conf.env = env
 	conf.update()
 
@@ -86,4 +87,24 @@ func (c *Service) update() {
 	c.secure = sBool.Get(sEnv.Get(fmt.Sprintf("%s_Secure", c.env), sBool.ToString(c.secure)))
 	c.protocol = sEnv.Get(fmt.Sprintf("%s_Protocol", c.env), c.protocol)
 	c.path_prefix = sEnv.Get(fmt.Sprintf("%s_Path_Prefix", c.env), c.path_prefix)
+}
+
+// model for yaml
+
+type model struct {
+	Url        string
+	Secure     bool
+	Port       int
+	Network    string
+	PathPrefix string
+}
+
+func (c *model) Service() *Service {
+	return &Service{
+		url:         c.Url,
+		secure:      c.Secure,
+		port:        c.Port,
+		protocol:    c.Network,
+		path_prefix: c.PathPrefix,
+	}
 }

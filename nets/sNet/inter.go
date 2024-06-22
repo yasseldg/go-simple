@@ -12,7 +12,7 @@ type InterService interface {
 	GetUri() string
 	GetUrl() string
 
-	HandlePath(handler string) string
+	HandlePath(handle string) string
 
 	Call(method, action string, body io.Reader) (resp *http.Response, err error)
 }
