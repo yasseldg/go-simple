@@ -38,7 +38,7 @@ func TestTakeProfitStoploss(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			tp, sl := TakeProfitStoploss(tc.entry_price, tc.take_profit_perc, tc.stop_loss_perc, tc.side)
+			tp, sl := TakeProfitStopLoss(tc.entry_price, tc.take_profit_perc, tc.stop_loss_perc, tc.side)
 			if tp != tc.expected_tp || sl != tc.expected_sl {
 				t.Errorf("TakeProfitStoploss() = %v, %v, want %v, %v", tp, sl, tc.expected_tp, tc.expected_sl)
 			}
