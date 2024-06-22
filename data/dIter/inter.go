@@ -12,3 +12,10 @@ type Inter interface {
 
 	Next() bool
 }
+
+type InterConfig interface {
+	Inter
+
+	Count() int
+	Reset()
+}
