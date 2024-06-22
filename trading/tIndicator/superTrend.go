@@ -41,6 +41,8 @@ type SuperTrend struct {
 	lower float64
 
 	value float64
+
+	ts_last int64
 }
 
 func NewSuperTrend(periods int, multiplier float64, smoothed bool) *SuperTrend {
@@ -91,6 +93,10 @@ func (st *SuperTrend) IsUptrend() bool {
 func (st *SuperTrend) Add(candle tCandle.Inter) {
 	st.mu.Lock()
 	defer st.mu.Unlock()
+
+	if st.ts_last >= candle.Ts() {
+		return
+	}
 
 	st.InterATR.Add(candle)
 
