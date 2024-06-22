@@ -4,7 +4,7 @@ go 1.21
 
 require (
 	github.com/google/uuid v1.6.0
-	github.com/yasseldg/mgm/v4 v4.0.4
+	github.com/yasseldg/mgm/v4 v4.0.7
 	go.mongodb.org/mongo-driver v1.13.1
 	go.uber.org/zap v1.26.0
 	gonum.org/v1/gonum v0.12.0
@@ -14,7 +14,6 @@ require (
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
-	github.com/google/go-cmp v0.5.8 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/klauspost/compress v1.16.4 // indirect
 	github.com/montanaflynn/stats v0.7.0 // indirect
