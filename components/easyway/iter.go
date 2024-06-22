@@ -1,10 +1,9 @@
-package tCandle
+package easyway
 
 import (
 	"fmt"
 
 	"github.com/yasseldg/go-simple/logs/sLog"
-	"github.com/yasseldg/go-simple/repositorys/rFilter"
 	"github.com/yasseldg/go-simple/repositorys/rIter"
 	"github.com/yasseldg/go-simple/repositorys/rMongo"
 	"github.com/yasseldg/go-simple/types/sTime"
@@ -13,24 +12,42 @@ import (
 type InterIter interface {
 	rIter.Inter
 
-	Item() Inter
+	EwType() string
+
+	Item() InterEasyWay
+	Ew() InterEwType
+
 	SetTsFrom(int64)
 	SetTsTo(int64)
+
+	Clone() InterIter
 }
 
 type Iter struct {
 	rIter.Inter
 
+	ew_type string
+
 	ts_from int64
 	ts_to   int64
 
-	item  Inter
-	items Candles
+	item  InterEasyWay
+	items EasyWays
 }
 
-func NewIter(filter rFilter.Filters, coll rMongo.Collection) (*Iter, error) {
+func NewIter(coll rMongo.Collection, ew_type string) *Iter {
+	filter := rMongo.NewFilter()
 
-	return &Iter{Inter: rIter.New(filter, coll)}, nil
+	sort := rMongo.NewSort()
+	sort.TsAsc()
+
+	coll.Sorts(sort)
+	coll.Limit(500)
+
+	return &Iter{
+		Inter:   rIter.New(filter, coll),
+		ew_type: ew_type,
+	}
 }
 
 func (iter *Iter) String(name string) string {
@@ -41,8 +58,16 @@ func (iter *Iter) Log(name string) {
 	sLog.Info(iter.String(name))
 }
 
-func (iter *Iter) Item() Inter {
+func (iter *Iter) EwType() string {
+	return iter.ew_type
+}
+
+func (iter *Iter) Item() InterEasyWay {
 	return iter.item
+}
+
+func (iter *Iter) Ew() InterEwType {
+	return iter.item.Ew(iter.ew_type)
 }
 
 func (iter *Iter) Next() bool {
@@ -61,7 +86,7 @@ func (iter *Iter) Next() bool {
 
 	// sLog.Warn("next: filter: %v", filter)
 
-	var items Candles
+	var items EasyWays
 	err := iter.Coll().Filters(filter).Find(&items)
 	if err != nil {
 		iter.SetError(fmt.Errorf("next: coll.Find: %s", err))
@@ -72,8 +97,6 @@ func (iter *Iter) Next() bool {
 		iter.SetEmpty(true)
 		return false
 	}
-
-	// sLog.Warn("next: items: %d", items[0].Ts())
 
 	iter.items = items
 	iter.ts_from = items[len(items)-1].Ts() + 1
@@ -87,4 +110,8 @@ func (iter *Iter) SetTsFrom(ts_from int64) {
 
 func (iter *Iter) SetTsTo(ts_to int64) {
 	iter.ts_to = ts_to
+}
+
+func (iter *Iter) Clone() InterIter {
+	return NewIter(*iter.Coll(), iter.ew_type)
 }

@@ -7,7 +7,12 @@ import (
 	"github.com/yasseldg/go-simple/trading/tCandle"
 )
 
-// El Índice de Movimiento Direccional Promedio (ADX, por sus siglas en inglés)
+type InterPriceAction interface {
+	String() string
+	Log()
+
+	Add(candle tCandle.Inter)
+}
 
 type PriceAction struct {
 	mu sync.Mutex
@@ -25,14 +30,21 @@ func NewPriceAction() *PriceAction {
 	}
 }
 
+func (pa *PriceAction) String() string {
+	pa.mu.Lock()
+	defer pa.mu.Unlock()
+
+	return ""
+}
+
 func (pa *PriceAction) Log() {
 	pa.mu.Lock()
 	defer pa.mu.Unlock()
 
-	sLog.Info("PriceAction: ")
+	sLog.Info("PriceAction: %s", pa.String())
 }
 
-func (pa *PriceAction) Add(candle tCandle.Candle) {
+func (pa *PriceAction) Add(candle tCandle.Inter) {
 	pa.mu.Lock()
 	defer pa.mu.Unlock()
 
