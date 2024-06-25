@@ -10,6 +10,11 @@ import (
 	"github.com/yasseldg/mgm/v4"
 )
 
+type Inter interface {
+	Log()
+	GetColl(env, conn_name, db_name, coll_name string, indexes ...Index) (Collection, error)
+}
+
 type Manager struct {
 	mu sync.Mutex
 

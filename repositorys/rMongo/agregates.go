@@ -10,11 +10,11 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-func (c Collection) Agregates(docs interface{}) error {
+func (c *Collection) Agregates(docs interface{}) error {
 	return c.AgregatesWithCtx(mgm.Ctx(), docs)
 }
 
-func (c Collection) AgregatesWithCtx(ctx context.Context, docs interface{}) error {
+func (c *Collection) AgregatesWithCtx(ctx context.Context, docs interface{}) error {
 
 	cursor, err := c.collection.Aggregate(ctx, c.pipeline)
 	if err != nil {
@@ -28,11 +28,11 @@ func (c Collection) AgregatesWithCtx(ctx context.Context, docs interface{}) erro
 	return err
 }
 
-func (c Collection) AgregatesCount() ([]bson.M, error) {
+func (c *Collection) AgregatesCount() ([]bson.M, error) {
 	return c.AgregatesCountWithCtx(mgm.Ctx())
 }
 
-func (c Collection) AgregatesCountWithCtx(ctx context.Context) ([]bson.M, error) {
+func (c *Collection) AgregatesCountWithCtx(ctx context.Context) ([]bson.M, error) {
 
 	var result []bson.M
 

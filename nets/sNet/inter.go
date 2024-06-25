@@ -1,6 +1,7 @@
 package sNet
 
 import (
+	"context"
 	"io"
 	"net/http"
 )
@@ -12,7 +13,28 @@ type InterService interface {
 	GetUri() string
 	GetUrl() string
 
-	HandlePath(handle string) string
+	HandlePath(string) string
+}
 
-	Call(method, action string, body io.Reader) (resp *http.Response, err error)
+type InterRequest interface {
+	// Options
+	MethodGet() InterRequest
+	MethodPost() InterRequest
+	SetEndPoint(string) InterRequest
+
+	SetParam(string, string)
+	AddParam(string, string)
+	DelParam(string)
+
+	SetHeader(string, string)
+	AddHeader(string, string)
+	DelHeader(string)
+
+	SetBody(io.Reader)
+
+	Call(context.Context, InterService, InterClient) ([]byte, error)
+}
+
+type InterClient interface {
+	Do(*http.Request) (*http.Response, error)
 }
