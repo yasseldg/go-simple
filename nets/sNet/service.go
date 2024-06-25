@@ -2,8 +2,6 @@ package sNet
 
 import (
 	"fmt"
-	"io"
-	"net/http"
 	"path"
 
 	"github.com/yasseldg/go-simple/configs/sEnv"
@@ -73,10 +71,6 @@ func (c *Service) HandlePath(handler string) string {
 		return fmt.Sprintf("/%s/%s", c.path_prefix, handler)
 	}
 	return fmt.Sprintf("/%s", handler)
-}
-
-func (c *Service) Call(method, action string, body io.Reader) (resp *http.Response, err error) {
-	return nil, nil
 }
 
 // private methods

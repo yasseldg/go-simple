@@ -32,19 +32,19 @@ func (cm CollectionsMap) get(coll_name string) *Collection {
 	return nil
 }
 
-func (c Collection) Prefix() string {
+func (c *Collection) Prefix() string {
 	return c.prefix
 }
 
-func (c Collection) Mgm() *mgm.Collection {
+func (c *Collection) Mgm() *mgm.Collection {
 	return c.collection
 }
 
-func (c Collection) String() string {
+func (c *Collection) String() string {
 	return fmt.Sprintf("coll: %s  ..  %s", c.conn, c.prefix)
 }
 
-func (c Collection) Log() {
+func (c *Collection) Log() {
 	sLog.Info("Mongo: %s", c.String())
 }
 
