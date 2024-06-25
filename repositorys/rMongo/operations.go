@@ -12,37 +12,37 @@ import (
 )
 
 // Create
-func (c Collection) Create(obj mgm.Model) error {
+func (c *Collection) Create(model mgm.Model) error {
 
-	err := c.collection.CreateWithCtx(mgm.Ctx(), obj)
+	err := c.collection.CreateWithCtx(mgm.Ctx(), model)
 	if err != nil {
-		return fmt.Errorf("%s err: %s  ..  obj: %#v", c.prefix, err, obj)
+		return fmt.Errorf("%s err: %s  ..  model: %#v", c.prefix, err, model)
 	}
 	return nil
 }
 
 // Update
-func (c Collection) Update(obj mgm.Model) error {
+func (c *Collection) Update(model mgm.Model) error {
 
-	err := c.collection.UpdateWithCtx(mgm.Ctx(), obj)
+	err := c.collection.UpdateWithCtx(mgm.Ctx(), model)
 	if err != nil {
-		return fmt.Errorf("%s err: %s  ..  obj: %#v", c.prefix, err, obj)
+		return fmt.Errorf("%s err: %s  ..  obj: %#v", c.prefix, err, model)
 	}
 	return nil
 }
 
 // Upsert
-func (c Collection) Upsert(obj mgm.Model, field string) error {
+func (c *Collection) Upsert(model mgm.Model, field string) error {
 
-	err := c.collection.UpdateWithCtx(mgm.Ctx(), obj, options.Update().SetUpsert(true))
+	err := c.collection.UpdateWithCtx(mgm.Ctx(), model, options.Update().SetUpsert(true))
 	if err != nil {
-		return fmt.Errorf("%s err: %s  ..  obj: %#v", c.prefix, err, obj)
+		return fmt.Errorf("%s err: %s  ..  obj: %#v", c.prefix, err, model)
 	}
 	return nil
 }
 
 // Count
-func (c Collection) Count() (int64, error) {
+func (c *Collection) Count() (int64, error) {
 
 	f, err := getFilter(c.filter)
 	if err != nil {
@@ -58,7 +58,7 @@ func (c Collection) Count() (int64, error) {
 }
 
 // Find
-func (c Collection) Find(objs interface{}) error {
+func (c *Collection) Find(models interface{}) error {
 
 	s, err := getSort(c.sort)
 	if err != nil {
@@ -75,7 +75,7 @@ func (c Collection) Find(objs interface{}) error {
 		return fmt.Errorf("mongo: %s.Find(): %s", c.prefix, err)
 	}
 
-	err = c.collection.SimpleFindWithCtx(mgm.Ctx(), objs, f.getFields(), opts)
+	err = c.collection.SimpleFindWithCtx(mgm.Ctx(), models, f.getFields(), opts)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			sLog.Debug("Mongo: %s.SimpleFind(objs, filter, opts): %s", c.prefix, err)
@@ -88,7 +88,7 @@ func (c Collection) Find(objs interface{}) error {
 }
 
 // FindOne
-func (c Collection) FindOne(obj mgm.Model) error {
+func (c *Collection) FindOne(model mgm.Model) error {
 
 	f, err := getFilter(c.filter)
 	if err != nil {
@@ -101,7 +101,7 @@ func (c Collection) FindOne(obj mgm.Model) error {
 	}
 
 	opts := options.FindOne().SetSort(s.getFields())
-	err = c.collection.FirstWithCtx(mgm.Ctx(), f.getFields(), obj, opts)
+	err = c.collection.FirstWithCtx(mgm.Ctx(), f.getFields(), model, opts)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			sLog.Debug("Mongo: %s.First(filters, obj, &opts): %s", c.prefix, err)
@@ -114,9 +114,9 @@ func (c Collection) FindOne(obj mgm.Model) error {
 }
 
 // FindById
-func (c Collection) FindById(id interface{}, obj mgm.Model) error {
+func (c *Collection) FindById(id interface{}, model mgm.Model) error {
 
-	err := c.collection.FindByIDWithCtx(mgm.Ctx(), id, obj)
+	err := c.collection.FindByIDWithCtx(mgm.Ctx(), id, model)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			sLog.Debug("Mongo: %s.FindByID(id, obj): %s", c.prefix, err)
