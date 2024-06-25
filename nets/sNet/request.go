@@ -1,89 +1,130 @@
 package sNet
 
 import (
-	"encoding/json"
+	"context"
 	"fmt"
 	"io"
 	"net/http"
 	"net/url"
+
+	"github.com/yasseldg/go-simple/logs/sLog"
 )
-
-type secType int
-
-const (
-	secTypeNone   secType = iota
-	secTypeSigned         // private Request
-)
-
-type Params map[string]interface{}
-
-func NewParams() Params {
-	return make(Params)
-}
-
-func (p Params) Set(key string, value interface{}) {
-	p[key] = value
-}
 
 // Request define an API Request
 type Request struct {
-	method     string
-	endpoint   string
-	query      url.Values
-	recvWindow string
-	secType    secType
-	header     http.Header
-	params     []byte
-	fullURL    string
-	body       io.Reader
+	method   string
+	endpoint string
+	query    url.Values
+	header   http.Header
+	body     io.Reader
 }
 
-func (r *Request) validate() (err error) {
-	if r.query == nil {
-		r.query = url.Values{}
+func NewRequest() *Request {
+	return &Request{
+		query:  url.Values{},
+		header: http.Header{},
 	}
-	return nil
 }
 
-func (r *Request) Get() *Request {
+func (r *Request) MethodGet() InterRequest {
 	r.method = http.MethodGet
 	return r
 }
 
-func (r *Request) Post() *Request {
+func (r *Request) MethodPost() InterRequest {
 	r.method = http.MethodPost
 	return r
 }
 
-func (r *Request) Signed() *Request {
-	r.secType = secTypeSigned
-	return r
-}
-
-func (r *Request) EndPoint(endpoint string) *Request {
+func (r *Request) SetEndPoint(endpoint string) InterRequest {
 	r.endpoint = endpoint
 	return r
 }
 
-// setParam set param with key/value to query string
-func (r *Request) setParam(key string, value interface{}) {
-	r.validate()
-	r.query.Set(key, fmt.Sprintf("%v", value))
+func (r *Request) SetParam(key, value string) {
+	r.query.Set(key, value)
 }
 
-func (r *Request) SetParams(params Params) error {
-	switch r.method {
-	case http.MethodGet:
-		for k, v := range params {
-			r.setParam(k, v)
-		}
-	case http.MethodPost:
-		jsonData, err := json.Marshal(params)
-		if err != nil {
-			return fmt.Errorf("error marshalling query: %s", err)
-		}
-		r.params = jsonData
+func (r *Request) AddParam(key, value string) {
+	r.query.Add(key, value)
+}
+
+func (r *Request) DelParam(key string) {
+	r.query.Del(key)
+}
+
+func (r *Request) SetHeader(key, value string) {
+	r.header.Set(key, value)
+}
+
+func (r *Request) AddHeader(key, value string) {
+	r.header.Add(key, value)
+}
+
+func (r *Request) DelHeader(key string) {
+	r.header.Del(key)
+}
+
+func (r *Request) SetBody(body io.Reader) {
+	r.body = body
+}
+
+func (r *Request) Call(ctx context.Context, service InterService, client InterClient) (data []byte, err error) {
+	if service == nil {
+		return nil, fmt.Errorf("service is nil")
 	}
 
-	return nil
+	urlFull, err := url.JoinPath(service.GetUrl(), r.getUri())
+	if err != nil {
+		return nil, fmt.Errorf("url.JoinPath(): %s ", err)
+	}
+
+	sLog.Warn("Call: urlFull: %s ", urlFull)
+
+	request, err := http.NewRequest(r.method, urlFull, r.body)
+	if err != nil {
+		return nil, fmt.Errorf("http.NewRequest(): %s ", err)
+	}
+
+	if ctx != nil {
+		request = request.WithContext(ctx)
+	}
+
+	request.Header = r.header
+
+	if client == nil {
+		client = NewClient(nil, nil)
+	}
+
+	response, err := client.Do(request)
+	if err != nil {
+		return nil, fmt.Errorf("client.Do(): %s ", err)
+	}
+
+	data, err = io.ReadAll(response.Body)
+	if err != nil {
+		return nil, fmt.Errorf("io.ReadAll(): %s ", err)
+	}
+
+	defer func() {
+		close_err := response.Body.Close()
+		// Only overwrite the returned error if the original error was nil and an
+		// error occurred while closing the body.
+		if err == nil && close_err != nil {
+			err = close_err
+		}
+	}()
+
+	if response.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("StatusCode: %d ", response.StatusCode)
+	}
+
+	return data, nil
+}
+
+func (r *Request) getUri() string {
+	if len(r.query) == 0 {
+		return r.endpoint
+	}
+	return fmt.Sprintf("%s?%s", r.endpoint, r.query.Encode())
 }
