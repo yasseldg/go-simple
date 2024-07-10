@@ -5,17 +5,15 @@ import (
 	"strings"
 
 	"github.com/yasseldg/go-simple/logs/sLog"
-	"github.com/yasseldg/go-simple/trading/tExchange"
 )
 
 type Base struct {
-	exchange tExchange.Inter
-
+	exchange  string
 	name      string
 	precision int
 }
 
-func New(exchange tExchange.Inter, name string) *Base {
+func New(exchange, name string) *Base {
 	return &Base{
 		name:     strings.ToUpper(name),
 		exchange: exchange,
@@ -23,14 +21,14 @@ func New(exchange tExchange.Inter, name string) *Base {
 }
 
 func (s *Base) String() string {
-	return fmt.Sprintf("%s_%s", s.exchange.Name(), s.name)
+	return fmt.Sprintf("%s_%s", s.exchange, s.name)
 }
 
 func (s *Base) Log() {
 	sLog.Info("%s .. prec: %d", s.String(), s.precision)
 }
 
-func (s *Base) Exchange() tExchange.Inter {
+func (s *Base) Exchange() string {
 	return s.exchange
 }
 
@@ -53,7 +51,7 @@ func (s *Base) IsValid() bool {
 
 func (s *Base) Clone() Inter {
 	return &Base{
-		exchange:  s.Exchange().Clone(),
+		exchange:  s.exchange,
 		name:      s.name,
 		precision: s.precision,
 	}
@@ -61,7 +59,7 @@ func (s *Base) Clone() Inter {
 
 func (s *Base) Model() InterModel {
 	return NewModel(
-		s.exchange.Model().StringID(),
+		s.exchange,
 		s.name,
 		s.precision,
 	)
