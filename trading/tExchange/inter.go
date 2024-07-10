@@ -1,6 +1,8 @@
 package tExchange
 
 import (
+	"github.com/yasseldg/go-simple/trading/tSymbol"
+
 	"github.com/yasseldg/mgm/v4"
 )
 
@@ -10,6 +12,8 @@ type Inter interface {
 	// Name returns the exchange name
 	Name() string
 	IsValid() bool
+
+	GetSymbols(symbols ...string) (tSymbol.Inters, error)
 
 	Clone() Inter
 	Model() InterModel
