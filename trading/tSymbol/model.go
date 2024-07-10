@@ -9,24 +9,24 @@ import (
 type Model struct {
 	mgm.ModelDateState `bson:",inline"`
 
-	M_exchange_id string `bson:"e_id" json:"e_id"`
-	M_name        string `bson:"n" json:"n"`
-	M_precision   int    `bson:"p" json:"p"`
+	M_exchange  string `bson:"e" json:"e"`
+	M_name      string `bson:"n" json:"n"`
+	M_precision int    `bson:"p" json:"p"`
 }
 type Models []*Model
 
-func NewModel(exchange_id, name string, precision int) *Model {
+func NewModel(exchange, name string, precision int) *Model {
 	return &Model{
 		ModelDateState: new(mgm.DefaultModelDateState),
 
-		M_exchange_id: exchange_id,
-		M_name:        name,
-		M_precision:   precision,
+		M_exchange:  exchange,
+		M_name:      name,
+		M_precision: precision,
 	}
 }
 
-func (b *Model) ExchangeID() string {
-	return b.M_exchange_id
+func (b *Model) Exchange() string {
+	return b.M_exchange
 }
 
 func (b *Model) Name() string {
