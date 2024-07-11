@@ -2,6 +2,7 @@ package sEnv
 
 import (
 	"os"
+	"strconv"
 
 	"github.com/yasseldg/go-simple/types/sFloats"
 	"github.com/yasseldg/go-simple/types/sInts"
@@ -35,6 +36,16 @@ func GetInt(env_name string, defaults int) int {
 		return sInts.Get(env)
 	}
 	return defaults
+}
+
+// GetBool
+func GetBool(env_name string, defaults bool) bool {
+	str := Get(env_name, "")
+	b, err := strconv.ParseBool(str)
+	if err != nil {
+		return defaults
+	}
+	return b
 }
 
 // GetSliceInt
