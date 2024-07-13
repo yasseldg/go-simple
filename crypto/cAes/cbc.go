@@ -24,6 +24,11 @@ func NewCBC(keyHex string) *CBC {
 // encrypt
 
 func (cr *CBC) Encrypt(plain string) (string, error) {
+
+	if len(plain) == 0 {
+		return "", errors.New("empty plain text")
+	}
+
 	// Decode hexadecimal key to bytes
 	key, err := hex.DecodeString(cr.KeyHex())
 	if err != nil {
@@ -64,6 +69,11 @@ func (cr *CBC) Encrypt(plain string) (string, error) {
 // decrypt
 
 func (cr *CBC) Decrypt(encryptedBase64 string) (string, error) {
+
+	if len(encryptedBase64) == 0 {
+		return "", errors.New("empty encrypted text")
+	}
+
 	// Decode hexadecimal key to bytes
 	key, err := hex.DecodeString(cr.KeyHex())
 	if err != nil {
