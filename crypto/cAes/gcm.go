@@ -22,6 +22,11 @@ func NewGCM(keyHex string) *GCM {
 }
 
 func (b *GCM) Encrypt(plain string) (string, error) {
+
+	if len(plain) == 0 {
+		return "", errors.New("empty plain text")
+	}
+
 	block, err := aes.NewCipher(b.key())
 	if err != nil {
 		return "", fmt.Errorf("error creating cipher block: %w", err)
@@ -43,6 +48,11 @@ func (b *GCM) Encrypt(plain string) (string, error) {
 }
 
 func (b *GCM) Decrypt(encrypted string) (string, error) {
+
+	if len(encrypted) == 0 {
+		return "", errors.New("empty encrypted text")
+	}
+
 	block, err := aes.NewCipher(b.key())
 	if err != nil {
 		return "", fmt.Errorf("error creating cipher block: %w", err)
