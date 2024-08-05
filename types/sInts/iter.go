@@ -7,7 +7,7 @@ import (
 	"github.com/yasseldg/go-simple/logs/sLog"
 )
 
-type Iter interface {
+type InterIter interface {
 	dIter.Inter
 
 	Value() int64
@@ -15,7 +15,7 @@ type Iter interface {
 	Reset()
 }
 
-type BaseIter struct {
+type Iter struct {
 	dIter.Inter
 
 	from       int64
@@ -28,8 +28,8 @@ type BaseIter struct {
 	current int64
 }
 
-func NewBaseIter(from, to, step int64, values ...int64) *BaseIter {
-	return &BaseIter{
+func NewIter(from, to, step int64, values ...int64) *Iter {
+	return &Iter{
 		Inter: dIter.New(),
 
 		from:       from,
@@ -42,29 +42,29 @@ func NewBaseIter(from, to, step int64, values ...int64) *BaseIter {
 	}
 }
 
-func (b *BaseIter) Reset() {
+func (b *Iter) Reset() {
 	b.index = -1
 	b.current = 0
 	b.values_map = make(map[int64]bool)
 }
 
-func (b *BaseIter) String(name string) string {
+func (b *Iter) String(name string) string {
 	return fmt.Sprintf("%s %d  ..  value: %d", b.Inter.String(name), b.Count(), b.current)
 }
 
-func (b *BaseIter) Log(name string) {
+func (b *Iter) Log(name string) {
 	sLog.Info(b.String(name))
 }
 
-func (b *BaseIter) Value() int64 {
+func (b *Iter) Value() int64 {
 	return b.current
 }
 
-func (b *BaseIter) Count() int {
+func (b *Iter) Count() int {
 	return b.index + 1
 }
 
-func (b *BaseIter) Next() bool {
+func (b *Iter) Next() bool {
 
 	if b.index < len(b.values) {
 		if b.nextValue() {
@@ -85,7 +85,7 @@ func (b *BaseIter) Next() bool {
 
 // private methods
 
-func (b *BaseIter) nextValue() bool {
+func (b *Iter) nextValue() bool {
 
 	b.index++
 
@@ -100,7 +100,7 @@ func (b *BaseIter) nextValue() bool {
 	return true
 }
 
-func (b *BaseIter) nextRange() bool {
+func (b *Iter) nextRange() bool {
 
 	nextValue := b.current + b.step
 	if (b.step > 0 && nextValue <= b.to) || (b.step < 0 && nextValue >= b.to) {
@@ -121,7 +121,7 @@ func (b *BaseIter) nextRange() bool {
 	return false
 }
 
-func (b *BaseIter) verify() bool {
+func (b *Iter) verify() bool {
 	if _, ok := b.values_map[b.current]; ok {
 		return b.nextRange()
 	}
