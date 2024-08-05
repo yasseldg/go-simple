@@ -12,6 +12,7 @@ const (
 	Interval_1m  = Interval("1m")
 	Interval_5m  = Interval("5m")
 	Interval_15m = Interval("15m")
+	Interval_30m = Interval("30m")
 	Interval_1h  = Interval("1h")
 	Interval_4h  = Interval("4h")
 	Interval_D   = Interval("D")
@@ -44,6 +45,8 @@ func (i Interval) Minutes() int64 {
 		return 5
 	case Interval_15m:
 		return 15
+	case Interval_30m:
+		return 30
 	case Interval_1h:
 		return 60
 	case Interval_4h:
