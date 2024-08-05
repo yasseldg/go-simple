@@ -19,3 +19,15 @@ type InterConfig interface {
 	Count() int
 	Reset()
 }
+
+// Define a generic interface
+type InterLimited[T any] interface {
+	Inter
+
+	Add(...T)
+	Reset()
+	Item() T
+	Count() int
+
+	Clone() InterLimited[T]
+}

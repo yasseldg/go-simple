@@ -19,12 +19,12 @@ type InterSTConfig interface {
 type STConfig struct {
 	InterPeriodsConfig
 
-	multipliers sFloats.Iter
+	multipliers sFloats.InterIter
 	at_close    bool
 	smoothed    bool
 }
 
-func NewSTConfig(periods sInts.Iter, multipliers sFloats.Iter, at_close, smoothed bool) *STConfig {
+func NewSTConfig(periods sInts.InterIter, multipliers sFloats.InterIter, at_close, smoothed bool) *STConfig {
 	return &STConfig{
 		InterPeriodsConfig: NewPeriodsConfig(periods),
 

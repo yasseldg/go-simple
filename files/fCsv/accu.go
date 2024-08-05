@@ -66,7 +66,7 @@ func (a *Accu) AddData(d []string) {
 
 func (a *Accu) save() error {
 	if len(a.data) == 0 {
-		return nil
+		return fmt.Errorf("no data to save in ( %s )", a.FilePath())
 	}
 
 	err := a.write()
