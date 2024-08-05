@@ -19,10 +19,10 @@ type InterPeriodsConfig interface {
 type PeriodsConfig struct {
 	dIter.Inter
 
-	periods sInts.Iter
+	periods sInts.InterIter
 }
 
-func NewPeriodsConfig(periods sInts.Iter) *PeriodsConfig {
+func NewPeriodsConfig(periods sInts.InterIter) *PeriodsConfig {
 	return &PeriodsConfig{
 		Inter: dIter.New(),
 

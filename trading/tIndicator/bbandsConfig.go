@@ -20,11 +20,11 @@ type InterBBConfig interface {
 type BBConfig struct {
 	InterPeriodsConfig
 
-	deviations sFloats.Iter
+	deviations sFloats.InterIter
 	at_close   bool
 }
 
-func NewBBConfig(periods sInts.Iter, deviations sFloats.Iter, at_close bool) *BBConfig {
+func NewBBConfig(periods sInts.InterIter, deviations sFloats.InterIter, at_close bool) *BBConfig {
 	return &BBConfig{
 		InterPeriodsConfig: NewPeriodsConfig(periods),
 

@@ -42,11 +42,19 @@ func (bb *BBcandle) Log() {
 	sLog.Info("BBands: %s", bb.String())
 }
 
+func (bb *BBcandle) Candle() tCandle.Inter {
+	return bb.prev
+}
+
 func (bb *BBcandle) Add(candle tCandle.Inter) {
 	bb.mu.Lock()
 	defer bb.mu.Unlock()
 
 	if candle.Close() == 0 {
+		return
+	}
+
+	if bb.prev.Ts() >= candle.Ts() {
 		return
 	}
 
