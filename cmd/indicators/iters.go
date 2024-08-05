@@ -9,12 +9,12 @@ import (
 
 func testBBandSuperTrendIter() {
 
-	bb_periods := sInts.NewBaseIter(18, 20, 1)
-	bb_deviations := sFloats.NewBaseIter(1.0, 2.0, 0.5)
+	bb_periods := sInts.NewIter(18, 20, 1)
+	bb_deviations := sFloats.NewIter(1.0, 2.0, 0.5)
 	bb_config := tIndicator.NewBBConfig(bb_periods, bb_deviations, true)
 
-	st_periods := sInts.NewBaseIter(12, 15, 1)
-	st_multipliers := sFloats.NewBaseIter(2.0, 3.0, 0.2)
+	st_periods := sInts.NewIter(12, 15, 1)
+	st_multipliers := sFloats.NewIter(2.0, 3.0, 0.2)
 	st_config := tIndicator.NewSTConfig(st_periods, st_multipliers, true, false)
 
 	c := 0

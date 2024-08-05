@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/yasseldg/go-simple/cmd/components"
 	"github.com/yasseldg/go-simple/cmd/indicators"
-	"github.com/yasseldg/go-simple/cmd/nets"
+	"github.com/yasseldg/go-simple/cmd/iters"
 	"github.com/yasseldg/go-simple/cmd/repos"
 
 	"github.com/yasseldg/go-simple/logs/sLog"
@@ -29,7 +29,7 @@ func main() {
 
 	sLog.Info("Starting...")
 
-	sTime.TimeControl(nets.Prueba, "Iters")
+	sTime.TimeControl(iters.Tests, "Iters")
 }
 
 func testModel() {
