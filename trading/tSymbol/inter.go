@@ -1,6 +1,8 @@
 package tSymbol
 
 import (
+	"github.com/yasseldg/go-simple/data/dIter"
+
 	"github.com/yasseldg/mgm/v4"
 )
 
@@ -27,4 +29,9 @@ type InterModel interface {
 	Exchange() string
 	Name() string
 	Precision() int
+}
+
+// InterIterLimited
+type InterIterLimited interface {
+	dIter.InterLimited[Inter]
 }
