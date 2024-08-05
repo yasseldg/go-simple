@@ -34,14 +34,15 @@ func (e *Base) Model() InterModel {
 	return NewModel(e.name)
 }
 
-func (e *Base) GetSymbols(symbols ...string) (tSymbol.Inters, error) {
+func (e *Base) GetSymbols(symbols ...string) (tSymbol.InterIterLimited, error) {
 	if len(symbols) == 0 {
 		return nil, ErrEmptySymbols
 	}
 
 	var err error = nil
 	var errs string
-	var inters tSymbol.Inters
+
+	iter := tSymbol.NewIterLimited()
 
 	for _, name := range symbols {
 		symbol := tSymbol.New(e.Name(), name)
@@ -50,16 +51,12 @@ func (e *Base) GetSymbols(symbols ...string) (tSymbol.Inters, error) {
 			continue
 		}
 
-		inters = append(inters, symbol)
+		iter.Add(symbol)
 	}
 
 	if len(errs) > 0 {
 		err = fmt.Errorf("%s: %s", tSymbol.ErrInvalidSymbol, errs)
 	}
 
-	if len(inters) > 0 {
-		return inters, err
-	}
-
-	return nil, err
+	return iter, err
 }
