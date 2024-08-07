@@ -15,6 +15,8 @@ func Get(interval string) Interval {
 		return Interval_5m
 	case "M15", "candle15m", "15m", "15", "15min":
 		return Interval_15m
+	case "M30", "candle30m", "30m", "30", "30min":
+		return Interval_30m
 	case "H1", "candle1H", "1H", "60", "1h":
 		return Interval_1h
 	case "H4", "candle4H", "4H", "240", "4h":
