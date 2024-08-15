@@ -4,7 +4,7 @@ go 1.21
 
 require (
 	github.com/google/uuid v1.6.0
-	github.com/yasseldg/mgm/v4 v4.0.8
+	github.com/yasseldg/mgm/v4 v4.0.9
 	go.mongodb.org/mongo-driver v1.13.1
 	go.uber.org/zap v1.26.0
 	gonum.org/v1/gonum v0.12.0
