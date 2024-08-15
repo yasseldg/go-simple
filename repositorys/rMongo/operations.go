@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/yasseldg/go-simple/logs/sLog"
+	"github.com/yasseldg/go-simple/repositorys/rFilter"
 
 	"github.com/yasseldg/mgm/v4"
 
@@ -32,11 +33,16 @@ func (c *Collection) Update(model mgm.Model) error {
 }
 
 // Upsert
-func (c *Collection) Upsert(model mgm.Model, field string) error {
+func (c *Collection) Upsert(model mgm.Model, filter rFilter.Filters) error {
 
-	err := c.collection.UpdateWithCtx(mgm.Ctx(), model, options.Update().SetUpsert(true))
+	f, err := getFilter(filter)
 	if err != nil {
-		return fmt.Errorf("%s err: %s  ..  obj: %#v", c.prefix, err, model)
+		return fmt.Errorf("mongo: %s.Upsert(): %s", c.prefix, err)
+	}
+
+	err = c.collection.UpsertWithCtx(mgm.Ctx(), f.getFields(), model, options.Update().SetUpsert(true))
+	if err != nil {
+		return fmt.Errorf("%s.SimpleFind(objs, filter, opts): %s  ..  filter: %#v", c.prefix, err, c.filter)
 	}
 	return nil
 }
