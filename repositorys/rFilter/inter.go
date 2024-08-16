@@ -16,6 +16,9 @@ type InterComp interface {
 
 	Like(key string, value string)
 
+	NotNull(key string)
+	NotEqual(key string, value interface{})
+
 	Gt(key string, value interface{})
 	Gte(key string, value interface{})
 	Lt(key string, value interface{})

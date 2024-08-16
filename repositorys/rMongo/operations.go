@@ -42,7 +42,22 @@ func (c *Collection) Upsert(model mgm.Model, filter rFilter.Filters) error {
 
 	err = c.collection.UpsertWithCtx(mgm.Ctx(), f.getFields(), model, options.Update().SetUpsert(true))
 	if err != nil {
-		return fmt.Errorf("%s.SimpleFind(objs, filter, opts): %s  ..  filter: %#v", c.prefix, err, c.filter)
+		return fmt.Errorf("%s.UpsertWithCtx(): %s  ..  filter: %#v", c.prefix, err, c.filter)
+	}
+	return nil
+}
+
+// Upsert
+func (c *Collection) UpsertDoc(doc interface{}, filter rFilter.Filters) error {
+
+	f, err := getFilter(filter)
+	if err != nil {
+		return fmt.Errorf("mongo: %s.Upsert(): %s", c.prefix, err)
+	}
+
+	err = c.collection.UpsertDocWithCtx(mgm.Ctx(), f.getFields(), doc, options.Update().SetUpsert(true))
+	if err != nil {
+		return fmt.Errorf("%s.UpsertDocWithCtx(): %s  ..  filter: %#v", c.prefix, err, c.filter)
 	}
 	return nil
 }

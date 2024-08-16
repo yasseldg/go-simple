@@ -7,6 +7,7 @@ import (
 	"github.com/yasseldg/go-simple/repositorys/rFilter"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // Implementing uFilter interface
@@ -47,6 +48,14 @@ func (f *Filter) Nin(field string, values ...interface{}) {
 
 func (f *Filter) Like(field string, value string) {
 	f.Append(field, bson.D{{Key: "$regex", Value: value}, {Key: "$options", Value: "i"}})
+}
+
+func (f *Filter) NotNull(field string) {
+	f.Append(field, bson.D{{Key: "$ne", Value: primitive.Null{}}})
+}
+
+func (f *Filter) NotEqual(field string, value interface{}) {
+	f.Append(field, bson.D{{Key: "$ne", Value: value}})
 }
 
 func (f *Filter) Gt(field string, value interface{}) {

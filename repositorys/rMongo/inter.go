@@ -20,6 +20,7 @@ type InterColl interface {
 	Create(model mgm.Model) error
 	Update(model mgm.Model) error
 	Upsert(model mgm.Model, filter rFilter.Filters) error
+	UpsertDoc(doc interface{}, filter rFilter.Filters) error
 	Count() (int64, error)
 	Find(models interface{}) error
 	FindOne(model mgm.Model) error
