@@ -13,13 +13,6 @@ type Inter interface {
 	Next() bool
 }
 
-type InterConfig interface {
-	Inter
-
-	Count() int
-	Reset()
-}
-
 // Define a generic interface
 type InterLimited[T any] interface {
 	Inter
@@ -30,4 +23,24 @@ type InterLimited[T any] interface {
 	Count() int
 
 	Clone() InterLimited[T]
+}
+
+// Config interfaces
+
+type InterConfig interface {
+	Inter
+
+	Count() int
+	Reset()
+}
+
+type InterNameConfig interface {
+	InterConfig
+	Name() string
+}
+
+type InterIterConfig interface {
+	InterNameConfig
+
+	Add(config ...InterNameConfig)
 }

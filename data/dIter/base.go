@@ -16,7 +16,7 @@ func New() *Base {
 }
 
 func (a *Base) String(name string) string {
-	return fmt.Sprintf("Iter ( %s ): ", name)
+	return fmt.Sprintf("Iter ( %s ):", name)
 }
 
 func (a *Base) Log(name string) {
