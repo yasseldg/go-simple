@@ -1,11 +1,13 @@
 package rMongo
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/yasseldg/go-simple/configs/sEnv"
 	"github.com/yasseldg/go-simple/logs/sLog"
 
+	"go.mongodb.org/mongo-driver/event"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
@@ -22,6 +24,7 @@ type Connection struct {
 	AuthMechanism    string `yaml: "authmechanism"`
 	ReadPreference   string `yaml: "readpreference"`
 	DirectConnection bool   `yaml: "directconnection"`
+	Debug            bool   `yaml: "debug"`
 }
 
 // GetConnection, Databases access data predefined
@@ -57,7 +60,16 @@ func (conn Connection) getUri() (string, options.Credential) {
 	return fmt.Sprintf("mongodb://%s:%s", conn.Host, conn.Port), optCredential
 }
 
-func (conn Connection) getClientOpt() *options.ClientOptions {
+func (conn Connection) getClientOpt(debug bool) *options.ClientOptions {
+
+	options := options.Client()
+
+	if conn.Debug || debug {
+		options.SetMonitor(&event.CommandMonitor{
+			Started: func(_ context.Context, evt *event.CommandStartedEvent) {
+				sLog.Warn("Mongo Command: %s  ..  %v", evt.CommandName, evt.Command)
+			}})
+	}
 
 	Uri, Credentials := conn.getUri()
 
@@ -65,9 +77,11 @@ func (conn Connection) getClientOpt() *options.ClientOptions {
 
 	switch conn.Environment {
 	case "prod":
-		return options.Client().ApplyURI(Uri)
+		options.ApplyURI(Uri)
 
 	default:
-		return options.Client().ApplyURI(Uri).SetAuth(Credentials)
+		options.ApplyURI(Uri).SetAuth(Credentials)
 	}
+
+	return options
 }

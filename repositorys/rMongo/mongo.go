@@ -18,6 +18,7 @@ type Inter interface {
 type Manager struct {
 	mu sync.Mutex
 
+	debug   bool
 	clients ClientsMap
 }
 
@@ -39,6 +40,13 @@ func (m *Manager) Log() {
 	}
 }
 
+func (m *Manager) SetDebug() {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+
+	m.debug = true
+}
+
 func (m *Manager) GetColl(env, conn_name, db_name, coll_name string, indexes ...Index) (Collection, error) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
@@ -48,7 +56,7 @@ func (m *Manager) GetColl(env, conn_name, db_name, coll_name string, indexes ...
 		return Collection{}, err
 	}
 
-	return client.getColl(db_name, coll_name, indexes...)
+	return client.getColl(env, db_name, coll_name, indexes...)
 }
 
 func (m *Manager) getClient(env, conn_name string) (*Client, error) {
@@ -73,7 +81,7 @@ func (m *Manager) setClient(env, conn_name string) (*Client, error) {
 		return nil, err
 	}
 
-	client, err := mgm.NewClient(conn.getClientOpt())
+	client, err := mgm.NewClient(conn.getClientOpt(m.debug))
 	if err != nil {
 		err := fmt.Errorf(" mgm.NewClient() for env: %s  ..  conn_name: %s  ..  err: %s", env, conn_name, err)
 		return nil, err
