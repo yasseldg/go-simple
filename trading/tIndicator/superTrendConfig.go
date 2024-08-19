@@ -1,37 +1,50 @@
 package tIndicator
 
 import (
+	"fmt"
+
+	"github.com/yasseldg/go-simple/data/dIter"
 	"github.com/yasseldg/go-simple/types/sFloats"
 	"github.com/yasseldg/go-simple/types/sInts"
 )
 
 type InterSTConfig interface {
-	InterPeriodsConfig
+	dIter.InterIterConfig
 
+	Periods() int
 	Multiplier() float64
 	AtClose() bool
 	Smoothed() bool
-
-	Reset()
-	Next() bool
 }
 
 type STConfig struct {
-	InterPeriodsConfig
+	dIter.InterIterConfig
 
+	periods     InterPeriodsConfig
 	multipliers sFloats.InterIter
 	at_close    bool
 	smoothed    bool
 }
 
-func NewSTConfig(periods sInts.InterIter, multipliers sFloats.InterIter, at_close, smoothed bool) *STConfig {
-	return &STConfig{
-		InterPeriodsConfig: NewPeriodsConfig(periods),
+func NewSTConfig(periods sInts.InterIter, multipliers sFloats.InterIter, at_close, smoothed bool, name string) *STConfig {
+	name = fmt.Sprintf("SuperTrend %s", name)
+	st_config := STConfig{
+		InterIterConfig: dIter.NewIterConfig(name),
 
+		periods:     NewPeriodsConfig(periods),
 		multipliers: multipliers,
 		at_close:    at_close,
 		smoothed:    smoothed,
 	}
+
+	st_config.Add(dIter.NewNameConfig("Periods", st_config.periods),
+		dIter.NewNameConfig("Multipliers", st_config.multipliers))
+
+	return &st_config
+}
+
+func (st *STConfig) Periods() int {
+	return st.periods.Periods()
 }
 
 func (st *STConfig) Multiplier() float64 {
@@ -44,27 +57,4 @@ func (st *STConfig) AtClose() bool {
 
 func (st *STConfig) Smoothed() bool {
 	return st.smoothed
-}
-
-func (st *STConfig) Next() bool {
-
-	if st.multipliers.Next() {
-		return true
-	}
-
-	if st.InterPeriodsConfig.Next() {
-		st.multipliers.Reset()
-
-		return st.Next()
-	}
-
-	return false
-}
-
-func (st *STConfig) Reset() {
-	st.multipliers.Reset()
-
-	st.InterPeriodsConfig.Reset()
-
-	st.InterPeriodsConfig.Next()
 }

@@ -9,9 +9,7 @@ type InterPeriodsConfig interface {
 	dIter.Inter
 
 	Periods() int
-
 	Count() int
-
 	Reset()
 	Next() bool
 }
@@ -28,6 +26,10 @@ func NewPeriodsConfig(periods sInts.InterIter) *PeriodsConfig {
 
 		periods: periods,
 	}
+}
+
+func (st *PeriodsConfig) String(name string) string {
+	return st.periods.String(name)
 }
 
 func (st *PeriodsConfig) Periods() int {
