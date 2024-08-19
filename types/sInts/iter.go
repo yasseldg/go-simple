@@ -24,32 +24,43 @@ type Iter struct {
 	values     []int64
 	values_map map[int64]bool
 
+	count   int
 	index   int
 	current int64
 }
 
 func NewIter(from, to, step int64, values ...int64) *Iter {
-	return &Iter{
+
+	if len(values) == 0 {
+		values = nil
+	}
+
+	iter := Iter{
 		Inter: dIter.New(),
 
 		from:       from,
 		to:         to,
 		step:       step,
 		values:     values,
-		values_map: make(map[int64]bool),
+		values_map: make(map[int64]bool, len(values)),
 
 		index: -1,
 	}
+
+	iter.setCount()
+
+	return &iter
 }
 
 func (b *Iter) Reset() {
 	b.index = -1
 	b.current = 0
-	b.values_map = make(map[int64]bool)
+	b.values_map = make(map[int64]bool, len(b.values))
 }
 
 func (b *Iter) String(name string) string {
-	return fmt.Sprintf("%s %d  ..  value: %d", b.Inter.String(name), b.Count(), b.current)
+	return fmt.Sprintf("%s %d  ..  from: %d  ..  to: %d  ..  step: %d  ..  values: %v  ..  value: %d",
+		b.Inter.String(name), b.Count(), b.from, b.to, b.step, b.values, b.current)
 }
 
 func (b *Iter) Log(name string) {
@@ -61,7 +72,7 @@ func (b *Iter) Value() int64 {
 }
 
 func (b *Iter) Count() int {
-	return b.index + 1
+	return b.count
 }
 
 func (b *Iter) Next() bool {
@@ -71,7 +82,7 @@ func (b *Iter) Next() bool {
 			return true
 		}
 
-		if b.from == 0 && b.to == 0 {
+		if b.from > 0 && b.from == b.to && b.from == b.current {
 			return false
 		}
 
@@ -84,6 +95,13 @@ func (b *Iter) Next() bool {
 }
 
 // private methods
+
+func (b *Iter) setCount() {
+	for b.Next() {
+		b.count++
+	}
+	b.Reset()
+}
 
 func (b *Iter) nextValue() bool {
 
@@ -111,7 +129,11 @@ func (b *Iter) nextRange() bool {
 		return b.verify()
 	}
 
-	if b.step == 0 && b.current == b.from {
+	if b.from == b.to && b.from == b.current {
+		return false
+	}
+
+	if b.step == 0 && b.from == b.current {
 
 		b.index++
 		b.current = b.to
