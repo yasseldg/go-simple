@@ -3,6 +3,8 @@ package rMongo
 import (
 	"fmt"
 
+	"github.com/yasseldg/go-simple/configs/sEnv"
+
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -15,12 +17,16 @@ type Client struct {
 }
 type ClientsMap map[string]*Client
 
-func (c *Client) getColl(db_name, coll_name string, indexes ...Index) (Collection, error) {
+func (c *Client) getColl(env, db_name, coll_name string, indexes ...Index) (Collection, error) {
+
+	db_name = sEnv.Get(fmt.Sprint("DB_", env), db_name)
 
 	db, err := c.getDatabase(db_name)
 	if err != nil {
 		return Collection{}, err
 	}
+
+	coll_name = sEnv.Get(fmt.Sprint("COLL_", env), coll_name)
 
 	coll, err := db.getCollection(coll_name, &c.connection)
 	if err != nil {

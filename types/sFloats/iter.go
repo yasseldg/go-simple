@@ -5,6 +5,7 @@ import (
 
 	"github.com/yasseldg/go-simple/data/dIter"
 	"github.com/yasseldg/go-simple/logs/sLog"
+	"github.com/yasseldg/go-simple/types/sInts"
 )
 
 type InterIter interface {
@@ -16,40 +17,39 @@ type InterIter interface {
 }
 
 type Iter struct {
-	dIter.Inter
+	sInts.InterIter
 
-	from       float64
-	to         float64
-	step       float64
-	values     []float64
-	values_map map[float64]bool
+	from   float64
+	to     float64
+	step   float64
+	prec   int
+	values []float64
 
-	index   int
 	current float64
 }
 
-func NewIter(from, to, step float64, values ...float64) *Iter {
+func NewIter(from, to, step float64, prec int, values ...float64) *Iter {
+
+	int_values := make([]int64, len(values))
+	for i, v := range values {
+		int_values[i] = sInts.InflateFloat64(v, prec)
+	}
+
 	return &Iter{
-		Inter: dIter.New(),
+		InterIter: sInts.NewIter(sInts.InflateFloat64(from, prec), sInts.InflateFloat64(to, prec),
+			sInts.InflateFloat64(step, prec), int_values...),
 
-		from:       from,
-		to:         to,
-		step:       step,
-		values:     values,
-		values_map: make(map[float64]bool),
-
-		index: -1,
+		from:   from,
+		to:     to,
+		step:   step,
+		prec:   prec,
+		values: values,
 	}
 }
 
-func (b *Iter) Reset() {
-	b.index = -1
-	b.current = 0
-	b.values_map = make(map[float64]bool)
-}
-
 func (b *Iter) String(name string) string {
-	return fmt.Sprintf("%s %d  ..  value: %f", b.Inter.String(name), b.Count(), b.current)
+	return fmt.Sprintf("%s ..  from: %f  ..  to: %f  ..  step: %f  ..  values: %v  ..  value: %f",
+		b.InterIter.String(name), b.from, b.to, b.step, b.values, b.current)
 }
 
 func (b *Iter) Log(name string) {
@@ -60,72 +60,17 @@ func (b *Iter) Value() float64 {
 	return b.current
 }
 
-func (b *Iter) Count() int {
-	return b.index + 1
-}
-
 func (b *Iter) Next() bool {
 
-	if b.index < len(b.values) {
-		if b.nextValue() {
-			return true
-		}
-
-		if b.from == 0 && b.to == 0 {
-			return false
-		}
-
-		b.current = b.from
-
-		return b.verify()
-	}
-
-	return b.nextRange()
-}
-
-// private methods
-
-func (b *Iter) nextValue() bool {
-
-	b.index++
-
-	if b.index >= len(b.values) {
-		return false
-	}
-
-	b.current = b.values[b.index]
-
-	b.values_map[b.current] = true
-
-	return true
-}
-
-func (b *Iter) nextRange() bool {
-
-	nextValue := b.current + b.step
-	if (b.step > 0 && CompareTruncFloat(nextValue, b.to, 3) <= 0) ||
-		(b.step < 0 && CompareTruncFloat(nextValue, b.to, 3) >= 0) {
-
-		b.index++
-		b.current = nextValue
-
-		return b.verify()
-	}
-
-	if b.step == 0 && b.current == b.from {
-
-		b.index++
-		b.current = b.to
-		return b.verify()
+	if b.InterIter.Next() {
+		b.current = sInts.DeflateFloat64(b.InterIter.Value(), b.prec)
+		return true
 	}
 
 	return false
 }
 
-func (b *Iter) verify() bool {
-	if _, ok := b.values_map[b.current]; ok {
-		return b.nextRange()
-	}
-
-	return true
+func (b *Iter) Reset() {
+	b.current = 0
+	b.InterIter.Reset()
 }

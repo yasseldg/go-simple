@@ -1,7 +1,10 @@
 package dIter
 
 import (
+	"fmt"
 	"sync"
+
+	"github.com/yasseldg/go-simple/logs/sLog"
 )
 
 type Limited[T any] struct {
@@ -22,6 +25,14 @@ func NewLimited[T any](cloneFunc func(T) T) *Limited[T] {
 		cloneFunc: cloneFunc,
 		index:     -1,
 	}
+}
+
+func (i *Limited[T]) String(name string) string {
+	return fmt.Sprintf("%s %d  ..  index: %d", i.Inter.String(name), i.Count(), i.index)
+}
+
+func (i *Limited[T]) Log(name string) {
+	sLog.Info(i.String(name))
 }
 
 func (i *Limited[T]) Add(items ...T) {

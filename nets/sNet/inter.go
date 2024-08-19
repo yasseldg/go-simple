@@ -17,6 +17,8 @@ type InterService interface {
 }
 
 type InterRequest interface {
+	String() string
+
 	// Options
 	MethodGet() InterRequest
 	MethodPost() InterRequest

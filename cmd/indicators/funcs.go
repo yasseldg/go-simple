@@ -11,7 +11,9 @@ import (
 )
 
 func Run(mongo *rMongo.Manager) {
-	indicator := get("SuperTrend")
+	indicator := get("SuperTrendIter")
+
+	return
 
 	run(indicator, mongo, "BYBIT_BTCUSDT", tInterval.Interval_4h)
 }

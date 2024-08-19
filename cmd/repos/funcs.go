@@ -2,6 +2,7 @@ package repos
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/yasseldg/go-simple/logs/sLog"
 	"github.com/yasseldg/go-simple/repositorys/rMongo"
@@ -13,6 +14,11 @@ var (
 )
 
 func Run(mongo *rMongo.Manager) {
+
+	// testEnv()
+
+	mongo.SetDebug()
+
 	err := config(mongo)
 	if err != nil {
 		sLog.Error("repos.Run(): config(): %s", err)
@@ -35,6 +41,25 @@ func Run(mongo *rMongo.Manager) {
 
 	model_A()
 	model_B()
+}
+
+func config(_mongo *rMongo.Manager) error {
+	var err error
+	_coll, err = _mongo.GetColl("strategies", "WRITE", "bot_test", "strat_test", Indexes()...)
+	if err != nil {
+		return fmt.Errorf("GetColl(): %s", err)
+	}
+	_coll.Log()
+
+	return nil
+}
+
+func testEnv() {
+	// set env
+
+	os.Setenv("CONN_strategies", "READ")
+	os.Setenv("DB_strategies", "bot_test_1")
+	os.Setenv("COLL_strategies", "strat_test_1")
 }
 
 func model_A() {
@@ -63,17 +88,6 @@ func model_B() {
 	if err != nil {
 		sLog.Error("upsert(): %s", err)
 	}
-}
-
-func config(_mongo *rMongo.Manager) error {
-	var err error
-	_coll, err = _mongo.GetColl("strategies", "WRITE", "bot_test", "strat_test", Indexes()...)
-	if err != nil {
-		return fmt.Errorf("GetColl(): %s", err)
-	}
-	_coll.Log()
-
-	return nil
 }
 
 func load(strategie InterModel) error {

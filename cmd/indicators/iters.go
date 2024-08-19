@@ -9,13 +9,13 @@ import (
 
 func testBBandSuperTrendIter() {
 
-	bb_periods := sInts.NewIter(18, 20, 1)
-	bb_deviations := sFloats.NewIter(1.0, 2.0, 0.5)
+	bb_periods := sInts.NewIter(20, 20, 1)
+	bb_deviations := sFloats.NewIter(2.0, 2.0, 0.5, 2)
 	bb_config := tIndicator.NewBBConfig(bb_periods, bb_deviations, true)
 
-	st_periods := sInts.NewIter(12, 15, 1)
-	st_multipliers := sFloats.NewIter(2.0, 3.0, 0.2)
-	st_config := tIndicator.NewSTConfig(st_periods, st_multipliers, true, false)
+	st_periods := sInts.NewIter(12, 12, 1)
+	st_multipliers := sFloats.NewIter(3.0, 3.0, 0.2, 2)
+	st_config := tIndicator.NewSTConfig(st_periods, st_multipliers, true, false, "Test")
 
 	c := 0
 	for _, name := range []string{"Sym_1", "Sym_2"} {

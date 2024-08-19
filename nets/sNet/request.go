@@ -26,6 +26,11 @@ func NewRequest() *Request {
 	}
 }
 
+func (r *Request) String() string {
+	return fmt.Sprintf("Request: method: %s  ..  endpoint: %s  ..  query: %s  ..  header: %s  ..  body: %s",
+		r.method, r.endpoint, r.query, r.header, r.body)
+}
+
 func (r *Request) MethodGet() InterRequest {
 	r.method = http.MethodGet
 	return r

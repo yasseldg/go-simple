@@ -1,6 +1,8 @@
 package iters
 
 import (
+	"github.com/yasseldg/go-simple/logs/sLog"
+	"github.com/yasseldg/go-simple/trading/tInterval"
 	"github.com/yasseldg/go-simple/trading/tSymbol"
 )
 
@@ -47,6 +49,14 @@ func runSymbols(iter tSymbol.InterIterLimited, name string) {
 	iter.Log(name)
 	for iter.Next() {
 		iter.Item().Log()
+	}
+	println()
+}
+
+func runIntervals(iter tInterval.InterIterLimited, name string) {
+	iter.Log(name)
+	for iter.Next() {
+		sLog.Info(iter.Item().String())
 	}
 	println()
 }
