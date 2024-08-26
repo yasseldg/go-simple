@@ -27,8 +27,10 @@ func Get(interval string) Interval {
 		return Interval_W
 	case "M", "Month":
 		return Interval_M
+	case "Y", "Year":
+		return Interval_Y
 	default:
-		return Interval_DEFAULT
+		return DEFAULT
 	}
 }
 
@@ -64,6 +66,22 @@ func startOfNextMonth(ts int64) int64 {
 		m = 0
 	}
 	return time.Date(y, m+1, 1, 0, 0, 0, 0, time.UTC).Unix()
+}
+
+func IsSameYear(ts1, ts2 int64) bool {
+	t1 := time.Unix(ts1, 0).UTC()
+	t2 := time.Unix(ts2, 0).UTC()
+	return t1.Year() == t2.Year()
+}
+
+func startOfYear(ts int64) int64 {
+	t := time.Unix(ts, 0).UTC()
+	return time.Date(t.Year(), time.January, 1, 0, 0, 0, 0, time.UTC).Unix()
+}
+
+func startOfNextYear(ts int64) int64 {
+	t := time.Unix(ts, 0).UTC()
+	return time.Date(t.Year()+1, time.January, 1, 0, 0, 0, 0, time.UTC).Unix()
 }
 
 func GetIntervals(intervals ...string) InterIterLimited {
