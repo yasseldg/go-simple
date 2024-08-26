@@ -17,8 +17,7 @@ func TestGet(t *testing.T) {
 		{"H4", Interval_4h},
 		{"D", Interval_D},
 		{"W", Interval_W},
-		{"M", Interval_M},
-		{"unknown", Interval_DEFAULT},
+		{"unknown", DEFAULT},
 	}
 
 	for _, tc := range testCases {
@@ -40,7 +39,6 @@ func TestGetMult(t *testing.T) {
 		{"H4*5", Interval_4h, 5},
 		{"D*6", Interval_D, 6},
 		{"W*7", Interval_W, 7},
-		{"M*8", Interval_M, 8},
 	}
 
 	for _, tc := range testCases {

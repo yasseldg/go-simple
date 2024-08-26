@@ -10,7 +10,7 @@ func TestIsDefault(t *testing.T) {
 		i    Interval
 		want bool
 	}{
-		{"Default", Interval_DEFAULT, true},
+		{"Default", DEFAULT, true},
 		{"Not Default", Interval_1m, false},
 	}
 
@@ -29,7 +29,7 @@ func TestString(t *testing.T) {
 		i    Interval
 		want string
 	}{
-		{"Default", Interval_DEFAULT, ""},
+		{"Default", DEFAULT, ""},
 		{"Not Default", Interval_1m, "1m"},
 	}
 
@@ -55,7 +55,7 @@ func TestMinutes(t *testing.T) {
 		{"4h", Interval_4h, 240},
 		{"D", Interval_D, 1440},
 		{"W", Interval_W, 10080},
-		{"Default", Interval_DEFAULT, 0},
+		{"Default", DEFAULT, 0},
 	}
 
 	for _, tt := range tests {
@@ -80,7 +80,7 @@ func TestSeconds(t *testing.T) {
 		{"4h", Interval_4h, 14400},
 		{"D", Interval_D, 86400},
 		{"W", Interval_W, 604800},
-		{"Default", Interval_DEFAULT, 0},
+		{"Default", DEFAULT, 0},
 	}
 
 	for _, tt := range tests {
@@ -105,7 +105,7 @@ func TestMilliSeconds(t *testing.T) {
 		{"4h", Interval_4h, 14400000},
 		{"D", Interval_D, 86400000},
 		{"W", Interval_W, 604800000},
-		{"Default", Interval_DEFAULT, 0},
+		{"Default", DEFAULT, 0},
 	}
 
 	for _, tt := range tests {

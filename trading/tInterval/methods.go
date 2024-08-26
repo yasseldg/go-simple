@@ -1,6 +1,8 @@
 package tInterval
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type (
 	Interval string
@@ -17,13 +19,16 @@ const (
 	Interval_4h  = Interval("4h")
 	Interval_D   = Interval("D")
 	Interval_W   = Interval("W")
-	Interval_M   = Interval("M")
 
-	Interval_DEFAULT = Interval("DEFAULT")
+	// long intervals
+	Interval_M = Interval("M")
+	Interval_Y = Interval("Y")
+
+	DEFAULT = Interval("DEFAULT")
 )
 
 func (i Interval) IsDefault() bool {
-	return i == Interval_DEFAULT
+	return i == DEFAULT
 }
 
 func (i Interval) String() string {
@@ -76,21 +81,33 @@ func (i Interval) IsClosing(ts int64) bool {
 }
 
 func (i Interval) Prev(ts int64) int64 {
-	if i.IsDefault() {
+	switch i {
+	case DEFAULT:
 		return 0
-	}
-	if i == Interval_M {
+
+	case Interval_M:
 		return startOfMonth(ts)
+
+	case Interval_Y:
+		return startOfYear(ts)
+
+	default:
+		return ts - (ts % i.Seconds())
 	}
-	return ts - (ts % i.Seconds())
 }
 
 func (i Interval) Next(ts int64) int64 {
-	if i.IsDefault() {
+	switch i {
+	case DEFAULT:
 		return 0
-	}
-	if i == Interval_M {
+
+	case Interval_M:
 		return startOfNextMonth(ts)
+
+	case Interval_Y:
+		return startOfNextYear(ts)
+
+	default:
+		return i.Prev(ts) + i.Seconds()
 	}
-	return i.Prev(ts) + i.Seconds()
 }
