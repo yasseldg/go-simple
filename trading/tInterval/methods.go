@@ -2,6 +2,7 @@ package tInterval
 
 import (
 	"fmt"
+	"time"
 )
 
 type (
@@ -109,5 +110,18 @@ func (i Interval) Next(ts int64) int64 {
 
 	default:
 		return i.Prev(ts) + i.Seconds()
+	}
+}
+
+func (i Interval) AsaName(ts int64) string {
+	switch i {
+	case Interval_M:
+		return time.Unix(ts, 0).Format("Jan 06")
+
+	case Interval_Y:
+		return time.Unix(ts, 0).Format("06")
+
+	default:
+		return ""
 	}
 }
