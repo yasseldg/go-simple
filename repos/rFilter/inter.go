@@ -1,6 +1,9 @@
 package rFilter
 
-import "github.com/yasseldg/go-simple/types/sId"
+import (
+	"github.com/yasseldg/go-simple/trading/tSide"
+	"github.com/yasseldg/go-simple/types/sId"
+)
 
 type Inter interface {
 	Clone() Inter
@@ -19,6 +22,9 @@ type Inter interface {
 	ObjectId(field string, value sId.ObjectId) Inter
 	ObjectId_in(field string, values ...sId.ObjectId) Inter
 	ObjectId_gt(field string, value interface{}) Inter
+
+	// ----- Trading Filters
+	Sides(sides ...tSide.Side) Inter
 }
 
 type InterOper interface {
