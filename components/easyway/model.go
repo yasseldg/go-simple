@@ -4,9 +4,8 @@ import (
 	"fmt"
 
 	"github.com/yasseldg/go-simple/logs/sLog"
+	"github.com/yasseldg/go-simple/repos/rMongo"
 	"github.com/yasseldg/go-simple/types/sTime"
-
-	"github.com/yasseldg/mgm/v4"
 )
 
 type InterEasyWay interface {
@@ -15,12 +14,14 @@ type InterEasyWay interface {
 
 	Ts() int64
 	Ew(ew_type string) InterEwType
+
+	Model() *EasyWay
 }
 
 type EwMap map[string]*EwType
 
 type EasyWay struct {
-	mgm.DefaultModel
+	rMongo.DefaultModel `bson:",inline"`
 
 	M_ts  int64 `bson:"ts" json:"ts"`
 	M_map EwMap `bson:"ew" json:"ew"`
@@ -54,6 +55,10 @@ func (ew *EasyWay) Ew(ew_type string) InterEwType {
 		return ewType
 	}
 	return nil
+}
+
+func (ew *EasyWay) Model() *EasyWay {
+	return ew
 }
 
 // {
