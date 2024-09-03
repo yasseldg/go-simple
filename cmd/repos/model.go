@@ -3,18 +3,15 @@ package repos
 import (
 	"fmt"
 
-	"github.com/yasseldg/go-simple/repositorys/rFilter"
-	"github.com/yasseldg/go-simple/repositorys/rMongo"
-	"github.com/yasseldg/go-simple/repositorys/rSort"
+	"github.com/yasseldg/go-simple/repos/rFilter"
+	"github.com/yasseldg/go-simple/repos/rIndex"
+	"github.com/yasseldg/go-simple/repos/rMongo"
+	"github.com/yasseldg/go-simple/repos/rSort"
 	"github.com/yasseldg/go-simple/trading/tSide"
-
-	"github.com/yasseldg/mgm/v4"
-
-	"go.mongodb.org/mongo-driver/bson"
 )
 
 type InterModel interface {
-	mgm.ModelDateState
+	rMongo.InterModelDateState
 
 	InterBasic
 
@@ -24,8 +21,8 @@ type InterModel interface {
 }
 
 type Model struct {
-	mgm.DefaultModelDateState `bson:",inline"`
-	ModelBasic                `bson:",inline"`
+	rMongo.DefaultModelDateState `bson:",inline"`
+	ModelBasic                   `bson:",inline"`
 
 	Name   string     `bson:"name" json:"name"`
 	Code   string     `bson:"code" json:"code"`
@@ -54,14 +51,12 @@ func (f *Filters) Symbol(symbol string) *Filters { f.Append("symbol", symbol); r
 
 // sorts
 
-type Sorts struct{ rSort.Sorts }
+type Sorts struct {
+	rSort.Sorts
+}
 
 func NewSort() *Sorts {
 	return &Sorts{Sorts: rMongo.NewSort()}
-}
-
-func (s *Sorts) Fields() bson.D {
-	return rMongo.GetFields(s.Sorts)
 }
 
 func (s *Sorts) UuidAsc() *Sorts { s.Asc("uuid"); return s }
@@ -79,10 +74,10 @@ func (s *Sorts) Indexes() *Sorts {
 
 // indexes
 
-func Indexes() rMongo.Indexes {
-	return rMongo.Indexes{
-		rMongo.Index{Fields: NewSort().Indexes().Fields(), Unique: true},
-		rMongo.Index{Fields: NewSort().UuidAsc().Fields(), Unique: true},
+func Indexes() rIndex.Indexes {
+	return rIndex.Indexes{
+		rIndex.New(NewSort().Indexes(), true),
+		rIndex.New(NewSort().UuidAsc(), true),
 	}
 }
 

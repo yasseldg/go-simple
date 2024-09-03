@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/yasseldg/go-simple/logs/sLog"
-	"github.com/yasseldg/go-simple/repositorys/rIter"
-	"github.com/yasseldg/go-simple/repositorys/rMongo"
+	"github.com/yasseldg/go-simple/repos/rIter"
+	"github.com/yasseldg/go-simple/repos/rMongo"
 	"github.com/yasseldg/go-simple/types/sTime"
 )
 
@@ -35,17 +35,17 @@ type Iter struct {
 	items EasyWays
 }
 
-func NewIter(coll rMongo.Collection, ew_type string) *Iter {
+func NewIter(coll rMongo.InterColl, ew_type string) *Iter {
 	filter := rMongo.NewFilter()
 
 	sort := rMongo.NewSort()
 	sort.TsAsc()
 
-	coll.Sorts(sort)
+	coll.Sorts(&sort)
 	coll.Limit(500)
 
 	return &Iter{
-		Inter:   rIter.New(filter, coll),
+		Inter:   rIter.New(&filter, coll),
 		ew_type: ew_type,
 	}
 }
@@ -113,5 +113,5 @@ func (iter *Iter) SetTsTo(ts_to int64) {
 }
 
 func (iter *Iter) Clone() InterIter {
-	return NewIter(*iter.Coll(), iter.ew_type)
+	return NewIter(iter.Coll(), iter.ew_type)
 }

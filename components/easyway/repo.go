@@ -3,8 +3,8 @@ package easyway
 import (
 	"fmt"
 
-	"github.com/yasseldg/go-simple/repositorys/rFilter"
-	"github.com/yasseldg/go-simple/repositorys/rMongo"
+	"github.com/yasseldg/go-simple/repos/rFilter"
+	"github.com/yasseldg/go-simple/repos/rMongo"
 )
 
 type InterRepo interface {
@@ -16,7 +16,7 @@ type InterRepo interface {
 }
 
 type Repo struct {
-	coll   rMongo.Collection
+	coll   rMongo.InterColl
 	filter rFilter.Filters
 
 	ew_type string
@@ -24,13 +24,13 @@ type Repo struct {
 	item InterEasyWay
 }
 
-func NewRepo(coll rMongo.Collection, ew_type string) *Repo {
+func NewRepo(coll rMongo.InterColl, ew_type string) *Repo {
 	filter := rMongo.NewFilter()
 
 	sort := rMongo.NewSort()
 	sort.TsAsc()
 
-	coll.Sorts(sort)
+	coll.Sorts(&sort)
 	coll.Limit(500)
 
 	return &Repo{
@@ -42,10 +42,8 @@ func NewRepo(coll rMongo.Collection, ew_type string) *Repo {
 
 func (repo *Repo) FindTs(ts int64) error {
 
-	filter := *repo.filter.Clone()
-	filter.Ts(ts, ts+1)
-
-	// sLog.Warn("find: filter: %s", filter.String())
+	filter := repo.filter.Clone()
+	filter.Ts(ts, (ts + 1))
 
 	var item EasyWay
 	err := repo.coll.Filters(filter).FindOne(&item)

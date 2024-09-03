@@ -1,19 +1,20 @@
 package indicators
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/yasseldg/go-simple/logs/sLog"
-	"github.com/yasseldg/go-simple/repositorys/rMongo"
+	"github.com/yasseldg/go-simple/repos/rMongo"
 	"github.com/yasseldg/go-simple/trading/tCandle"
 	"github.com/yasseldg/go-simple/trading/tIndicator"
 	"github.com/yasseldg/go-simple/trading/tInterval"
 )
 
-func Run(mongo *rMongo.Manager) {
-	indicator := get("SuperTrendIter")
+func Run(mongo rMongo.Inter) {
+	indicator := get("SuperTrend")
 
-	return
+	// return
 
 	run(indicator, mongo, "BYBIT_BTCUSDT", tInterval.Interval_4h)
 }
@@ -50,7 +51,7 @@ func get(indicator string) Indicator {
 // private vars
 
 var (
-	_coll rMongo.Collection
+	_coll rMongo.InterColl
 
 	_iter tCandle.InterIter
 )
@@ -62,7 +63,7 @@ type Indicator interface {
 
 //  private methods
 
-func run(indicator Indicator, mongo *rMongo.Manager, symbol string, interval tInterval.Interval) {
+func run(indicator Indicator, mongo rMongo.Inter, symbol string, interval tInterval.Interval) {
 	if indicator == nil {
 		sLog.Info("Indicator is nil")
 		return
@@ -83,18 +84,21 @@ func run(indicator Indicator, mongo *rMongo.Manager, symbol string, interval tIn
 	}
 }
 
-func config(_mongo *rMongo.Manager, symbol string, interval tInterval.Interval) error {
+func config(_mongo rMongo.Inter, symbol string, interval tInterval.Interval) error {
 
 	coll_name := fmt.Sprintf("%s_%s", "historic_prices", interval.String())
 
+	ctx := context.Background()
 	var err error
-	_coll, err = _mongo.GetColl("", "PP_Historic_Trades_R", symbol, coll_name)
+	_coll, err = _mongo.GetColl(ctx, "", "PP_Historic_Trades_R", symbol, coll_name)
 	if err != nil {
 		return fmt.Errorf("GetColl(): %s", err)
 	}
 	_coll.Log()
 
-	_iter, err = tCandle.NewIter(rMongo.NewFilter(), _coll)
+	filter := rMongo.NewFilter()
+
+	_iter, err = tCandle.NewIter(&filter, _coll)
 	if err != nil {
 		return fmt.Errorf("tCandle.NewIter(): %s", err)
 	}
