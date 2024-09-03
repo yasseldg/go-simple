@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/yasseldg/go-simple/logs/sLog"
-	"github.com/yasseldg/mgm/v4"
+	"github.com/yasseldg/go-simple/repos/rMongo"
 )
 
 type InterBasic interface {
@@ -33,14 +33,14 @@ func (m *ModelBasic) CUuid() string {
 //  models
 
 type InterModelss interface {
-	mgm.Model
+	rMongo.InterModel
 
 	InterBasic
 }
 
 type Modelss struct {
-	mgm.DefaultModel `bson:",inline"`
-	ModelBasic       `bson:",inline"`
+	rMongo.DefaultModel `bson:",inline"`
+	ModelBasic          `bson:",inline"`
 }
 
 type Model_A struct {

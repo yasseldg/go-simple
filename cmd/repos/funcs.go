@@ -1,23 +1,24 @@
 package repos
 
 import (
+	"context"
 	"fmt"
 	"os"
 
 	"github.com/yasseldg/go-simple/logs/sLog"
-	"github.com/yasseldg/go-simple/repositorys/rMongo"
+	"github.com/yasseldg/go-simple/repos/rMongo"
 	"github.com/yasseldg/go-simple/trading/tSide"
 )
 
 var (
-	_coll rMongo.Collection
+	_coll rMongo.InterColl
 )
 
-func Run(mongo *rMongo.Manager) {
+func Run(mongo rMongo.Inter) {
 
-	// testEnv()
+	testEnv()
 
-	mongo.SetDebug()
+	mongo.SetDebug(true)
 
 	err := config(mongo)
 	if err != nil {
@@ -27,7 +28,7 @@ func Run(mongo *rMongo.Manager) {
 
 	strategie := &Model{
 		ModelBasic: ModelBasic{
-			Uuid: "uuid_6"},
+			Uuid: "uuid_7"},
 		Name:   "name",
 		Code:   "code",
 		Symbol: "symbol",
@@ -43,9 +44,12 @@ func Run(mongo *rMongo.Manager) {
 	model_B()
 }
 
-func config(_mongo *rMongo.Manager) error {
+func config(_mongo rMongo.Inter) error {
+
+	ctx := context.Background()
+
 	var err error
-	_coll, err = _mongo.GetColl("strategies", "WRITE", "bot_test", "strat_test", Indexes()...)
+	_coll, err = _mongo.GetColl(ctx, "strategies", "WRITE", "bot_test", "strat_test", Indexes()...)
 	if err != nil {
 		return fmt.Errorf("GetColl(): %s", err)
 	}
@@ -111,7 +115,7 @@ func find(strategie InterModel) (*Model, error) {
 	sLog.Warn("find strategie: %s", filter.String())
 
 	var doc Model
-	err := _coll.Filters(filter.Filters).FindOne(&doc)
+	err := _coll.Filters(filter).FindOne(&doc)
 	if err != nil {
 		return nil, fmt.Errorf("coll.FindOne(): %s", err)
 	}
@@ -151,7 +155,7 @@ func upsert(strategie InterModelss) error {
 
 	filter := NewFilter().Uuid(strategie.CUuid())
 
-	err := _coll.Upsert(strategie, filter.Filters)
+	err := _coll.Filters(filter).Upsert(strategie)
 	if err != nil {
 		return fmt.Errorf("coll.Upsert(): %s", err)
 	}

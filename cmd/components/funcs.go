@@ -5,27 +5,41 @@ import (
 
 	"github.com/yasseldg/go-simple/components/easyway"
 	"github.com/yasseldg/go-simple/logs/sLog"
-	"github.com/yasseldg/go-simple/repositorys/rMongo"
+	"github.com/yasseldg/go-simple/repos/rAccu"
+	"github.com/yasseldg/go-simple/repos/rMongo"
 	"github.com/yasseldg/go-simple/trading/tInterval"
 )
 
-func Run(_mongo *rMongo.Manager) {
+func Run(_mongo rMongo.Inter) {
 
-	coll, err := _mongo.GetColl("", "PP_Data_Center", "BYBIT_BTCUSDT", "strategies_5") //  PT_Dev_Data_Center	PP_Data_Center
+	_mongo.SetDebug(false)
+
+	coll, err := _mongo.GetColl(nil, "", "PP_Data_Center", "BYBIT_BTCUSDT", "strategies_5") //  PT_Dev_Data_Center	PP_Data_Center
 	if err != nil {
 		sLog.Error("Failed to get collection: %s", err)
 		return
 	}
 	coll.Log()
 
-	repo(coll)
+	accuColl, err := _mongo.GetColl(nil, "", "WRITE", "accu_tests", "strategies_5")
+	if err != nil {
+		sLog.Error("Failed to get collection: %s", err)
+		return
+	}
+	accuColl.Log()
+
+	// mix(coll)
+
+	// repo(coll)
+
+	iter(coll, accuColl)
 }
 
-func mix(coll rMongo.Collection) {
+func mix(coll rMongo.InterColl) {
 
 	ew_type := "t5000"
 
-	iter := easyway.NewIter(coll, ew_type)
+	iter := easyway.NewIter(coll.Clone(), ew_type)
 	if iter == nil {
 		sLog.Error("Failed to create iter")
 		return
@@ -34,7 +48,7 @@ func mix(coll rMongo.Collection) {
 	iter.SetTsFrom(1696490400)
 	iter.SetTsTo(1696582800)
 
-	repo := easyway.NewRepo(coll, ew_type)
+	repo := easyway.NewRepo(coll.Clone(), ew_type)
 	if repo == nil {
 		sLog.Error("Failed to create repo")
 		return
@@ -51,7 +65,10 @@ func mix(coll rMongo.Collection) {
 	}
 }
 
-func iter(coll rMongo.Collection) {
+func iter(coll, accuColl rMongo.InterColl) {
+
+	accu := rAccu.New(accuColl.Clone(), 10)
+	accu.Log("EWs")
 
 	ew_type := "t5000"
 
@@ -62,14 +79,19 @@ func iter(coll rMongo.Collection) {
 	}
 
 	iter.SetTsFrom(1696490400)
-	iter.SetTsTo(1696582800)
+	iter.SetTsTo(1696496400)
 
 	for iter.Next() {
 		iter.Item().Log(ew_type)
+
+		accu.Add(iter.Item().Model())
 	}
+
+	accu.Save()
+	accu.Log("EWs")
 }
 
-func repo(coll rMongo.Collection) {
+func repo(coll rMongo.InterColl) {
 
 	ew_type := "t5000"
 
