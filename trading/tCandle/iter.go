@@ -4,9 +4,9 @@ import (
 	"fmt"
 
 	"github.com/yasseldg/go-simple/logs/sLog"
-	"github.com/yasseldg/go-simple/repositorys/rFilter"
-	"github.com/yasseldg/go-simple/repositorys/rIter"
-	"github.com/yasseldg/go-simple/repositorys/rMongo"
+	"github.com/yasseldg/go-simple/repos/rFilter"
+	"github.com/yasseldg/go-simple/repos/rIter"
+	"github.com/yasseldg/go-simple/repos/rMongo"
 	"github.com/yasseldg/go-simple/types/sTime"
 )
 
@@ -28,7 +28,7 @@ type Iter struct {
 	items Candles
 }
 
-func NewIter(filter rFilter.Filters, coll rMongo.Collection) (*Iter, error) {
+func NewIter(filter rFilter.Inter, coll rMongo.InterColl) (*Iter, error) {
 
 	return &Iter{Inter: rIter.New(filter, coll)}, nil
 }
