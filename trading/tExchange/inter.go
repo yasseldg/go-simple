@@ -1,9 +1,8 @@
 package tExchange
 
 import (
+	"github.com/yasseldg/go-simple/repos/rMongo"
 	"github.com/yasseldg/go-simple/trading/tSymbol"
-
-	"github.com/yasseldg/mgm/v4"
 )
 
 // Inter
@@ -22,7 +21,7 @@ type Inter interface {
 // InterModel
 
 type InterModel interface {
-	mgm.ModelDateState
+	rMongo.InterModelDateState
 
 	Name() string
 }

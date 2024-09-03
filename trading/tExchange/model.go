@@ -1,19 +1,16 @@
 package tExchange
 
 import (
-	"github.com/yasseldg/go-simple/repositorys/rFilter"
-	"github.com/yasseldg/go-simple/repositorys/rMongo"
-	"github.com/yasseldg/go-simple/repositorys/rSort"
-
-	"github.com/yasseldg/mgm/v4"
-
-	"go.mongodb.org/mongo-driver/bson"
+	"github.com/yasseldg/go-simple/repos/rFilter"
+	"github.com/yasseldg/go-simple/repos/rIndex"
+	"github.com/yasseldg/go-simple/repos/rMongo"
+	"github.com/yasseldg/go-simple/repos/rSort"
 )
 
 // Model
 
 type Model struct {
-	mgm.ModelDateState `bson:",inline"`
+	rMongo.InterModelDateState `bson:",inline"`
 
 	M_name string `bson:"n" json:"n"`
 }
@@ -21,8 +18,8 @@ type Models []*Model
 
 func NewModel(name string) *Model {
 	return &Model{
-		ModelDateState: new(mgm.DefaultModelDateState),
-		M_name:         name,
+		InterModelDateState: new(rMongo.DefaultModelDateState),
+		M_name:              name,
 	}
 }
 
@@ -55,16 +52,12 @@ func NewSort() *Sorts {
 	return &Sorts{Sorts: rMongo.NewSort()}
 }
 
-func (s *Sorts) Fields() bson.D {
-	return rMongo.GetFields(s.Sorts)
-}
-
 func (s *Sorts) NameAsc() *Sorts { s.Asc("n"); return s }
 
 // indexes
 
-func Indexes() rMongo.Indexes {
-	return rMongo.Indexes{
-		{Fields: NewSort().NameAsc(), Unique: true},
+func Indexes() rIndex.Indexes {
+	return rIndex.Indexes{
+		rIndex.New(NewSort().NameAsc(), true),
 	}
 }
