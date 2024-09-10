@@ -36,7 +36,7 @@ func (b *Model) Inter() *Base {
 type Filters struct{ rFilter.Filters }
 
 func NewFilter() *Filters {
-	return &Filters{Filters: rMongo.NewFilter()}
+	return &Filters{Filters: *rMongo.NewFilter()}
 }
 
 func (f *Filters) Name(name string) *Filters {
@@ -49,7 +49,7 @@ func (f *Filters) Name(name string) *Filters {
 type Sorts struct{ rSort.Sorts }
 
 func NewSort() *Sorts {
-	return &Sorts{Sorts: rMongo.NewSort()}
+	return &Sorts{Sorts: *rMongo.NewSort()}
 }
 
 func (s *Sorts) NameAsc() *Sorts { s.Asc("n"); return s }

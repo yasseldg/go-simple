@@ -14,12 +14,12 @@ func New() Inter {
 	return manager.New()
 }
 
-func NewSort() rSort.Sorts {
-	return *sort.New()
+func NewSort() *rSort.Sorts {
+	return sort.New()
 }
 
-func NewFilter() rFilter.Filters {
-	return *filter.New()
+func NewFilter() *rFilter.Filters {
+	return filter.New()
 }
 
 func NewPipeline() pipeline.Inter {

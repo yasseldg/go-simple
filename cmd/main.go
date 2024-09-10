@@ -30,12 +30,13 @@ func main() {
 
 	sLog.Info("Starting...")
 
-	sTime.TimeControl(testComponents, "Iters")
+	sTime.TimeControl(testModel, "Iters")
 }
 
 func testModel() {
 	repos.Run(_mongo)
-	repos.RunConcurr(_mongo)
+	// repos.RunConcurr(_mongo)
+	// repos.RunIter(_mongo)
 }
 
 func testIndicators() {

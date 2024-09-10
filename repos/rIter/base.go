@@ -18,6 +18,15 @@ type Base struct {
 }
 
 func New(coll rMongo.InterColl, filter rFilter.Inter) *Base {
+
+	if coll == nil {
+		return nil
+	}
+
+	if filter == nil {
+		filter = rMongo.NewFilter()
+	}
+
 	return &Base{
 		Inter:  dIter.New(),
 		coll:   coll,
@@ -26,7 +35,7 @@ func New(coll rMongo.InterColl, filter rFilter.Inter) *Base {
 }
 
 func (i *Base) String(name string) string {
-	return fmt.Sprintf("%s coll: %s  ..  filter: %s", i.Inter.String(name), i.coll.String(), i.filter.Oper().String())
+	return fmt.Sprintf("%s %s  ..  filter: %s", i.Inter.String(name), i.coll.String(), i.filter.Oper().String())
 }
 
 func (i *Base) Log(name string) {

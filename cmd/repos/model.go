@@ -36,7 +36,7 @@ type Models []Model
 type Filters struct{ rFilter.Filters }
 
 func NewFilter() *Filters {
-	return &Filters{Filters: rMongo.NewFilter()}
+	return &Filters{Filters: *rMongo.NewFilter()}
 }
 
 func (f *Filters) Uuid(uuid string) *Filters { f.Append("uuid", uuid); return f }
@@ -56,7 +56,7 @@ type Sorts struct {
 }
 
 func NewSort() *Sorts {
-	return &Sorts{Sorts: rMongo.NewSort()}
+	return &Sorts{Sorts: *rMongo.NewSort()}
 }
 
 func (s *Sorts) UuidAsc() *Sorts { s.Asc("uuid"); return s }

@@ -19,12 +19,8 @@ type IterTs struct {
 
 func NewTs(coll rMongo.InterColl, filter rFilter.Inter, sort rSort.Inter) *IterTs {
 
-	if filter == nil {
-		filter = rFilter.New(rMongo.NewFilter())
-	}
-
 	if sort == nil {
-		sort = rSort.New(rMongo.NewSort()).TsAsc()
+		sort = rMongo.NewSort().TsAsc()
 	}
 
 	coll.Sorts(sort)
