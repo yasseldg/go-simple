@@ -73,6 +73,7 @@ func (a *Base) save() error {
 
 	err := rMongo.CreateMany(a.items, a.coll)
 	if err != nil {
+		sLog.Error("rMongo.CreateMany(): %s", err.Error())
 		return a.saveErr()
 	}
 

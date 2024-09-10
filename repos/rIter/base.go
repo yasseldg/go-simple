@@ -17,7 +17,7 @@ type Base struct {
 	filter rFilter.Inter
 }
 
-func New(filter rFilter.Inter, coll rMongo.InterColl) *Base {
+func New(coll rMongo.InterColl, filter rFilter.Inter) *Base {
 	return &Base{
 		Inter:  dIter.New(),
 		coll:   coll,

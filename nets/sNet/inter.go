@@ -12,6 +12,7 @@ type InterService interface {
 	Port() int
 	GetUri() string
 	GetUrl() string
+	LocalAddr() string
 
 	HandlePath(string) string
 }

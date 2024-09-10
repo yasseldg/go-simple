@@ -36,7 +36,6 @@ type Iter struct {
 }
 
 func NewIter(coll rMongo.InterColl, ew_type string) *Iter {
-	filter := rMongo.NewFilter()
 
 	sort := rMongo.NewSort()
 	sort.TsAsc()
@@ -45,7 +44,7 @@ func NewIter(coll rMongo.InterColl, ew_type string) *Iter {
 	coll.Limit(500)
 
 	return &Iter{
-		Inter:   rIter.New(&filter, coll),
+		Inter:   rIter.New(coll, nil),
 		ew_type: ew_type,
 	}
 }

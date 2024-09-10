@@ -96,12 +96,7 @@ func config(_mongo rMongo.Inter, symbol string, interval tInterval.Interval) err
 	}
 	_coll.Log()
 
-	filter := rMongo.NewFilter()
-
-	_iter, err = tCandle.NewIter(&filter, _coll)
-	if err != nil {
-		return fmt.Errorf("tCandle.NewIter(): %s", err)
-	}
+	_iter = tCandle.NewIter(_coll, nil)
 	_iter.Log("Candles")
 
 	return nil

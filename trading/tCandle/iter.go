@@ -3,42 +3,30 @@ package tCandle
 import (
 	"fmt"
 
-	"github.com/yasseldg/go-simple/logs/sLog"
 	"github.com/yasseldg/go-simple/repos/rFilter"
 	"github.com/yasseldg/go-simple/repos/rIter"
 	"github.com/yasseldg/go-simple/repos/rMongo"
-	"github.com/yasseldg/go-simple/types/sTime"
 )
 
 type InterIter interface {
-	rIter.Inter
+	rIter.InterTs
 
 	Item() Inter
-	SetTsFrom(int64)
-	SetTsTo(int64)
+
+	Clone() InterIter
 }
 
 type Iter struct {
-	rIter.Inter
-
-	ts_from int64
-	ts_to   int64
+	rIter.InterTs
 
 	item  Inter
 	items Candles
 }
 
-func NewIter(filter rFilter.Inter, coll rMongo.InterColl) (*Iter, error) {
-
-	return &Iter{Inter: rIter.New(filter, coll)}, nil
-}
-
-func (iter *Iter) String(name string) string {
-	return fmt.Sprintf("%s ts_from: %s  ..  ts_to: %s", iter.Inter.String(name), sTime.ForLog(iter.ts_from, 0), sTime.ForLog(iter.ts_to, 0))
-}
-
-func (iter *Iter) Log(name string) {
-	sLog.Info(iter.String(name))
+func NewIter(coll rMongo.InterColl, filter rFilter.Inter) *Iter {
+	return &Iter{
+		InterTs: rIter.NewTs(coll, nil, nil),
+	}
 }
 
 func (iter *Iter) Item() Inter {
@@ -46,7 +34,7 @@ func (iter *Iter) Item() Inter {
 }
 
 func (iter *Iter) Next() bool {
-	if !iter.Inter.Next() {
+	if !iter.InterTs.Next() {
 		return false
 	}
 
@@ -56,10 +44,7 @@ func (iter *Iter) Next() bool {
 		return true
 	}
 
-	filter := iter.Filter()
-	filter.Ts(iter.ts_from, iter.ts_to)
-
-	// sLog.Warn("next: filter: %v", filter)
+	filter := iter.Filter().Ts(iter.TsFrom(), iter.TsTo())
 
 	var items Candles
 	err := iter.Coll().Filters(filter).Find(&items)
@@ -73,18 +58,12 @@ func (iter *Iter) Next() bool {
 		return false
 	}
 
-	// sLog.Warn("next: items: %d", items[0].Ts())
-
 	iter.items = items
-	iter.ts_from = items[len(items)-1].Ts() + 1
+	iter.SetTsFrom(items[len(items)-1].Ts() + 1)
 
 	return iter.Next()
 }
 
-func (iter *Iter) SetTsFrom(ts_from int64) {
-	iter.ts_from = ts_from
-}
-
-func (iter *Iter) SetTsTo(ts_to int64) {
-	iter.ts_to = ts_to
+func (iter *Iter) Clone() InterIter {
+	return NewIter(iter.Coll().Clone(), iter.Filter())
 }
