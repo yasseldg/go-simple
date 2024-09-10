@@ -3,6 +3,7 @@ package tCandle
 import (
 	"fmt"
 
+	"github.com/yasseldg/go-simple/logs/sLog"
 	"github.com/yasseldg/go-simple/repos/rFilter"
 	"github.com/yasseldg/go-simple/repos/rIter"
 	"github.com/yasseldg/go-simple/repos/rMongo"
@@ -50,6 +51,7 @@ func (iter *Iter) Next() bool {
 	err := iter.Coll().Filters(filter).Find(&items)
 	if err != nil {
 		iter.SetError(fmt.Errorf("next: coll.Find: %s", err))
+		sLog.Error(iter.Error().Error())
 		return false
 	}
 
