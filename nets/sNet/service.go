@@ -47,6 +47,14 @@ func (c *Service) Port() int {
 	return c.port
 }
 
+func (c *Service) LocalAddr() string {
+	port := 80
+	if c.port > 0 {
+		port = c.port
+	}
+	return fmt.Sprintf("0.0.0.0:%d", port)
+}
+
 func (c *Service) GetUri() string {
 	uri := c.url
 	if c.port > 0 {
