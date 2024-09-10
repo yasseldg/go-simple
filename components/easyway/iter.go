@@ -37,10 +37,9 @@ type Iter struct {
 
 func NewIter(coll rMongo.InterColl, ew_type string) *Iter {
 
-	sort := rMongo.NewSort()
-	sort.TsAsc()
+	sort := rMongo.NewSort().TsAsc()
 
-	coll.Sorts(&sort)
+	coll.Sorts(sort)
 	coll.Limit(500)
 
 	return &Iter{

@@ -27,15 +27,14 @@ type Repo struct {
 func NewRepo(coll rMongo.InterColl, ew_type string) *Repo {
 	filter := rMongo.NewFilter()
 
-	sort := rMongo.NewSort()
-	sort.TsAsc()
+	sort := rMongo.NewSort().TsAsc()
 
-	coll.Sorts(&sort)
+	coll.Sorts(sort)
 	coll.Limit(500)
 
 	return &Repo{
 		coll:    coll,
-		filter:  filter,
+		filter:  *filter,
 		ew_type: ew_type,
 	}
 }
