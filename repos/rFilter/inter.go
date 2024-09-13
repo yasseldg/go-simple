@@ -19,6 +19,11 @@ type Inter interface {
 
 	// ----- Trading Filters
 	Sides(sides ...tSide.Side) Inter
+
+	// ----- ObjectId Filters
+	ObjectId(field string, value interface{}) Inter
+	ObjectId_in(field string, values ...interface{}) Inter
+	ObjectId_gt(field string, value interface{}) Inter
 }
 
 type InterOper interface {
