@@ -8,11 +8,6 @@ import (
 	"github.com/google/uuid"
 )
 
-type ObjectId interface {
-	Get(interface{}) interface{}
-	IsValid() bool
-}
-
 // UUID attempts to generate a UUID up to 3 times.
 // It returns a UUID on success or an error if it fails after 3 attempts.
 func UUID() (uuid.UUID, error) {
