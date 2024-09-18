@@ -2,6 +2,7 @@ package tCandle
 
 import (
 	"github.com/yasseldg/go-simple/repos/rAccu"
+	"github.com/yasseldg/go-simple/repos/rIndex"
 	"github.com/yasseldg/go-simple/repos/rMongo"
 )
 
@@ -24,4 +25,12 @@ func NewAccu(coll rMongo.InterColl, limit int) (Accu, error) {
 
 func (iter *Accu) Add(candle *Candle) {
 	iter.Inter.Add(&mCandle{Candle: *candle})
+}
+
+// indexes
+
+func Indexes() rIndex.Indexes {
+	return rIndex.Indexes{
+		rIndex.New(rMongo.NewSort().TsAsc(), true),
+	}
 }
