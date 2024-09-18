@@ -1,6 +1,8 @@
 package sNet
 
 import (
+	"bytes"
+	"context"
 	"fmt"
 	"path"
 
@@ -8,6 +10,7 @@ import (
 	"github.com/yasseldg/go-simple/logs/sLog"
 	"github.com/yasseldg/go-simple/types/sBool"
 	"github.com/yasseldg/go-simple/types/sInts"
+	"github.com/yasseldg/go-simple/types/sJson"
 )
 
 type Service struct {
@@ -22,14 +25,19 @@ type Service struct {
 // NewService
 func NewService(env, file_path string) (*Service, error) {
 	if len(file_path) == 0 {
-		name := sEnv.Get(env, "DEV")
+		name := sEnv.Get(env, "")
+
+		if len(name) == 0 {
+			return nil, fmt.Errorf("empty name")
+		}
+
 		file_path = fmt.Sprint(".env/services/", name, ".yaml")
 	}
 
 	m := new(model)
 	err := sEnv.LoadYaml(file_path, m)
 	if err != nil {
-		return nil, fmt.Errorf("sNet: getConf: can't load env file %s: %s", file_path, err)
+		return nil, fmt.Errorf("can't load env file %s: %s", file_path, err)
 	}
 
 	conf := m.Service()
@@ -109,4 +117,23 @@ func (c *model) Service() *Service {
 		protocol:    c.Network,
 		path_prefix: c.PathPrefix,
 	}
+}
+
+func (c *Service) SendObj(end_point string, obj interface{}) error {
+
+	byteObj, err := sJson.ToByte(obj)
+	if err != nil {
+		return fmt.Errorf("sJson.ToByte(): %s", err)
+	}
+
+	request := NewRequest().MethodPost()
+	request.SetBody(bytes.NewReader(byteObj))
+	request.SetEndPoint(end_point)
+
+	_, err = request.Call(context.TODO(), c, nil)
+	if err != nil {
+		return fmt.Errorf("request.Call(): %s", err)
+	}
+
+	return nil
 }
