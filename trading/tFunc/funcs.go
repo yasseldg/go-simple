@@ -13,6 +13,10 @@ func TakeProfitStopLoss(entry_price, tp_perc, sl_perc float64, side tSide.Side) 
 
 func TakeProfit(entry_price, tp_perc float64, side tSide.Side) (take_profit float64) {
 
+	if tp_perc == 0 {
+		return 0
+	}
+
 	adding := true
 	if side == tSide.Sell {
 		adding = false
@@ -32,6 +36,10 @@ func TakeProfitPerc(entry_price, tp_price float64, side tSide.Side) float64 {
 }
 
 func StopLoss(entry_price, sl_perc float64, side tSide.Side) float64 {
+
+	if sl_perc == 0 {
+		return 0
+	}
 
 	adding := false
 	if side == tSide.Sell {
