@@ -38,6 +38,11 @@ func GetInt(env_name string, defaults int) int {
 	return defaults
 }
 
+// GetInt64
+func GetInt64(env_name string, defaults int64) int64 {
+	return int64(GetInt(env_name, int(defaults)))
+}
+
 // GetBool
 func GetBool(env_name string, defaults bool) bool {
 	str := Get(env_name, "")

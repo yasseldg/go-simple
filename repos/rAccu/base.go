@@ -33,12 +33,16 @@ func New(coll rMongo.InterColl, limit int) *Base {
 }
 
 func (a *Base) String(name string) string {
-	return fmt.Sprintf("%s  ..  items: %d  ..  %s", a.Inter.String(name), len(a.items), a.coll.String())
+	s := fmt.Sprintf("%s  ..  items: %d  ..  %s", a.Inter.String(name), len(a.items), a.coll.String())
+	if a.Error() != nil {
+		return fmt.Sprintf("%s  ..  errs: %d", s, a.errs)
+	}
+	return s
 }
 
 func (a *Base) Log(name string) {
 	if a.Error() != nil {
-		sLog.Error("%s  ..  err: %s", a.String(name), a.Error())
+		sLog.Error(a.String(name))
 		return
 	}
 	sLog.Info(a.String(name))

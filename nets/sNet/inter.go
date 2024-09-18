@@ -15,6 +15,8 @@ type InterService interface {
 	LocalAddr() string
 
 	HandlePath(string) string
+
+	SendObj(end_point string, obj interface{}) error
 }
 
 type InterRequest interface {
