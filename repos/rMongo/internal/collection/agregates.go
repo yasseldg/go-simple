@@ -2,6 +2,7 @@ package collection
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/yasseldg/go-simple/logs/sLog"
 
@@ -15,8 +16,11 @@ func (c *Full) Agregates(docs interface{}) error {
 }
 
 func (c *Full) AgregatesWithCtx(ctx context.Context, docs interface{}) error {
+	if c.pipeline == nil {
+		return fmt.Errorf("no pipeline")
+	}
 
-	cursor, err := c.Coll().Aggregate(ctx, c.pipeline.Fields())
+	cursor, err := c.Coll().Aggregate(ctx, c.pipeline)
 	if err != nil {
 		sLog.Error("sMongo: %s.AgregatesWithCtx: %s", c.Prefix(), err.Error())
 	} else {
@@ -33,10 +37,13 @@ func (c *Full) AgregatesCount() ([]bson.M, error) {
 }
 
 func (c *Full) AgregatesCountWithCtx(ctx context.Context) ([]bson.M, error) {
-
 	var result []bson.M
 
-	cursor, err := c.Coll().Aggregate(mgm.Ctx(), c.pipeline.Fields())
+	if c.pipeline == nil {
+		return result, fmt.Errorf("no pipeline")
+	}
+
+	cursor, err := c.Coll().Aggregate(mgm.Ctx(), c.pipeline)
 	if err != nil {
 		sLog.Error("sMongo: %s.AgregatesCountWithCtx: %s", c.Prefix(), err.Error())
 	} else {

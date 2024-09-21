@@ -2,8 +2,8 @@ package collection
 
 import (
 	"github.com/yasseldg/go-simple/repos/rMongo/internal/filter"
-	"github.com/yasseldg/go-simple/repos/rMongo/internal/pipeline"
 	"github.com/yasseldg/go-simple/repos/rMongo/internal/sort"
+	"go.mongodb.org/mongo-driver/mongo"
 
 	"github.com/yasseldg/go-simple/repos/rFilter"
 	"github.com/yasseldg/go-simple/repos/rSort"
@@ -12,7 +12,7 @@ import (
 type Full struct {
 	InterBase
 
-	pipeline pipeline.Inter
+	pipeline mongo.Pipeline
 	filter   rFilter.Inter
 	sort     rSort.Inter
 	limit    int64
@@ -22,7 +22,7 @@ func NewFull(inter InterBase) *Full {
 	return &Full{
 		InterBase: inter,
 
-		pipeline: pipeline.New(),
+		pipeline: mongo.Pipeline{},
 		filter:   filter.New(),
 		sort:     sort.New(),
 	}
@@ -32,7 +32,7 @@ func (c *Full) Clone() *Full {
 	return NewFull(c.InterBase)
 }
 
-func (c *Full) Pipeline(inter pipeline.Inter) *Full {
+func (c *Full) Pipeline(inter mongo.Pipeline) *Full {
 	c.pipeline = inter
 	return c
 }

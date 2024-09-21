@@ -3,8 +3,6 @@ package collection
 import (
 	"context"
 
-	"github.com/yasseldg/go-simple/repos/rMongo/internal/pipeline"
-
 	"github.com/yasseldg/go-simple/repos/rFilter"
 	"github.com/yasseldg/go-simple/repos/rIndex"
 	"github.com/yasseldg/go-simple/repos/rSort"
@@ -12,6 +10,7 @@ import (
 	"github.com/yasseldg/mgm/v4"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type Inter interface {
@@ -21,7 +20,7 @@ type Inter interface {
 
 	Clone() *Full
 
-	Pipeline(pipeline.Inter) *Full
+	Pipeline(mongo.Pipeline) *Full
 	Filters(rFilter.Inter) *Full
 	Sorts(rSort.Inter) *Full
 	Limit(int64) *Full
