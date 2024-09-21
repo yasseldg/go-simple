@@ -11,6 +11,14 @@ func Get64(str string) float64 {
 	return GetValid(v)
 }
 
+func Sum(values []float64) float64 {
+	var sum float64
+	for _, v := range values {
+		sum += v
+	}
+	return sum
+}
+
 func ToString(v float64, prec int) string {
 	return strconv.FormatFloat(v, 'f', prec, 64)
 }

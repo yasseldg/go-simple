@@ -19,6 +19,14 @@ func Get64(str string) int64 {
 	return v
 }
 
+func Sum(values []int) int {
+	var sum int
+	for _, v := range values {
+		sum += v
+	}
+	return sum
+}
+
 func ToString(v int64) string {
 	return strconv.FormatInt(v, 10)
 }
