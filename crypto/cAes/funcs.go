@@ -13,6 +13,13 @@ func pkcs7Pad(data []byte, blockSize int) []byte {
 
 // Function to remove PKCS#7 padding
 func pkcs7Unpad(data []byte) []byte {
+	if len(data) == 0 {
+		return data
+	}
+
 	padding := data[len(data)-1]
+	if int(padding) > len(data) {
+		return data
+	}
 	return data[:len(data)-int(padding)]
 }

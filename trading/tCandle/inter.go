@@ -13,3 +13,8 @@ type Inter interface {
 
 	LogReturn() float64
 }
+
+type InterModel interface {
+	Inter
+	GetModel() *Candle
+}

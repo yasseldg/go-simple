@@ -5,6 +5,7 @@ import "github.com/yasseldg/go-simple/data/dIter"
 type Inter interface {
 	String() string
 
+	Get() Interval
 	AsaName(int64) string
 
 	ForLog() string

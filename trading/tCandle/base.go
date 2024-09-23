@@ -86,3 +86,7 @@ func (b *Candle) LogReturn() float64 {
 	}
 	return sFloats.GetValid(math.Log(b.Close() / b.Open()))
 }
+
+func (b *Candle) GetModel() *Candle {
+	return b
+}

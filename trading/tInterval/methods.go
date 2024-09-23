@@ -39,6 +39,10 @@ func (i Interval) String() string {
 	return string(i)
 }
 
+func (i Interval) Get() Interval {
+	return i
+}
+
 func (i Interval) ForLog() string {
 	return fmt.Sprintf(" ( %s ) ", i.String())
 }

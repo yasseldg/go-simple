@@ -7,12 +7,14 @@ import (
 )
 
 type InterService interface {
+	String() string
 	Log()
 
 	Port() int
 	GetUri() string
 	GetUrl() string
 	LocalAddr() string
+	Secret() string
 
 	HandlePath(string) string
 
