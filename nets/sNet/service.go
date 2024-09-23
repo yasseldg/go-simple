@@ -20,6 +20,7 @@ type Service struct {
 	port        int
 	protocol    string
 	path_prefix string
+	secret      string
 }
 
 // NewService
@@ -47,12 +48,20 @@ func NewService(env, file_path string) (*Service, error) {
 	return conf, nil
 }
 
+func (c *Service) String() string {
+	return fmt.Sprintf("%s: %s", c.env, c.GetUrl())
+}
+
 func (c *Service) Log() {
-	sLog.Info("%s: %s ", c.env, c.GetUrl())
+	sLog.Info(c.String())
 }
 
 func (c *Service) Port() int {
 	return c.port
+}
+
+func (c *Service) Secret() string {
+	return c.secret
 }
 
 func (c *Service) LocalAddr() string {
@@ -89,6 +98,25 @@ func (c *Service) HandlePath(handler string) string {
 	return fmt.Sprintf("/%s", handler)
 }
 
+func (c *Service) SendObj(end_point string, obj interface{}) error {
+
+	byteObj, err := sJson.ToByte(obj)
+	if err != nil {
+		return fmt.Errorf("sJson.ToByte(): %s", err)
+	}
+
+	request := NewRequest().MethodPost()
+	request.SetBody(bytes.NewReader(byteObj))
+	request.SetEndPoint(end_point)
+
+	_, err = request.Call(context.TODO(), c, nil)
+	if err != nil {
+		return fmt.Errorf("request.Call(): %s", err)
+	}
+
+	return nil
+}
+
 // private methods
 
 func (c *Service) update() {
@@ -107,6 +135,7 @@ type model struct {
 	Port       int
 	Network    string
 	PathPrefix string
+	Secret     string
 }
 
 func (c *model) Service() *Service {
@@ -116,24 +145,6 @@ func (c *model) Service() *Service {
 		port:        c.Port,
 		protocol:    c.Network,
 		path_prefix: c.PathPrefix,
+		secret:      c.Secret,
 	}
-}
-
-func (c *Service) SendObj(end_point string, obj interface{}) error {
-
-	byteObj, err := sJson.ToByte(obj)
-	if err != nil {
-		return fmt.Errorf("sJson.ToByte(): %s", err)
-	}
-
-	request := NewRequest().MethodPost()
-	request.SetBody(bytes.NewReader(byteObj))
-	request.SetEndPoint(end_point)
-
-	_, err = request.Call(context.TODO(), c, nil)
-	if err != nil {
-		return fmt.Errorf("request.Call(): %s", err)
-	}
-
-	return nil
 }
