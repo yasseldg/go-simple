@@ -3,10 +3,10 @@ package collection
 import (
 	"fmt"
 
-	"github.com/yasseldg/go-simple/logs/sLog"
-
 	"github.com/yasseldg/go-simple/repos/rMongo/internal/filter"
 	"github.com/yasseldg/go-simple/repos/rMongo/internal/sort"
+
+	"github.com/yasseldg/go-simple/logs/sLog"
 
 	"github.com/yasseldg/mgm/v4"
 
@@ -101,7 +101,6 @@ func (c *Full) Find(models interface{}) error {
 	err = c.Coll().SimpleFindWithCtx(mgm.Ctx(), models, filter, opts)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			sLog.Debug("Mongo: %s.SimpleFind(objs, filter, opts): %s", c.Prefix(), err)
 			return err
 		}
 		sLog.Error("Mongo: %s.SimpleFind(objs, filter, opts): %s  ..  filter: %#v  ..  opts: %#v", c.Prefix(), err, c.filter, opts)
@@ -128,7 +127,6 @@ func (c *Full) FindOne(model mgm.Model) error {
 	err = c.Coll().FirstWithCtx(mgm.Ctx(), filter, model, opts)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			sLog.Debug("Mongo: %s.First(filters, obj, &opts): %s", c.Prefix(), err)
 			return err
 		}
 		sLog.Error("Mongo: %s.First(filters, obj, &opts): %s  ..  filter: %#v  ..  opts: %#v", c.Prefix(), err, c.filter, opts)
@@ -143,7 +141,6 @@ func (c *Full) FindById(id interface{}, model mgm.Model) error {
 	err := c.Coll().FindByIDWithCtx(mgm.Ctx(), id, model)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			sLog.Debug("Mongo: %s.FindByID(id, obj): %s", c.Prefix(), err)
 			return err
 		}
 		sLog.Error("Mongo: %s.FindByID(id, obj): %s  ..  id: %s", c.Prefix(), err, id)

@@ -71,7 +71,7 @@ func (b *Base) GetClientOpt(debug bool) *options.ClientOptions {
 	if b.Debug || debug {
 		options.SetMonitor(&event.CommandMonitor{
 			Started: func(_ context.Context, evt *event.CommandStartedEvent) {
-				sLog.Warn("Mongo Command: %s  ..  %v", evt.CommandName, evt.Command)
+				sLog.Debug("Mongo Command: %s  ..  %v", evt.CommandName, evt.Command)
 			}})
 	}
 

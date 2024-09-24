@@ -84,7 +84,9 @@ func (r *Request) Call(ctx context.Context, service InterService, client InterCl
 		return nil, fmt.Errorf("url.JoinPath(): %s ", err)
 	}
 
-	sLog.Debug("Call: urlFull: %s ", urlFull)
+	if service.Debug() {
+		sLog.Debug("Call: urlFull: %s  ..  body: %s", urlFull, r.body)
+	}
 
 	request, err := http.NewRequest(r.method, urlFull, r.body)
 	if err != nil {

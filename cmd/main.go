@@ -23,7 +23,7 @@ func Init() {
 
 func main() {
 
-	clean := sLog.SetByName(sLog.Zap, sLog.LevelInfo, "")
+	clean := sLog.SetByName(sLog.Zap, sLog.LevelDebug, "")
 	defer clean()
 
 	Init()

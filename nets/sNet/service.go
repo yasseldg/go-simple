@@ -21,6 +21,8 @@ type Service struct {
 	protocol    string
 	path_prefix string
 	secret      string
+
+	debug bool
 }
 
 // NewService
@@ -46,6 +48,14 @@ func NewService(env, file_path string) (*Service, error) {
 	conf.update()
 
 	return conf, nil
+}
+
+func (c *Service) SetDebug(debug bool) {
+	c.debug = debug
+}
+
+func (c *Service) Debug() bool {
+	return c.debug
 }
 
 func (c *Service) String() string {

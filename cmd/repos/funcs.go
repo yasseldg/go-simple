@@ -49,11 +49,25 @@ func config(_mongo rMongo.Inter) error {
 	ctx := context.Background()
 
 	var err error
-	_coll, err = _mongo.GetColl(ctx, "strategies", "WRITE", "bot_test", "strat_test", Indexes()...)
+	_coll, err = _mongo.GetColl(ctx, "", "WRITE", "bot_test", "strat_test", Indexes()...)
 	if err != nil {
 		return fmt.Errorf("GetColl(): %s", err)
 	}
 	_coll.Log()
+
+	_coll_2, err := _mongo.GetColl(ctx, "", "READ", "bot_test", "strat_test")
+	if err != nil {
+		return fmt.Errorf("GetColl(): %s", err)
+	}
+	_coll_2.Log()
+
+	_coll_3, err := _mongo.GetColl(ctx, "", "READ", "bot_test", "strat_test_1")
+	if err != nil {
+		return fmt.Errorf("GetColl(): %s", err)
+	}
+	_coll_3.Log()
+
+	_mongo.Log()
 
 	return nil
 }
