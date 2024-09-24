@@ -10,6 +10,9 @@ type InterService interface {
 	String() string
 	Log()
 
+	SetDebug(bool)
+	Debug() bool
+
 	Port() int
 	GetUri() string
 	GetUrl() string
