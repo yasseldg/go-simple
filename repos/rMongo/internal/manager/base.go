@@ -34,14 +34,17 @@ func (m *Base) Log() {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
+	template := "Mongo Manager collections:"
 	println()
 	for conn_name, client := range m.clients {
 		for _, database := range client.Databases() {
 			for _, collection := range database.Collections() {
-				sLog.Info("client: %s  ..  env: %s  ..  database: %s  ..  coll: %s \n", conn_name, client.Env(), database.Name(), collection.Name())
+				template += fmt.Sprintf("%%l   client: %s  ..  env: %s  ..  database: %s  ..  coll: %s", conn_name, client.Env(), database.Name(), collection.Name())
 			}
 		}
 	}
+
+	sLog.Info(sLog.Lines(template))
 }
 
 func (m *Base) SetDebug(debug bool) {

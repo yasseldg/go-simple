@@ -17,6 +17,7 @@ type Inter interface {
 	InterBase
 	InterOper
 	InterAgregate
+	InterTs
 
 	Clone() *Full
 
@@ -52,4 +53,12 @@ type InterAgregate interface {
 	AgregatesWithCtx(ctx context.Context, docs interface{}) error
 	AgregatesCount() ([]bson.M, error)
 	AgregatesCountWithCtx(ctx context.Context) ([]bson.M, error)
+}
+
+type InterTs interface {
+	First(tsFrom, tsTo int64, obj mgm.Model) error
+	FirstTs(tsFrom, tsTo int64) int64
+
+	Last(tsFrom, tsTo int64, obj mgm.Model) error
+	LastTs(tsFrom, tsTo int64) int64
 }

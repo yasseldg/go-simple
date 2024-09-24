@@ -6,41 +6,41 @@ import (
 
 type TsModel struct {
 	mgm.DefaultModel `bson:",inline"`
-	UnixTs           int64 `bson:"ts" json:"ts"`
+	Ts               int64 `bson:"ts" json:"ts"`
 }
 
-// First, $gte: tsFrom  $lt: tsTo, tsFrom = tsTo = 0 for "ts" first object,
-func (c *Full) First(tsFrom, tsTo int64, obj mgm.Model) error {
+// First, $gte: ts_from  $lt: ts_to, ts_from = ts_to = 0 for "ts" first object,
+func (c *Full) First(ts_from, ts_to int64, obj mgm.Model) error {
 	c.sort.TsAsc()
-	// c.filter.Ts(tsFrom, tsTo)
+	c.filter.Ts(ts_from, ts_to)
 	return c.FindOne(obj)
 }
 
-// Last, $gte: tsFrom  $lt: tsTo, tsFrom = tsTo = 0 for first
-func (c *Full) FirstTs(tsFrom, tsTo int64) int64 {
+// Last, $gte: ts_from  $lt: ts_to, ts_from = ts_to = 0 for first
+func (c *Full) FirstTs(ts_from, ts_to int64) int64 {
 	var obj TsModel
-	err := c.First(tsFrom, tsTo, &obj)
+	err := c.First(ts_from, ts_to, &obj)
 	if err != nil {
 		return 0
 	}
-	return int64(obj.UnixTs)
+	return int64(obj.Ts)
 }
 
-// Last, $gte: tsFrom  $lt: tsTo, tsFrom = tsTo = 0 for "ts" Last object,
-func (c *Full) Last(tsFrom, tsTo int64, obj mgm.Model) error {
+// Last, $gte: ts_from  $lt: ts_to, ts_from = ts_to = 0 for "ts" Last object,
+func (c *Full) Last(ts_from, ts_to int64, obj mgm.Model) error {
 	c.sort.TsDesc()
-	// c.filter.Ts(tsFrom, tsTo)
+	c.filter.Ts(ts_from, ts_to)
 	return c.FindOne(obj)
 }
 
-// Last, $gte: tsFrom  $lt: tsTo, tsFrom = tsTo = 0 for last
-func (c *Full) LastTs(tsFrom, tsTo int64) int64 {
+// Last, $gte: ts_from  $lt: ts_to, ts_from = ts_to = 0 for last
+func (c *Full) LastTs(ts_from, ts_to int64) int64 {
 	var obj TsModel
-	err := c.Last(tsFrom, tsTo, &obj)
+	err := c.Last(ts_from, ts_to, &obj)
 	if err != nil {
 		return 0
 	}
-	return int64(obj.UnixTs)
+	return int64(obj.Ts)
 }
 
 // func (c *Full) GetTss() ([]int64, error) {
@@ -59,7 +59,7 @@ func (c *Full) LastTs(tsFrom, tsTo int64) int64 {
 
 // 	tss := make([]int64, len(docs))
 // 	for i, doc := range docs {
-// 		tss[i] = doc.UnixTs
+// 		tss[i] = doc.Ts
 // 	}
 
 // 	return tss, nil
