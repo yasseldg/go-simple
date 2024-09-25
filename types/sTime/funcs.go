@@ -37,16 +37,25 @@ func Since(duration time.Duration) string {
 	return s
 }
 
-func TimeControl(f func(), name string) {
+func TimeControlError(f func() error, name string) error {
 	t := time.Now()
 
 	msg := fmt.Sprintf("Time Control ( %s )", name)
 
 	sLog.Info(msg)
 
-	f()
+	err := f()
 
 	fmt.Println()
 
 	sLog.Info(fmt.Sprintf("%s elapsed %s \n", msg, Since(time.Since(t))))
+
+	return err
+}
+
+func TimeControl(f func(), name string) {
+	TimeControlError(func() error {
+		f()
+		return nil
+	}, name)
 }

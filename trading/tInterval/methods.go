@@ -129,3 +129,7 @@ func (i Interval) AsaName(ts int64) string {
 		return ""
 	}
 }
+
+func (i Interval) Duration() time.Duration {
+	return time.Duration(i.Seconds()) * time.Second
+}
