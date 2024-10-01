@@ -1,5 +1,7 @@
 package dAccu
 
+import "github.com/yasseldg/go-simple/data/dTs"
+
 type Inter interface {
 	String(name string) string
 	Log(name string)
@@ -13,4 +15,10 @@ type Inter interface {
 	Empty() bool
 
 	Save()
+}
+
+type InterTs interface {
+	Inter
+
+	Add(inter dTs.Inter)
 }
