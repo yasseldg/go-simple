@@ -6,6 +6,7 @@ import (
 
 	"github.com/yasseldg/go-simple/cmd/components"
 	"github.com/yasseldg/go-simple/cmd/indicators"
+	"github.com/yasseldg/go-simple/cmd/iters"
 	"github.com/yasseldg/go-simple/cmd/repos"
 
 	"github.com/yasseldg/go-simple/logs/sLog"
@@ -30,7 +31,7 @@ func main() {
 
 	sLog.Info("Starting...")
 
-	sTime.TimeControl(testModel, "Iters")
+	sTime.TimeControl(iters.Csv, "Iters")
 }
 
 func testModel() {
