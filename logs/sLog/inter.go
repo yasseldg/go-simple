@@ -65,6 +65,10 @@ func SetByName(name Name, level Level, timeformat string) func() error {
 	}
 }
 
+func SetLevel(level Level) {
+	_logger.SetLevel(string(level))
+}
+
 func Fatal(template string, args ...interface{}) {
 	_logger.Fatalf(template, args...)
 }
