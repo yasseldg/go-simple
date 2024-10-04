@@ -64,6 +64,31 @@ func (c *Full) UpsertDoc(doc interface{}) error {
 	return nil
 }
 
+// Delete
+func (c *Full) Delete(model mgm.Model) error {
+
+	err := c.Coll().DeleteWithCtx(mgm.Ctx(), model)
+	if err != nil {
+		return fmt.Errorf("%s err: %s  ..  obj: %#v", c.Prefix(), err, model)
+	}
+	return nil
+}
+
+// DeleteMany
+func (c *Full) DeleteMany(models []mgm.Model) error {
+
+	filter, err := filter.Fields(c.filter)
+	if err != nil {
+		return fmt.Errorf("mongo: %s.DeleteMany(): %s", c.Prefix(), err)
+	}
+
+	err = c.Coll().DelManyWithCtx(mgm.Ctx(), c.Coll(), models, filter)
+	if err != nil {
+		return fmt.Errorf("%s.DelManyWithCtx(): %s  ..  filter: %#v", c.Prefix(), err, c.filter)
+	}
+	return nil
+}
+
 // Count
 func (c *Full) Count() (int64, error) {
 

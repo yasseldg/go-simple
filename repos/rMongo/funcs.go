@@ -3,8 +3,15 @@ package rMongo
 import (
 	"fmt"
 
+	"github.com/yasseldg/go-simple/repos/rFilter"
+	"github.com/yasseldg/go-simple/repos/rSort"
+
+	"github.com/yasseldg/go-simple/repos/rMongo/internal/filter"
+	"github.com/yasseldg/go-simple/repos/rMongo/internal/sort"
+
 	"github.com/yasseldg/mgm/v4"
 
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -32,4 +39,12 @@ func GetID(id interface{}) primitive.ObjectID {
 		return objId
 	}
 	return id.(primitive.ObjectID)
+}
+
+func FilterFields(inter rFilter.Inter) (bson.D, error) {
+	return filter.Fields(inter)
+}
+
+func SortFields(inter rSort.Inter) (bson.D, error) {
+	return sort.Fields(inter)
 }
