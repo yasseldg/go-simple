@@ -2,10 +2,8 @@ package tCandle
 
 import (
 	"fmt"
-	"math"
 
 	"github.com/yasseldg/go-simple/logs/sLog"
-	"github.com/yasseldg/go-simple/types/sFloats"
 	"github.com/yasseldg/go-simple/types/sTime"
 )
 
@@ -78,13 +76,6 @@ func (b *Candle) Close() float64 {
 
 func (b *Candle) Volume() float64 {
 	return b.M_volume
-}
-
-func (b *Candle) LogReturn() float64 {
-	if b.Close() == 0 || b.Open() == 0 {
-		return 0
-	}
-	return sFloats.GetValid(math.Log(b.Close() / b.Open()))
 }
 
 func (b *Candle) GetModel() *Candle {

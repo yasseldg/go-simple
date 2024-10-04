@@ -11,7 +11,12 @@ type Inter interface {
 	Close() float64
 	Volume() float64
 
+	InterCalc
+}
+
+type InterCalc interface {
 	LogReturn() float64
+	BodyPerc() float64
 }
 
 type InterModel interface {
