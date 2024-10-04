@@ -4,11 +4,9 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/yasseldg/go-simple/cmd/components"
 	"github.com/yasseldg/go-simple/cmd/indicators"
 	"github.com/yasseldg/go-simple/cmd/iters"
 	"github.com/yasseldg/go-simple/cmd/repos"
-
 	"github.com/yasseldg/go-simple/logs/sLog"
 	"github.com/yasseldg/go-simple/repos/rMongo"
 	"github.com/yasseldg/go-simple/types/sTime"
@@ -42,10 +40,6 @@ func testModel() {
 
 func testIndicators() {
 	indicators.Run(_mongo)
-}
-
-func testComponents() {
-	components.Run(_mongo)
 }
 
 func testErrors() {
