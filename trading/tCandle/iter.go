@@ -26,7 +26,7 @@ type Iter struct {
 
 func NewIter(coll rMongo.InterColl, filter rFilter.Inter) *Iter {
 	return &Iter{
-		InterTs: rIter.NewTs(coll, nil, nil),
+		InterTs: rIter.NewTs(coll, filter, nil),
 	}
 }
 
