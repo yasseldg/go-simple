@@ -74,3 +74,7 @@ func (b *Iter) Reset() {
 	b.current = 0
 	b.InterIter.Reset()
 }
+
+func (b *Iter) Clone() InterIter {
+	return NewIter(b.from, b.to, b.step, b.prec, b.values...)
+}
