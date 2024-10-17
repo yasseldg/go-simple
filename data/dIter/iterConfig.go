@@ -35,7 +35,7 @@ func (it *IterConfig) String(name string) string {
 		configs += fmt.Sprintf("\n %s", config.String(config.Name()))
 	}
 
-	return fmt.Sprintf("%s ( %d / %d ): %s", it.name, it.index, it.count, configs)
+	return fmt.Sprintf("%s %s ( %d / %d ): %s", it.name, name, it.index, it.count, configs)
 }
 
 func (it *IterConfig) Log(name string) {
