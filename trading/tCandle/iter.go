@@ -67,5 +67,5 @@ func (iter *Iter) Next() bool {
 }
 
 func (iter *Iter) Clone() InterIter {
-	return NewIter(iter.Coll().Clone(), iter.Filter())
+	return NewIter(iter.Coll().Clone(), iter.Filter().Clone())
 }
