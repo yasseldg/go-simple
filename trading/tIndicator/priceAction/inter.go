@@ -18,6 +18,7 @@ type Inter interface {
 
 	State() state
 	IsTrigger() bool
+	IsChange() bool
 
 	Values() []ind
 

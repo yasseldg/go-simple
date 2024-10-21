@@ -25,6 +25,7 @@ func (pa *Base) Add(candle tCandle.Inter) {
 
 	pa.Increase()
 	pa.trigger = false
+	pa.change = false
 
 	if pa.funcLow(candle) < pa.funcLow(pa.last) {
 		if pa.swing {
@@ -72,9 +73,9 @@ func (pa *Base) neutral(candle tCandle.Inter) {
 
 			pa.last_low = pa.new_low
 			pa.new_low = 0
-
-			pa.state = uptrend
 			pa.trigger = true
+			pa.change = true
+			pa.state = uptrend
 
 			pa.values = append(pa.values, newInd(candle.Ts(), pa.state))
 		}
@@ -93,9 +94,9 @@ func (pa *Base) neutral(candle tCandle.Inter) {
 
 			pa.last_high = pa.new_high
 			pa.new_high = 0
-
-			pa.state = downtrend
 			pa.trigger = true
+			pa.change = true
+			pa.state = downtrend
 
 			pa.values = append(pa.values, newInd(candle.Ts(), pa.state))
 		}
@@ -117,6 +118,7 @@ func (pa *Base) uptrend(candle tCandle.Inter) {
 
 			pa.last_low = pa.new_low
 			pa.new_low = 0
+			pa.trigger = true
 
 			pa.values = append(pa.values, newInd(candle.Ts(), pa.state))
 		}
@@ -135,9 +137,9 @@ func (pa *Base) uptrend(candle tCandle.Inter) {
 
 			pa.last_high = pa.new_high
 			pa.new_high = 0
-
-			pa.state = neutral_down
 			pa.trigger = true
+			pa.change = true
+			pa.state = neutral_down
 
 			pa.values = append(pa.values, newInd(candle.Ts(), pa.state))
 		}
@@ -154,6 +156,7 @@ func (pa *Base) downtrend(candle tCandle.Inter) {
 
 			pa.last_high = pa.new_high
 			pa.new_high = 0
+			pa.trigger = true
 
 			pa.values = append(pa.values, newInd(candle.Ts(), pa.state))
 		}
@@ -172,9 +175,9 @@ func (pa *Base) downtrend(candle tCandle.Inter) {
 
 			pa.last_low = pa.new_low
 			pa.new_low = 0
-
-			pa.state = neutral_up
 			pa.trigger = true
+			pa.change = true
+			pa.state = neutral_up
 
 			pa.values = append(pa.values, newInd(candle.Ts(), pa.state))
 		}
