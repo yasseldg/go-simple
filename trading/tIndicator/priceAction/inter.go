@@ -16,7 +16,8 @@ type Inter interface {
 
 	Add(candle tCandle.Inter)
 
-	IsUptrend() bool
+	State() state
+	IsTrigger() bool
 
 	Values() []ind
 
@@ -25,8 +26,8 @@ type Inter interface {
 }
 
 type InterPrices interface {
-	UptrendPrice() float64
-	DowntrendPrice() float64
+	UpPrice() float64
+	DownPrice() float64
 	NeutralPrice() float64
 }
 

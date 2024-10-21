@@ -1,6 +1,6 @@
 package priceAction
 
-func (pa *Base) UptrendPrice() float64 {
+func (pa *Base) UpPrice() float64 {
 
 	if pa.new_low == 0 {
 		return 0
@@ -13,7 +13,7 @@ func (pa *Base) UptrendPrice() float64 {
 	return pa.last_high
 }
 
-func (pa *Base) DowntrendPrice() float64 {
+func (pa *Base) DownPrice() float64 {
 
 	if pa.new_high == 0 {
 		return 0

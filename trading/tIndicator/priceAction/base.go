@@ -11,13 +11,6 @@ import (
 	"github.com/yasseldg/go-simple/types/sTime"
 )
 
-const (
-	downtrend = iota - 1
-	neutral_down
-	neutral_up
-	uptrend
-)
-
 type Base struct {
 	indicator.Inter
 
@@ -28,8 +21,9 @@ type Base struct {
 	last_low  float64
 	last_high float64
 
-	state  int
-	values []ind
+	state   state
+	trigger bool
+	values  []ind
 
 	last tCandle.Inter
 
@@ -47,7 +41,7 @@ func New() *Base {
 	pa := &Base{
 		Inter: indicator.NewBase(),
 
-		state:  neutral_down,
+		state:  neutral_up,
 		values: make([]ind, 0),
 	}
 	pa.SetCloses(false)
@@ -61,7 +55,7 @@ func (pa *Base) String() string {
 		last_ts = pa.last.Ts()
 	}
 	return fmt.Sprintf("PriceAction: c: %d  ..  values: %d  ..  state: %s  ..  high: %f  ..  low: %f  ..  %s",
-		pa.Count(), len(pa.values), pa.State(), pa.last_high, pa.last_low, sTime.ForLog(last_ts, 0))
+		pa.Count(), len(pa.values), pa.state.String(), pa.last_high, pa.last_low, sTime.ForLog(last_ts, 0))
 }
 
 func (pa *Base) Log() {
@@ -72,44 +66,10 @@ func (pa *Base) Values() []ind {
 	return pa.values
 }
 
-func (pa *Base) State() string {
-	switch pa.state {
-	case downtrend:
-		return "downtrend"
-
-	case neutral_down:
-		return "neutral down"
-
-	case neutral_up:
-		return "neutral up"
-
-	case uptrend:
-		return "uptrend"
-
-	default:
-		return "unknown"
-	}
+func (pa *Base) State() state {
+	return pa.state
 }
 
-func (pa *Base) IsUptrend() bool {
-	return pa.state == uptrend
-}
-
-// private types
-
-type ind struct {
-	ts    int64
-	state int
-}
-
-func newInd(ts int64, state int) ind {
-	return ind{ts: ts, state: state}
-}
-
-func (i *ind) Ts() int64 {
-	return i.ts
-}
-
-func (i *ind) State() int {
-	return i.state
+func (pa *Base) IsTrigger() bool {
+	return pa.trigger
 }
