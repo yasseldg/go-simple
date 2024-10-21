@@ -13,6 +13,8 @@ type InterIter interface {
 	Value() int64
 	Count() int
 	Reset()
+
+	Clone() InterIter
 }
 
 type Iter struct {
@@ -92,6 +94,10 @@ func (b *Iter) Next() bool {
 	}
 
 	return b.nextRange()
+}
+
+func (b *Iter) Clone() InterIter {
+	return NewIter(b.from, b.to, b.step, b.values...)
 }
 
 // private methods
