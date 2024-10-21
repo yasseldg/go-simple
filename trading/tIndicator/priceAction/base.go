@@ -23,6 +23,7 @@ type Base struct {
 
 	state   state
 	trigger bool
+	change  bool
 	values  []ind
 
 	last tCandle.Inter
@@ -72,4 +73,8 @@ func (pa *Base) State() state {
 
 func (pa *Base) IsTrigger() bool {
 	return pa.trigger
+}
+
+func (pa *Base) IsChange() bool {
+	return pa.change
 }
