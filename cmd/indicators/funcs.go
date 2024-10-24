@@ -12,11 +12,11 @@ import (
 )
 
 func Run(mongo rMongo.Inter) {
-	indicator := get("SuperTrend")
+	indicator := get("PriceAction")
 
 	// return
 
-	run(indicator, mongo, "BYBIT_BTCUSDT", tInterval.Interval_4h)
+	run(indicator, mongo, "BYBIT_WLDUSDT", tInterval.Interval_4h)
 }
 
 func get(indicator string) Indicator {
@@ -38,6 +38,9 @@ func get(indicator string) Indicator {
 
 	case "SuperTrend":
 		return tIndicator.NewSuperTrend(10, 3, false)
+
+	case "PriceAction":
+		return tIndicator.NewPriceAction()
 
 	case "SuperTrendIter":
 		testBBandSuperTrendIter()

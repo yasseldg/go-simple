@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/yasseldg/go-simple/cmd/indicators"
-	"github.com/yasseldg/go-simple/cmd/iters"
 	"github.com/yasseldg/go-simple/cmd/repos"
 	"github.com/yasseldg/go-simple/logs/sLog"
 	"github.com/yasseldg/go-simple/repos/rMongo"
@@ -29,7 +28,7 @@ func main() {
 
 	sLog.Info("Starting...")
 
-	sTime.TimeControl(iters.Csv, "Iters")
+	sTime.TimeControl(testIndicators, "Iters")
 }
 
 func testModel() {

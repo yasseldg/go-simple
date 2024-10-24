@@ -1,5 +1,10 @@
 package tCandle
 
+import (
+	"github.com/yasseldg/go-simple/repos/rAccu"
+	"github.com/yasseldg/go-simple/repos/rIter"
+)
+
 type Inter interface {
 	String(prec int) string
 	Log(prec int)
@@ -22,4 +27,18 @@ type InterCalc interface {
 type InterModel interface {
 	Inter
 	GetModel() *Candle
+}
+
+type InterIter interface {
+	rIter.InterTs
+
+	Item() Inter
+
+	Clone() InterIter
+}
+
+type InterAccu interface {
+	rAccu.Inter
+
+	AddCandle(*Candle)
 }
