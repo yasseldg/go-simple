@@ -9,14 +9,6 @@ import (
 	"github.com/yasseldg/go-simple/repos/rMongo"
 )
 
-type InterIter interface {
-	rIter.InterTs
-
-	Item() Inter
-
-	Clone() InterIter
-}
-
 type Iter struct {
 	rIter.InterTs
 
