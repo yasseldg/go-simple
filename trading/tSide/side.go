@@ -24,6 +24,10 @@ func Get(s string) Side {
 	}
 }
 
+func (s Side) Side() Side {
+	return s
+}
+
 func (s Side) Switch() Side {
 	switch s {
 	case Buy:
@@ -41,6 +45,10 @@ func (s Side) IsBuy() bool {
 
 func (s Side) IsSell() bool {
 	return s == Sell
+}
+
+func (s Side) IsDefault() bool {
+	return s == DEFAULT
 }
 
 func (s Side) String() string {
