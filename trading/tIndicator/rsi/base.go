@@ -1,4 +1,4 @@
-package tIndicator
+package rsi
 
 import (
 	"fmt"
@@ -8,25 +8,7 @@ import (
 	"github.com/yasseldg/go-simple/types/sFloats"
 )
 
-type interRSI interface {
-	String() string
-	Log()
-
-	Periods() int
-
-	Filled() bool
-	Get() float64
-}
-
-type InterRSI interface {
-	interRSI
-
-	Add(close float64)
-}
-
-// RSI (Relative Strength Index)
-
-type RSI struct {
+type Base struct {
 	mu sync.Mutex
 
 	loss sFloats.SmoothedAverage
@@ -35,8 +17,8 @@ type RSI struct {
 	close float64
 }
 
-func NewRSI(period int) *RSI {
-	return &RSI{
+func New(period int) *Base {
+	return &Base{
 		mu: sync.Mutex{},
 
 		loss: *sFloats.NewSmoothedAverage(period),
@@ -44,26 +26,26 @@ func NewRSI(period int) *RSI {
 	}
 }
 
-func (rsi *RSI) String() string {
+func (rsi *Base) String() string {
 	return fmt.Sprintf("calc: %f  ..  gain: %f  ..  loss: %f", rsi.calc(), rsi.gain.Value(), rsi.loss.Value())
 }
 
-func (rsi *RSI) Log() {
+func (rsi *Base) Log() {
 	rsi.mu.Lock()
 	defer rsi.mu.Unlock()
 
 	sLog.Info("RSI: %s", rsi.String())
 }
 
-func (rsi *RSI) Periods() int {
+func (rsi *Base) Periods() int {
 	return rsi.gain.Periods()
 }
 
-func (rsi *RSI) Filled() bool {
+func (rsi *Base) Filled() bool {
 	return rsi.gain.Filled()
 }
 
-func (rsi *RSI) Get() float64 {
+func (rsi *Base) Get() float64 {
 	rsi.mu.Lock()
 	defer rsi.mu.Unlock()
 
@@ -74,7 +56,7 @@ func (rsi *RSI) Get() float64 {
 	return rsi.calc()
 }
 
-func (rsi *RSI) Add(close float64) {
+func (rsi *Base) Add(close float64) {
 	rsi.mu.Lock()
 	defer rsi.mu.Unlock()
 
@@ -85,7 +67,7 @@ func (rsi *RSI) Add(close float64) {
 	rsi.add(close)
 }
 
-func (rsi *RSI) add(close float64) {
+func (rsi *Base) add(close float64) {
 
 	if rsi.close == 0 {
 		rsi.close = close
@@ -105,7 +87,7 @@ func (rsi *RSI) add(close float64) {
 	rsi.close = close
 }
 
-func (rsi *RSI) calc() float64 {
+func (rsi *Base) calc() float64 {
 
 	temp := rsi.gain.Value() + rsi.loss.Value()
 	if !((-0.00000000000001 < temp) && (temp < 0.00000000000001)) {

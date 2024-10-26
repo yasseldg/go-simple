@@ -1,4 +1,4 @@
-package tIndicator
+package priceStop
 
 import (
 	"sync"
@@ -8,19 +8,7 @@ import (
 	"github.com/yasseldg/go-simple/trading/tSide"
 )
 
-type InterPriceStop interface {
-	String() string
-	Log()
-
-	SetStop(stop float64)
-	Stop() float64
-	Reset()
-	Prev() tCandle.Inter
-
-	Add(candle tCandle.Inter)
-}
-
-type PriceStop struct {
+type Base struct {
 	mu sync.Mutex
 
 	prev tCandle.Inter
@@ -31,12 +19,12 @@ type PriceStop struct {
 	stop float64
 }
 
-func NewPriceStop(side tSide.Side) *PriceStop {
+func New(side tSide.Side) *Base {
 	if side == tSide.DEFAULT {
 		return nil
 	}
 
-	return &PriceStop{
+	return &Base{
 		mu: sync.Mutex{},
 
 		prev: new(tCandle.Candle),
@@ -45,32 +33,32 @@ func NewPriceStop(side tSide.Side) *PriceStop {
 	}
 }
 
-func (ps *PriceStop) String() string {
+func (ps *Base) String() string {
 	return ""
 }
 
-func (ps *PriceStop) Log() {
+func (ps *Base) Log() {
 	ps.mu.Lock()
 	defer ps.mu.Unlock()
 
 	sLog.Info("PriceStop: %s", ps.String())
 }
 
-func (ps *PriceStop) SetStop(stop float64) {
+func (ps *Base) SetStop(stop float64) {
 	ps.mu.Lock()
 	defer ps.mu.Unlock()
 
 	ps.stop = stop
 }
 
-func (ps *PriceStop) Stop() float64 {
+func (ps *Base) Stop() float64 {
 	ps.mu.Lock()
 	defer ps.mu.Unlock()
 
 	return ps.stop
 }
 
-func (ps *PriceStop) Reset() {
+func (ps *Base) Reset() {
 	ps.mu.Lock()
 	defer ps.mu.Unlock()
 
@@ -81,7 +69,7 @@ func (ps *PriceStop) Reset() {
 	ps.stop = 0
 }
 
-func (ps *PriceStop) Add(candle tCandle.Inter) {
+func (ps *Base) Add(candle tCandle.Inter) {
 	ps.mu.Lock()
 	defer ps.mu.Unlock()
 
@@ -96,7 +84,7 @@ func (ps *PriceStop) Add(candle tCandle.Inter) {
 	ps.prev = candle
 }
 
-func (ps *PriceStop) long(candle tCandle.Inter) {
+func (ps *Base) long(candle tCandle.Inter) {
 	if ps.prev.Low() > candle.Low() {
 		ps.low = candle.Low()
 	}
@@ -110,7 +98,7 @@ func (ps *PriceStop) long(candle tCandle.Inter) {
 	}
 }
 
-func (ps *PriceStop) short(candle tCandle.Inter) {
+func (ps *Base) short(candle tCandle.Inter) {
 	if candle.Low() < ps.low {
 		ps.low = candle.Low()
 

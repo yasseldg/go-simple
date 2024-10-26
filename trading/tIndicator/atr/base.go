@@ -1,4 +1,4 @@
-package tIndicator
+package atr
 
 import (
 	"fmt"
@@ -8,22 +8,7 @@ import (
 	"github.com/yasseldg/go-simple/types/sTime"
 )
 
-// ATR (Average True Range)
-
-type InterATR interface {
-	String() string
-	Log()
-
-	Count() int
-	Periods() int
-	Filled() bool
-	Get() float64
-	Prev() tCandle.Inter
-
-	Add(candle tCandle.Inter)
-}
-
-type BaseATR struct {
+type Base struct {
 	mu sync.Mutex
 
 	prev tCandle.Inter
@@ -31,26 +16,26 @@ type BaseATR struct {
 	c int
 }
 
-func newBaseATR() *BaseATR {
-	return &BaseATR{
+func newBase() *Base {
+	return &Base{
 		mu: sync.Mutex{},
 
 		prev: new(tCandle.Candle),
 	}
 }
 
-func (atr *BaseATR) String() string {
+func (atr *Base) String() string {
 	return fmt.Sprintf("%d: %s", atr.c, sTime.ForLog(atr.prev.Ts(), 0))
 }
 
-func (atr *BaseATR) Count() int {
+func (atr *Base) Count() int {
 	atr.mu.Lock()
 	defer atr.mu.Unlock()
 
 	return atr.c
 }
 
-func (atr *BaseATR) Prev() tCandle.Inter {
+func (atr *Base) Prev() tCandle.Inter {
 	atr.mu.Lock()
 	defer atr.mu.Unlock()
 

@@ -66,6 +66,10 @@ func (pa *IterConfig) Closes() bool {
 }
 
 func (pa *IterConfig) Get() Inter {
+	if pa.swing == nil || pa.high_low == nil || pa.closes == nil {
+		return nil
+	}
+
 	if pa.Closes() && pa.HighLow() {
 		return nil
 	}

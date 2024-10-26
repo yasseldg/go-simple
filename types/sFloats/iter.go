@@ -14,6 +14,8 @@ type InterIter interface {
 	Value() float64
 	Count() int
 	Reset()
+
+	Clone() InterIter
 }
 
 type Iter struct {
