@@ -1,4 +1,4 @@
-package tIndicator
+package bollingerBands
 
 import (
 	"fmt"
@@ -8,27 +8,7 @@ import (
 	"github.com/yasseldg/go-simple/types/sFloats"
 )
 
-//  BBands (Bollinger Bands)
-
-type interBBands interface {
-	String() string
-	Log()
-
-	Periods() int
-	Deviations() float64
-
-	Filled() bool
-	Get() (mean, upper, lower float64)
-	Calc(deviations float64) (mean, upper, lower float64)
-}
-
-type InterBBands interface {
-	interBBands
-
-	Add(close float64)
-}
-
-type BBands struct {
+type Base struct {
 	mu sync.Mutex
 
 	deviations float64
@@ -38,8 +18,8 @@ type BBands struct {
 	std  float64
 }
 
-func NewBBands(periods int, deviations float64) *BBands {
-	return &BBands{
+func New(periods int, deviations float64) *Base {
+	return &Base{
 		mu: sync.Mutex{},
 
 		deviations: deviations,
@@ -47,7 +27,7 @@ func NewBBands(periods int, deviations float64) *BBands {
 	}
 }
 
-func (bb *BBands) String() string {
+func (bb *Base) String() string {
 
 	mean, upper, lower := bb.get()
 
@@ -55,43 +35,43 @@ func (bb *BBands) String() string {
 		bb.deviations, bb.closes.Periods(), bb.std, upper, mean, lower)
 }
 
-func (bb *BBands) Log() {
+func (bb *Base) Log() {
 	bb.mu.Lock()
 	defer bb.mu.Unlock()
 
 	sLog.Info("BBands: %s", bb.String())
 }
 
-func (bb *BBands) Deviations() float64 {
+func (bb *Base) Deviations() float64 {
 	return bb.deviations
 }
 
-func (bb *BBands) Periods() int {
+func (bb *Base) Periods() int {
 	return bb.closes.Periods()
 }
 
-func (bb *BBands) Filled() bool {
+func (bb *Base) Filled() bool {
 	bb.mu.Lock()
 	defer bb.mu.Unlock()
 
 	return bb.closes.Filled()
 }
 
-func (bb *BBands) Get() (mean, upper, lower float64) {
+func (bb *Base) Get() (mean, upper, lower float64) {
 	bb.mu.Lock()
 	defer bb.mu.Unlock()
 
 	return bb.get()
 }
 
-func (bb *BBands) Calc(deviations float64) (mean, upper, lower float64) {
+func (bb *Base) Calc(deviations float64) (mean, upper, lower float64) {
 	bb.mu.Lock()
 	defer bb.mu.Unlock()
 
 	return bb.calc(deviations)
 }
 
-func (bb *BBands) Add(close float64) {
+func (bb *Base) Add(close float64) {
 	bb.mu.Lock()
 	defer bb.mu.Unlock()
 
@@ -102,7 +82,7 @@ func (bb *BBands) Add(close float64) {
 	bb.add(close)
 }
 
-func (bb *BBands) add(close float64) {
+func (bb *Base) add(close float64) {
 	bb.closes.Add(close)
 
 	if !bb.closes.Filled() {
@@ -112,11 +92,11 @@ func (bb *BBands) add(close float64) {
 	bb.mean, bb.std = bb.closes.MeanStdDev()
 }
 
-func (bb *BBands) get() (mean, upper, lower float64) {
+func (bb *Base) get() (mean, upper, lower float64) {
 	return bb.calc(bb.deviations)
 }
 
-func (bb *BBands) calc(deviations float64) (mean, upper, lower float64) {
+func (bb *Base) calc(deviations float64) (mean, upper, lower float64) {
 	if !bb.closes.Filled() {
 		return 0, 0, 0
 	}

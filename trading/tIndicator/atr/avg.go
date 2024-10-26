@@ -1,4 +1,4 @@
-package tIndicator
+package atr
 
 import (
 	"fmt"
@@ -9,47 +9,47 @@ import (
 	"github.com/yasseldg/go-simple/types/sFloats"
 )
 
-type AvgATR struct {
-	BaseATR
+type Avg struct {
+	Base
 
 	trs sFloats.InterPeriodValues
 }
 
-func NewAvgATR(periods int) *AvgATR {
-	return &AvgATR{
-		BaseATR: *newBaseATR(),
-		trs:     sFloats.NewPeriodValues(periods),
+func NewAvg(periods int) *Avg {
+	return &Avg{
+		Base: *newBase(),
+		trs:  sFloats.NewPeriodValues(periods),
 	}
 }
 
-func (atr *AvgATR) String() string {
-	return fmt.Sprintf("%s  ..  atr: %f", atr.BaseATR.String(), atr.get())
+func (atr *Avg) String() string {
+	return fmt.Sprintf("%s  ..  atr: %f", atr.Base.String(), atr.get())
 }
 
-func (atr *AvgATR) Log() {
+func (atr *Avg) Log() {
 	atr.mu.Lock()
 	defer atr.mu.Unlock()
 
 	sLog.Info("AvgATR: %s", atr.String())
 }
 
-func (atr *AvgATR) Periods() int {
+func (atr *Avg) Periods() int {
 	return atr.trs.Periods()
 }
 
-func (atr *AvgATR) Filled() bool {
+func (atr *Avg) Filled() bool {
 	return atr.trs.Filled()
 }
 
 // Add adds a candle to the AvgATR
-func (atr *AvgATR) Add(candle tCandle.Inter) {
+func (atr *Avg) Add(candle tCandle.Inter) {
 	atr.mu.Lock()
 	defer atr.mu.Unlock()
 
 	atr.add(candle)
 }
 
-func (atr *AvgATR) Get() float64 {
+func (atr *Avg) Get() float64 {
 	atr.mu.Lock()
 	defer atr.mu.Unlock()
 
@@ -58,7 +58,7 @@ func (atr *AvgATR) Get() float64 {
 
 // private methods
 
-func (atr *AvgATR) add(candle tCandle.Inter) {
+func (atr *Avg) add(candle tCandle.Inter) {
 	atr.c++
 
 	if atr.prev.Close() > 0 {
@@ -68,6 +68,6 @@ func (atr *AvgATR) add(candle tCandle.Inter) {
 	atr.prev = candle
 }
 
-func (atr *AvgATR) get() float64 {
+func (atr *Avg) get() float64 {
 	return atr.trs.Mean()
 }

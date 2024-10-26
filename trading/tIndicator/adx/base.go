@@ -1,23 +1,19 @@
-package tIndicator
+package adx
 
 import (
 	"fmt"
 	"math"
 	"sync"
 
+	"github.com/yasseldg/go-simple/trading/tIndicator/atr"
+
 	"github.com/yasseldg/go-simple/logs/sLog"
 	"github.com/yasseldg/go-simple/trading/tCandle"
 	"github.com/yasseldg/go-simple/types/sFloats"
 )
 
-type InterADX interface {
-	InterATR
-}
-
-// El Índice de Movimiento Direccional Promedio (ADX, por sus siglas en inglés)
-
-type ADX struct {
-	InterATR
+type Base struct {
+	atr.Inter
 
 	mu sync.Mutex
 
@@ -28,9 +24,9 @@ type ADX struct {
 	historic sFloats.Average
 }
 
-func NewADX(period int) *ADX {
-	return &ADX{
-		InterATR: NewSmATR(period),
+func New(period int) *Base {
+	return &Base{
+		Inter: atr.NewSmoothed(period),
 
 		plusDMs:  *sFloats.NewSmoothedAverage(period),
 		minusDMs: *sFloats.NewSmoothedAverage(period),
@@ -40,49 +36,49 @@ func NewADX(period int) *ADX {
 	}
 }
 
-func (adx *ADX) String() string {
+func (adx *Base) String() string {
 	return fmt.Sprintf("%s  ..  pDMs: %f  ..  mDMs: %f  ..  adx: %f  ..  %s",
-		adx.InterATR.String(), adx.plusDMs.Value(), adx.minusDMs.Value(), adx.value.Value(), adx.historic.String())
+		adx.Inter.String(), adx.plusDMs.Value(), adx.minusDMs.Value(), adx.value.Value(), adx.historic.String())
 }
 
-func (adx *ADX) Log() {
+func (adx *Base) Log() {
 	adx.mu.Lock()
 	defer adx.mu.Unlock()
 
 	sLog.Info("ADX: %s", adx.String())
 }
 
-func (adx *ADX) Add(candle tCandle.Inter) {
+func (adx *Base) Add(candle tCandle.Inter) {
 	adx.mu.Lock()
 	defer adx.mu.Unlock()
 
 	if adx.Prev().Close() <= 0 {
-		adx.InterATR.Add(candle)
+		adx.Inter.Add(candle)
 		return
 	}
 
 	adx.calcDMs(candle)
 
-	adx.InterATR.Add(candle)
+	adx.Inter.Add(candle)
 
 	adx.calcDIs()
 }
 
-func (adx *ADX) Value() float64 {
+func (adx *Base) Value() float64 {
 	adx.mu.Lock()
 	defer adx.mu.Unlock()
 
 	return adx.value.Value()
 }
 
-func (adx *ADX) Historic() float64 {
+func (adx *Base) Historic() float64 {
 	adx.mu.Lock()
 	defer adx.mu.Unlock()
 
 	return adx.historic.Calc()
 }
 
-func (adx *ADX) calcDMs(candle tCandle.Inter) {
+func (adx *Base) calcDMs(candle tCandle.Inter) {
 
 	plusDM := candle.High() - adx.Prev().High()
 	minusDM := adx.Prev().Low() - candle.Low()
@@ -98,14 +94,14 @@ func (adx *ADX) calcDMs(candle tCandle.Inter) {
 	adx.minusDMs.AddPos(minusDM)
 }
 
-func (adx *ADX) calcDIs() {
+func (adx *Base) calcDIs() {
 
-	if !adx.InterATR.Filled() || !adx.plusDMs.Filled() || !adx.minusDMs.Filled() {
+	if !adx.Inter.Filled() || !adx.plusDMs.Filled() || !adx.minusDMs.Filled() {
 		return
 	}
 
-	plusDi := (adx.plusDMs.Value() / adx.InterATR.Get()) * 100
-	minusDi := (adx.minusDMs.Value() / adx.InterATR.Get()) * 100
+	plusDi := (adx.plusDMs.Value() / adx.Inter.Get()) * 100
+	minusDi := (adx.minusDMs.Value() / adx.Inter.Get()) * 100
 
 	dx := (math.Abs(plusDi-minusDi) / math.Abs(plusDi+minusDi)) * 100
 

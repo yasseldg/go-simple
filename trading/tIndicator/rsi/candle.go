@@ -1,4 +1,4 @@
-package tIndicator
+package rsi
 
 import (
 	"fmt"
@@ -8,48 +8,42 @@ import (
 	"github.com/yasseldg/go-simple/types/sTime"
 )
 
-type InterRSIcandle interface {
-	interRSI
-
-	Candle() tCandle.Inter
-	Add(candle tCandle.Inter)
-}
-
 // RSIcandle is a RSI indicator for candles
 
-type RSIcandle struct {
-	RSI
+type Candle struct {
+	Base
 
 	c      int
 	candle tCandle.Inter
 }
 
-func NewRSIcandle(period int) *RSIcandle {
-	return &RSIcandle{
-		RSI:    *NewRSI(period),
+func NewCandle(period int) *Candle {
+	return &Candle{
+		Base:   *New(period),
 		candle: new(tCandle.Candle),
 	}
 }
 
-func (rsi *RSIcandle) String() string {
-	return fmt.Sprintf("c: %d: %s  ..  %s", rsi.c, sTime.ForLog(rsi.candle.Ts(), 0), rsi.RSI.String())
+func (rsi *Candle) String() string {
+	return fmt.Sprintf("c: %d: %s  ..  %s",
+		rsi.c, sTime.ForLog(rsi.candle.Ts(), 0), rsi.Base.String())
 }
 
-func (rsi *RSIcandle) Log() {
+func (rsi *Candle) Log() {
 	rsi.mu.Lock()
 	defer rsi.mu.Unlock()
 
 	sLog.Info("RSI: %s ", rsi.String())
 }
 
-func (rsi *RSIcandle) Candle() tCandle.Inter {
+func (rsi *Candle) Candle() tCandle.Inter {
 	rsi.mu.Lock()
 	defer rsi.mu.Unlock()
 
 	return rsi.candle
 }
 
-func (rsi *RSIcandle) Add(candle tCandle.Inter) {
+func (rsi *Candle) Add(candle tCandle.Inter) {
 	rsi.mu.Lock()
 	defer rsi.mu.Unlock()
 

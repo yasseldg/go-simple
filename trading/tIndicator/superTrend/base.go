@@ -1,4 +1,4 @@
-package tIndicator
+package superTrend
 
 import (
 	"fmt"
@@ -6,28 +6,13 @@ import (
 
 	"github.com/yasseldg/go-simple/logs/sLog"
 	"github.com/yasseldg/go-simple/trading/tCandle"
+	"github.com/yasseldg/go-simple/trading/tIndicator/atr"
 	"github.com/yasseldg/go-simple/types/sStrings"
 	"github.com/yasseldg/go-simple/types/sTime"
 )
 
-// SuperTrend like TradingView
-
-type InterSuperTrend interface {
-	InterATR
-
-	String() string
-
-	Config() string
-	Multiplier() float64
-	IsUptrend() bool
-	Add(candle tCandle.Inter)
-	Get() float64
-
-	Periods() int
-}
-
-type SuperTrend struct {
-	InterATR
+type Base struct {
+	atr.Inter
 
 	mu sync.Mutex
 
@@ -45,25 +30,25 @@ type SuperTrend struct {
 	ts_last int64
 }
 
-func NewSuperTrend(periods int, multiplier float64, smoothed bool) *SuperTrend {
-	supertrend := &SuperTrend{
+func New(periods int, multiplier float64, smoothed bool) *Base {
+	supertrend := &Base{
 		multiplier: multiplier,
 	}
 
 	if smoothed {
-		supertrend.InterATR = NewSmATR(periods)
+		supertrend.Inter = atr.NewSmoothed(periods)
 	} else {
-		supertrend.InterATR = NewAvgATR(periods)
+		supertrend.Inter = atr.NewAvg(periods)
 	}
 
 	return supertrend
 }
 
-func (st *SuperTrend) Config() string {
+func (st *Base) Config() string {
 	return fmt.Sprintf("period: %d  ..  multiplier: %.2f", st.Periods(), st.multiplier)
 }
 
-func (st *SuperTrend) String() string {
+func (st *Base) String() string {
 	v := ""
 	if st.IsUptrend() {
 		v = sStrings.Colored(sStrings.Green, fmt.Sprintf("%f", st.value))
@@ -72,25 +57,29 @@ func (st *SuperTrend) String() string {
 	}
 
 	return fmt.Sprintf("SuperTrend %d: period: %d  ..  multiplier: %.2f  ..  %s  ..  %s",
-		st.InterATR.Count(), st.Periods(), st.multiplier, sTime.ForLog(st.InterATR.Prev().Ts(), 0), v)
+		st.Inter.Count(), st.Periods(), st.multiplier, sTime.ForLog(st.Inter.Prev().Ts(), 0), v)
 }
 
-func (st *SuperTrend) Log() {
+func (st *Base) Log() {
 	st.mu.Lock()
 	defer st.mu.Unlock()
 
 	sLog.Info(st.String())
 }
 
-func (st *SuperTrend) Multiplier() float64 {
+func (st *Base) Multiplier() float64 {
 	return st.multiplier
 }
 
-func (st *SuperTrend) IsUptrend() bool {
+func (st *Base) IsUptrend() bool {
 	return st.value == st.lower
 }
 
-func (st *SuperTrend) Add(candle tCandle.Inter) {
+func (st *Base) IsDowntrend() bool {
+	return st.value == st.upper
+}
+
+func (st *Base) Add(candle tCandle.Inter) {
 	st.mu.Lock()
 	defer st.mu.Unlock()
 
@@ -98,15 +87,15 @@ func (st *SuperTrend) Add(candle tCandle.Inter) {
 		return
 	}
 
-	st.InterATR.Add(candle)
+	st.Inter.Add(candle)
 
-	if st.InterATR.Get() == 0 {
+	if st.Inter.Get() == 0 {
 		return
 	}
 
 	hl2 := (candle.High() + candle.Low()) / 2
 
-	multAtr := st.multiplier * st.InterATR.Get()
+	multAtr := st.multiplier * st.Inter.Get()
 
 	basicUpper := hl2 + multAtr
 	basicLower := hl2 - multAtr
@@ -148,7 +137,7 @@ func (st *SuperTrend) Add(candle tCandle.Inter) {
 	st.prev_value = st.value
 }
 
-func (st *SuperTrend) Get() float64 {
+func (st *Base) Get() float64 {
 	st.mu.Lock()
 	defer st.mu.Unlock()
 
