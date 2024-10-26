@@ -18,7 +18,7 @@ func TakeProfit(entry_price, tp_perc float64, side tSide.Side) (take_profit floa
 	}
 
 	adding := true
-	if side == tSide.Sell {
+	if side.IsSell() {
 		adding = false
 	}
 
@@ -29,7 +29,7 @@ func TakeProfitPerc(entry_price, tp_price float64, side tSide.Side) float64 {
 
 	perc := sFloats.GetDiffPercent(entry_price, tp_price)
 
-	if side == tSide.Sell {
+	if side.IsSell() {
 		perc *= -1
 	}
 	return perc
@@ -42,7 +42,7 @@ func StopLoss(entry_price, sl_perc float64, side tSide.Side) float64 {
 	}
 
 	adding := false
-	if side == tSide.Sell {
+	if side.IsSell() {
 		adding = true
 	}
 
@@ -53,8 +53,40 @@ func StopLossPerc(entry_price, sl_price float64, side tSide.Side) float64 {
 
 	perc := sFloats.GetDiffPercent(entry_price, sl_price)
 
-	if side == tSide.Sell {
+	if side.IsSell() {
 		perc *= -1
 	}
 	return perc
 }
+
+// func (bt *Backtest) Roe(side sTrading.Side, triggers_Coll sMongo.CollManager) float64 {
+// 	triggers := bt.Triggers(side, triggers_Coll)
+
+// 	roe := 0.0
+// 	for _, trigger := range triggers {
+// 		r := trigger.Roe()
+// 		sLog.Debug("Backtest.Roe: %s  ..  entry: %.2f  ..  exit: %.2f  ..  roe: %3f", sDate.ForLog(trigger.UnixTs, 0), trigger.Entry.Price, trigger.Close.Price, r)
+// 		roe += r
+// 	}
+// 	return roe * 100
+// }
+
+// func (t Trigger) Roe() float64 {
+// 	switch t.State {
+// 	case sTrading.State_Win:
+// 		return (t.TakeProfit.Price - t.Entry.Price) / t.Entry.Price
+
+// 	case sTrading.State_Loss:
+// 		return (t.StopLoss.Price - t.Entry.Price) / t.Entry.Price
+
+// 	default:
+// 		return 0
+// 	}
+// }
+
+// func (c *Calcs) update(win, loss int, takeProfit, stopLoss, roe float64) {
+// 	total := win + loss
+// 	c.WinRate = float64(win) / float64(total)
+// 	c.MathHope = (c.WinRate * (takeProfit / stopLoss)) - (float64(loss) / float64(total))
+// 	c.Roe = roe
+// }
