@@ -53,6 +53,7 @@ type InterADXIterConfig interface {
 }
 
 type InterATRIterConfig interface {
+	atr.InterIterConfig
 }
 
 type InterRSIIterConfig interface {
