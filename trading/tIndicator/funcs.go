@@ -53,6 +53,10 @@ func NewSuperTrend(periods int, multiplier float64, smoothed bool) superTrend.In
 
 //  Iter Configs
 
+func NewATRIterConfig(name string) atr.InterIterConfig {
+	return atr.NewIterConfig(name)
+}
+
 func NewBBIterConfig(name string) bollingerBands.InterIterConfig {
 	return bollingerBands.NewIterConfig(name)
 }
