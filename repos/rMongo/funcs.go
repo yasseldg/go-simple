@@ -1,6 +1,7 @@
 package rMongo
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/yasseldg/go-simple/repos/rFilter"
@@ -17,6 +18,10 @@ import (
 
 // CreateMany
 func CreateMany[T []InterModel](inters T, coll InterColl) error {
+	return CreateManyWithCtx(mgm.Ctx(), inters, coll)
+}
+
+func CreateManyWithCtx[T []InterModel](ctx context.Context, inters T, coll InterColl) error {
 	if len(inters) == 0 {
 		return nil
 	}
@@ -26,7 +31,7 @@ func CreateMany[T []InterModel](inters T, coll InterColl) error {
 		models = append(models, inter)
 	}
 
-	err := coll.Coll().CreateMany(models)
+	err := coll.Coll().CreateManyWithCtx(ctx, models)
 	if err != nil {
 		return fmt.Errorf("%s.CreateMany(objs): %s  ..  objs: %#v", coll.Prefix(), err, models)
 	}
