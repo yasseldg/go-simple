@@ -48,6 +48,17 @@ type InterOper interface {
 	FindById(id interface{}, model mgm.Model) error
 }
 
+type InterOperWithCtx interface {
+	CreateWithCtx(ctx context.Context, model mgm.Model) error
+	UpdateWithCtx(ctx context.Context, model mgm.Model) error
+	UpsertWithCtx(ctx context.Context, model mgm.Model) error
+	UpsertDocWithCtx(ctx context.Context, doc interface{}) error
+	CountWithCtx(ctx context.Context) (int64, error)
+	FindWithCtx(ctx context.Context, models interface{}) error
+	FindOneWithCtx(ctx context.Context, model mgm.Model) error
+	FindByIdWithCtx(ctx context.Context, id interface{}, model mgm.Model) error
+}
+
 type InterAgregate interface {
 	Agregates(docs interface{}) error
 	AgregatesWithCtx(ctx context.Context, docs interface{}) error
