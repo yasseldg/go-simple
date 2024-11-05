@@ -14,6 +14,10 @@ func New() Inter {
 	return manager.New()
 }
 
+func NewAdmin() InterAdmin {
+	return manager.New()
+}
+
 func NewSort() *rSort.Sorts {
 	return sort.New()
 }
