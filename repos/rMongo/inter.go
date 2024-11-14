@@ -17,7 +17,7 @@ type Inter interface {
 	GetColl(ctx context.Context, env, conn_name, db_name, coll_name string, indexes ...rIndex.Inter) (collection.Inter, error)
 }
 
-type InterColl interface {
+type InterRepo interface {
 	collection.Inter
 }
 

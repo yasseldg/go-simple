@@ -17,11 +17,11 @@ import (
 )
 
 // CreateMany
-func CreateMany[T []InterModel](inters T, coll InterColl) error {
+func CreateMany[T []InterModel](inters T, coll InterRepo) error {
 	return CreateManyWithCtx(mgm.Ctx(), inters, coll)
 }
 
-func CreateManyWithCtx[T []InterModel](ctx context.Context, inters T, coll InterColl) error {
+func CreateManyWithCtx[T []InterModel](ctx context.Context, inters T, coll InterRepo) error {
 	if len(inters) == 0 {
 		return nil
 	}
