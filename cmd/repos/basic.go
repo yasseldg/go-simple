@@ -39,8 +39,8 @@ type InterModelss interface {
 }
 
 type Modelss struct {
-	rMongo.DefaultModel `bson:",inline"`
-	ModelBasic          `bson:",inline"`
+	rMongo.Model `bson:",inline"`
+	ModelBasic   `bson:",inline"`
 }
 
 type Model_A struct {

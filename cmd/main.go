@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"runtime"
 
 	"github.com/yasseldg/go-simple/cmd/indicators"
 	"github.com/yasseldg/go-simple/cmd/repos"
@@ -28,7 +29,7 @@ func main() {
 
 	sLog.Info("Starting...")
 
-	sTime.TimeControl(testIndicators, "Iters")
+	sTime.TimeControl(repos.Drop, "Iters")
 }
 
 func testModel() {
@@ -51,4 +52,17 @@ func testErrors() {
 	sLog.Error("Errors: %s", errs)
 
 	sLog.Error("Error Join: \n%s", errors.Join(errs...).Error())
+}
+
+func printMemUsage() {
+	var mem runtime.MemStats
+	runtime.ReadMemStats(&mem)
+	fmt.Printf("Alloc = %v MiB", bToMb(mem.Alloc))
+	fmt.Printf("\tTotalAlloc = %v MiB", bToMb(mem.TotalAlloc))
+	fmt.Printf("\tSys = %v MiB", bToMb(mem.Sys))
+	fmt.Printf("\tNumGC = %v\n", mem.NumGC)
+}
+
+func bToMb(b uint64) uint64 {
+	return b / 1024 / 1024
 }
