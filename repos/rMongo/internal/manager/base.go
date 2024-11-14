@@ -58,7 +58,7 @@ func (m *Base) GetColl(ctx context.Context, env, conn_name, db_name, coll_name s
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
-	client, err := m.getClient(env, conn_name)
+	client, err := m.GetClient(env, conn_name)
 	if err != nil {
 		return nil, err
 	}
@@ -71,7 +71,7 @@ func (m *Base) GetColl(ctx context.Context, env, conn_name, db_name, coll_name s
 	return collection.NewFull(coll), nil
 }
 
-func (m *Base) getClient(env, conn_name string) (*client.Base, error) {
+func (m *Base) GetClient(env, conn_name string) (*client.Base, error) {
 
 	conn_name = sEnv.Get(fmt.Sprint("CONN_", env), conn_name)
 

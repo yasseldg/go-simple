@@ -44,6 +44,22 @@ func (db *Base) GetCollection(ctx context.Context, coll_name string, conn *conne
 	return db.setCollection(ctx, coll_name, conn, indexes...)
 }
 
+// admin functions
+
+func (db *Base) Drop(ctx context.Context) error {
+	return db.database.Drop(ctx)
+}
+
+func (db *Base) ListCollectionNames(ctx context.Context, filter interface{}) ([]string, error) {
+	return db.database.ListCollectionNames(ctx, filter)
+}
+
+func (db *Base) NewCollection(name string) *mongo.Collection {
+	return db.database.Collection(name)
+}
+
+// private methods
+
 func (db *Base) setCollection(ctx context.Context, coll_name string, conn *connection.Base, indexes ...rIndex.Inter) (*collection.Base, error) {
 
 	coll := mgm.NewCollection(db.database, coll_name)

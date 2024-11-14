@@ -1,11 +1,16 @@
 package rMongo
 
-import "github.com/yasseldg/mgm/v4"
+import (
+	"github.com/yasseldg/mgm/v4"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
 
 // mgm interfaces
 
 type InterModel interface {
 	mgm.Model
+
+	ID() ObjectID
 }
 
 type InterDate interface {
@@ -17,31 +22,46 @@ type InterState interface {
 }
 
 type InterModelDate interface {
-	mgm.ModelDate
+	InterModel
+	InterDate
 }
 
 type InterModelState interface {
-	mgm.ModelState
+	InterModel
+	InterState
 }
 
 type InterModelDateState interface {
-	mgm.ModelDateState
+	InterModel
+	InterDate
+	InterState
 }
 
 // mgm models
 
-type DefaultModel struct {
+type Model struct {
 	mgm.DefaultModel `bson:",inline"`
 }
 
-type DefaultModelDate struct {
-	mgm.DefaultModelDate `bson:",inline"`
+type ModelDate struct {
+	Model          `bson:",inline"`
+	mgm.DateFields `bson:",inline"`
 }
 
-type DefaultModelState struct {
-	mgm.DefaultModelState `bson:",inline"`
+type ModelState struct {
+	Model          `bson:",inline"`
+	mgm.StateField `bson:",inline"`
 }
 
-type DefaultModelDateState struct {
-	mgm.DefaultModelDateState `bson:",inline"`
+type ModelDateState struct {
+	Model           `bson:",inline"`
+	mgm.DateFields  `bson:",inline"`
+	mgm.StateFields `bson:",inline"`
+}
+
+// ObjectID es un alias de string para trabajar con IDs de MongoDB
+type ObjectID = primitive.ObjectID
+
+func (m *Model) ID() ObjectID {
+	return m.IDField.ID
 }

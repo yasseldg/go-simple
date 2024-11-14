@@ -21,9 +21,9 @@ type Inter interface {
 	Sides(sides ...tSide.Side) Inter
 
 	// ----- ObjectId Filters
-	ObjectId(field string, value interface{}) Inter
-	ObjectId_in(field string, values ...interface{}) Inter
-	ObjectId_gt(field string, value interface{}) Inter
+	ObjectId(field string, value InterID) Inter
+	ObjectId_in(field string, values ...InterID) Inter
+	ObjectId_gt(field string, value InterID) Inter
 }
 
 type InterOper interface {
@@ -32,14 +32,14 @@ type InterOper interface {
 	Clone_() InterOper
 
 	String() string
-	Log(msg string)
+	Log(title string)
 
 	Append(key string, value interface{})
 }
 
 type InterComp interface {
-	In(key string, values ...interface{})
-	Nin(key string, values ...interface{})
+	In(key string, values interface{})
+	Nin(key string, values interface{})
 
 	Like(key string, value string)
 
@@ -55,4 +55,8 @@ type InterComp interface {
 	GtLte(key string, value_1, value_2 interface{})
 	GteLt(key string, value_1, value_2 interface{})
 	GteLte(key string, value_1, value_2 interface{})
+}
+
+type InterID interface {
+	GetID() interface{}
 }

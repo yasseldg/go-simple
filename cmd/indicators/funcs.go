@@ -12,11 +12,11 @@ import (
 )
 
 func Run(mongo rMongo.Inter) {
-	indicator := get("PriceAction")
+	indicator := get("SmATR")
 
 	// return
 
-	run(indicator, mongo, "BYBIT_WLDUSDT", tInterval.Interval_4h)
+	run(indicator, mongo, "BYBIT_BTCUSDT", tInterval.Interval_D)
 }
 
 func get(indicator string) Indicator {
@@ -31,7 +31,7 @@ func get(indicator string) Indicator {
 		return tIndicator.NewAvgATR(10)
 
 	case "SmATR":
-		return tIndicator.NewSmATR(14)
+		return tIndicator.NewSmoothedATR(14)
 
 	case "ADX":
 		return tIndicator.NewADX(14)
@@ -54,7 +54,7 @@ func get(indicator string) Indicator {
 // private vars
 
 var (
-	_coll rMongo.InterColl
+	_coll rMongo.InterRepo
 
 	_iter tCandle.InterIter
 )

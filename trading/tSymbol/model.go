@@ -1,38 +1,70 @@
 package tSymbol
 
 import (
-	"github.com/yasseldg/mgm/v4"
+	"github.com/yasseldg/go-simple/repos/rFilter"
+	"github.com/yasseldg/go-simple/repos/rIndex"
+	"github.com/yasseldg/go-simple/repos/rMongo"
+	"github.com/yasseldg/go-simple/repos/rSort"
 )
 
 // Model
 
-type Model struct {
-	mgm.ModelDateState `bson:",inline"`
+type model struct {
+	rMongo.ModelDateState `bson:",inline"`
 
 	M_exchange  string `bson:"e" json:"e"`
 	M_name      string `bson:"n" json:"n"`
 	M_precision int    `bson:"p" json:"p"`
 }
-type Models []*Model
 
-func NewModel(exchange, name string, precision int) *Model {
-	return &Model{
-		ModelDateState: new(mgm.DefaultModelDateState),
-
-		M_exchange:  exchange,
-		M_name:      name,
-		M_precision: precision,
-	}
-}
-
-func (b *Model) Exchange() string {
+func (b *model) Exchange() string {
 	return b.M_exchange
 }
 
-func (b *Model) Name() string {
+func (b *model) Name() string {
 	return b.M_name
 }
 
-func (b *Model) Precision() int {
+func (b *model) Precision() int {
 	return b.M_precision
+}
+
+func (s *model) SetPrecision(prec int) {
+	s.M_precision = prec
+}
+
+// filters
+
+type Filters struct{ rFilter.Filters }
+
+func NewFilters() *Filters {
+	return &Filters{Filters: *rMongo.NewFilter()}
+}
+
+func (f *Filters) Exchange(exchange string) *Filters { f.Append("e", exchange); return f }
+
+func (f *Filters) Name(name string) *Filters { f.Append("n", name); return f }
+
+func (f *Filters) Name_Gt(name string) *Filters { f.Append("n", name); return f }
+
+func (f *Filters) Name_In(names ...string) *Filters { f.String_in("n", names...); return f }
+
+// sorts
+
+type Sorts struct{ rSort.Sorts }
+
+func NewSorts() *Sorts {
+	return &Sorts{Sorts: *rMongo.NewSort()}
+}
+
+func (s *Sorts) ExchangeAsc() *Sorts { s.Asc("e"); return s }
+
+func (s *Sorts) NameAsc() *Sorts { s.Asc("n"); return s }
+
+// indexes
+
+func Indexes() rIndex.Indexes {
+	return rIndex.Indexes{
+		rIndex.New(NewSorts().ExchangeAsc().NameAsc(), true),
+	}
 }

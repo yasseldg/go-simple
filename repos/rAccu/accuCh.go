@@ -10,7 +10,7 @@ type AccuCh struct {
 	SaveCh chan struct{}
 }
 
-func NewAccuCH(coll rMongo.InterColl, limit int, saveCh chan struct{}) *AccuCh {
+func NewAccuCH(coll rMongo.InterRepo, limit int, saveCh chan struct{}) *AccuCh {
 	accu := AccuCh{
 		Inter:  New(coll, limit),
 		SaveCh: saveCh,

@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	_coll rMongo.InterColl
+	_coll rMongo.InterRepo
 )
 
 func Run(mongo rMongo.Inter) {

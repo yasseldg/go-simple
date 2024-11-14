@@ -27,7 +27,7 @@ func (f Filter) Clone_() rFilter.InterOper {
 }
 
 func (f Filter) String() string {
-	return fmt.Sprintf("Filter Mongo: %v", f.fields)
+	return fmt.Sprintf("Filter Mongo: %#v", f.fields)
 }
 
 func (f Filter) Log(msg string) {
@@ -38,11 +38,11 @@ func (f *Filter) Append(field string, value interface{}) {
 	f.fields = append(f.fields, bson.E{Key: field, Value: value})
 }
 
-func (f *Filter) In(field string, values ...interface{}) {
+func (f *Filter) In(field string, values interface{}) {
 	f.Append(field, bson.D{{Key: "$in", Value: values}})
 }
 
-func (f *Filter) Nin(field string, values ...interface{}) {
+func (f *Filter) Nin(field string, values interface{}) {
 	f.Append(field, bson.D{{Key: "$nin", Value: values}})
 }
 
@@ -88,10 +88,4 @@ func (f *Filter) GteLt(field string, value_1, value_2 interface{}) {
 
 func (f *Filter) GteLte(field string, value_1, value_2 interface{}) {
 	f.Append(field, bson.D{{Key: "$gte", Value: value_1}, {Key: "$lte", Value: value_2}})
-}
-
-//  Own methods
-
-func (f *Filter) Id(id interface{}) {
-	// f.Append("_id", GetID(id))
 }

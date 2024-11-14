@@ -3,6 +3,7 @@ package client
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/yasseldg/go-simple/repos/rMongo/internal/collection"
 	"github.com/yasseldg/go-simple/repos/rMongo/internal/connection"
@@ -43,7 +44,7 @@ func (c *Base) GetColl(ctx context.Context, env, db_name, coll_name string, inde
 
 	db_name = sEnv.Get(fmt.Sprint("DB_", env), db_name)
 
-	db, err := c.getDatabase(db_name)
+	db, err := c.GetDatabase(db_name)
 	if err != nil {
 		return nil, err
 	}
@@ -58,7 +59,21 @@ func (c *Base) GetColl(ctx context.Context, env, db_name, coll_name string, inde
 	return coll, nil
 }
 
-func (c *Base) getDatabase(db_name string) (*database.Base, error) {
+// admin functions
+
+func (c *Base) Timeout() *time.Duration {
+	return c.client.Timeout()
+}
+
+func (c *Base) NumberSessionsInProgress() int {
+	return c.client.NumberSessionsInProgress()
+}
+
+func (c *Base) ListDatabaseNames(ctx context.Context, filter interface{}) ([]string, error) {
+	return c.client.ListDatabaseNames(ctx, filter)
+}
+
+func (c *Base) GetDatabase(db_name string) (*database.Base, error) {
 
 	db := c.databases.Get(db_name)
 	if db != nil {
@@ -67,6 +82,8 @@ func (c *Base) getDatabase(db_name string) (*database.Base, error) {
 
 	return c.setDatabase(db_name)
 }
+
+// private methods
 
 func (c *Base) setDatabase(db_name string) (*database.Base, error) {
 

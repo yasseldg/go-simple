@@ -21,8 +21,8 @@ type InterModel interface {
 }
 
 type Model struct {
-	rMongo.DefaultModelDateState `bson:",inline"`
-	ModelBasic                   `bson:",inline"`
+	rMongo.ModelDateState `bson:",inline"`
+	ModelBasic            `bson:",inline"`
 
 	Name   string     `bson:"name" json:"name"`
 	Code   string     `bson:"code" json:"code"`

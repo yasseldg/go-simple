@@ -16,7 +16,7 @@ type Iter struct {
 	items Candles
 }
 
-func NewIter(coll rMongo.InterColl, filter rFilter.Inter) *Iter {
+func NewIter(coll rMongo.InterRepo, filter rFilter.Inter) *Iter {
 	return &Iter{
 		InterTs: rIter.NewTs(coll, filter, nil),
 	}

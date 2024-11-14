@@ -2,36 +2,41 @@ package tSymbol
 
 import (
 	"github.com/yasseldg/go-simple/data/dIter"
-
-	"github.com/yasseldg/mgm/v4"
+	"github.com/yasseldg/go-simple/repos/rMongo"
 )
 
 type Inter interface {
+	InterModel
+
 	String() string
 	Log()
 
-	Exchange() string
-	Name() string
-	Precision() int
-	SetPrecision(int)
-
 	IsValid() bool
-	Clone() Inter
 	Model() InterModel
+	Clone() Inter
 }
-type Inters []Inter
 
 // InterModel
 
 type InterModel interface {
-	mgm.ModelDateState
+	rMongo.InterModelDateState
 
 	Exchange() string
 	Name() string
 	Precision() int
+
+	SetPrecision(int)
 }
 
 // InterIterLimited
 type InterIterLimited interface {
 	dIter.InterLimited[Inter]
+}
+
+type InterRepo interface {
+	rMongo.InterRepo
+
+	GetAll() ([]Inter, error)
+	GetByName(name string) (Inter, error)
+	GetByExchangeName(exchange, name string) (Inter, error)
 }

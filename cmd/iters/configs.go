@@ -88,17 +88,11 @@ func Configs() {
 }
 
 func configST() dIter.InterConfig {
-	st_periods := sInts.NewIter(11, 12, 1)
-	st_multipliers := sFloats.NewIter(2.8, 3.0, 0.2, 2)
 
-	st_intervals := tInterval.NewIterLimited()
-	st_intervals.Add(tInterval.Interval_D)
-
-	st_at_close := sInts.NewIter(0, 1, 1)
-	st_smoothed := sInts.NewIter(0, 1, 1)
-
-	st_config := tIndicator.NewSTConfig(st_periods, st_multipliers,
-		st_intervals, st_at_close, st_smoothed, "Test")
+	st_config := tIndicator.NewSuperTrendIterConfig("Test")
+	st_config.SetPeriods(sInts.NewIter(11, 12, 1))
+	st_config.SetMultiplier(sFloats.NewIter(2.8, 3.0, 0.2, 2))
+	st_config.SetSmoothed(sInts.NewIter(0, 1, 1))
 
 	for st_config.Reset(); st_config.Next(); {
 		st_config.Log("")
