@@ -2,65 +2,46 @@ package tSymbol
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/yasseldg/go-simple/logs/sLog"
 )
 
-type Base struct {
-	exchange  string
-	name      string
-	precision int
+type base struct {
+	model
 }
 
-func New(exchange, name string) *Base {
-	return &Base{
-		name:     strings.ToUpper(name),
-		exchange: exchange,
+func New(exchange, name string) *base {
+	return &base{
+		model: model{
+			M_exchange: exchange,
+			M_name:     name,
+		},
 	}
 }
 
-func (s *Base) String() string {
-	return fmt.Sprintf("%s_%s", s.exchange, s.name)
+func (b *base) String() string {
+	return fmt.Sprintf("%s_%s", b.Exchange(), b.Name())
 }
 
-func (s *Base) Log() {
-	sLog.Info("%s .. prec: %d", s.String(), s.precision)
+func (b *base) Log() {
+	sLog.Info("%s .. prec: %d", b.String(), b.Precision())
 }
 
-func (s *Base) Exchange() string {
-	return s.exchange
+func (b *base) IsValid() bool {
+	return b.Exchange() != "" && b.Name() != ""
 }
 
-func (s *Base) Name() string {
-	return s.name
+func (b *base) Model() InterModel {
+	return &b.model
 }
 
-func (s *Base) Precision() int {
-	return s.precision
-}
-
-func (s *Base) SetPrecision(prec int) {
-	s.precision = prec
-}
-
-func (s *Base) IsValid() bool {
-	// TODO: implement
-	return s.name != ""
-}
-
-func (s *Base) Clone() Inter {
-	return &Base{
-		exchange:  s.exchange,
-		name:      s.name,
-		precision: s.precision,
+func (b *base) Clone() Inter {
+	return &base{
+		model: model{
+			ModelDateState: b.ModelDateState,
+			M_exchange:     b.M_exchange,
+			M_name:         b.M_name,
+			M_precision:    b.M_precision,
+		},
 	}
-}
-
-func (s *Base) Model() InterModel {
-	return NewModel(
-		s.exchange,
-		s.name,
-		s.precision,
-	)
 }
