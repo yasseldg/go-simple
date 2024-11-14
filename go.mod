@@ -7,6 +7,7 @@ require (
 	github.com/yasseldg/mgm/v4 v4.0.10
 	go.mongodb.org/mongo-driver v1.13.1
 	go.uber.org/zap v1.26.0
+	golang.org/x/net v0.10.0
 	gonum.org/v1/gonum v0.12.0
 	gopkg.in/yaml.v3 v3.0.1
 )
