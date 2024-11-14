@@ -1,22 +1,28 @@
 package rFilter
 
-import (
-	"github.com/yasseldg/go-simple/logs/sLog"
-)
-
 // ObjectId
-func (f *Filters) ObjectId(field string, value interface{}) Inter {
-	sLog.Debug("ObjectId: field: %s  value: %v", field, value)
-	f.InterOper.Append(field, value)
+func (f *Filters) ObjectId(field string, value InterID) Inter {
+	f.InterOper.Append(field, value.GetID())
 	return f
 }
 
-func (f *Filters) ObjectId_in(field string, values ...interface{}) Inter {
-	f.InterOper.In(field, values)
+func (f *Filters) ObjectId_in(field string, values ...InterID) Inter {
+
+	var ids []interface{}
+	for _, v := range values {
+		ids = append(ids, v.GetID())
+	}
+
+	f.InterOper.In(field, ids)
 	return f
 }
 
-func (f *Filters) ObjectId_gt(field string, value interface{}) Inter {
-	f.InterOper.Gt(field, value)
+func (f *Filters) ObjectId_gt(field string, value InterID) Inter {
+	f.InterOper.Gt(field, value.GetID())
+	return f
+}
+
+func (f *Filters) ObjectId_lt(field string, value InterID) Inter {
+	f.InterOper.Lt(field, value.GetID())
 	return f
 }
