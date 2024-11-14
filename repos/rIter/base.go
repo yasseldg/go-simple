@@ -13,11 +13,11 @@ import (
 type Base struct {
 	dIter.Inter
 
-	coll   rMongo.InterColl
+	coll   rMongo.InterRepo
 	filter rFilter.Inter
 }
 
-func New(coll rMongo.InterColl, filter rFilter.Inter) *Base {
+func New(coll rMongo.InterRepo, filter rFilter.Inter) *Base {
 
 	if coll == nil {
 		return nil
@@ -42,7 +42,7 @@ func (i *Base) Log(name string) {
 	sLog.Info(i.String(name))
 }
 
-func (i *Base) Coll() rMongo.InterColl {
+func (i *Base) Coll() rMongo.InterRepo {
 	return i.coll
 }
 

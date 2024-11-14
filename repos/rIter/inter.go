@@ -9,6 +9,6 @@ import (
 type Inter interface {
 	dIter.Inter
 
-	Coll() rMongo.InterColl
+	Coll() rMongo.InterRepo
 	Filter() rFilter.Inter
 }

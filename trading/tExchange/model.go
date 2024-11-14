@@ -14,11 +14,10 @@ type Model struct {
 
 	M_name string `bson:"n" json:"n"`
 }
-type Models []*Model
 
 func NewModel(name string) *Model {
 	return &Model{
-		InterModelDateState: new(rMongo.DefaultModelDateState),
+		InterModelDateState: new(rMongo.ModelDateState),
 		M_name:              name,
 	}
 }

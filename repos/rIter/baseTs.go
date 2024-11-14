@@ -17,7 +17,7 @@ type IterTs struct {
 	ts_to   int64
 }
 
-func NewTs(coll rMongo.InterColl, filter rFilter.Inter, sort rSort.Inter) *IterTs {
+func NewTs(coll rMongo.InterRepo, filter rFilter.Inter, sort rSort.Inter) *IterTs {
 
 	if sort == nil {
 		sort = rMongo.NewSort().TsAsc()

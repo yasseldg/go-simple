@@ -11,12 +11,12 @@ type Accu struct {
 }
 
 type mCandle struct {
-	rMongo.DefaultModel `bson:",inline"`
+	rMongo.Model `bson:",inline"`
 
 	Candle `bson:",inline"`
 }
 
-func NewAccu(coll rMongo.InterColl, limit int) (*Accu, error) {
+func NewAccu(coll rMongo.InterRepo, limit int) (*Accu, error) {
 	return &Accu{
 		Inter: rAccu.New(coll, limit),
 	}, nil

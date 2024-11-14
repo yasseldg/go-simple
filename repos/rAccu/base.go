@@ -12,7 +12,7 @@ import (
 type Base struct {
 	dAccu.Inter
 
-	coll rMongo.InterColl
+	coll rMongo.InterRepo
 
 	mu sync.Mutex
 
@@ -21,7 +21,7 @@ type Base struct {
 	errs int
 }
 
-func New(coll rMongo.InterColl, limit int) *Base {
+func New(coll rMongo.InterRepo, limit int) *Base {
 
 	b := &Base{
 		coll: coll,
