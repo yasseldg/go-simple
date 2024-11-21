@@ -2,6 +2,8 @@ package rMongo
 
 import (
 	"github.com/yasseldg/mgm/v4"
+
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -65,3 +67,5 @@ type ObjectID = primitive.ObjectID
 func (m *Model) ID() ObjectID {
 	return m.IDField.ID
 }
+
+type M = bson.M

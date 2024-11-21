@@ -53,3 +53,39 @@ func FilterFields(inter rFilter.Inter) (bson.D, error) {
 func SortFields(inter rSort.Inter) (bson.D, error) {
 	return sort.Fields(inter)
 }
+
+func GetInterID(id interface{}) rFilter.InterID {
+
+	field := new(mgm.IDField)
+
+	field.SetID(GetID(id))
+
+	return field
+}
+
+func BsonMarshal(val interface{}) (M, error) {
+
+	bson_bytes, err := bson.Marshal(val)
+	if err != nil {
+		return nil, fmt.Errorf("bson.Marshal: %s", err)
+	}
+
+	var m bson.M
+	if err := bson.Unmarshal(bson_bytes, &m); err != nil {
+		return nil, fmt.Errorf("bson.Unmarshal: %s", err)
+	}
+	return m, nil
+}
+
+func BsonUnmarshal(m M, val interface{}) error {
+
+	bson_bytes, err := bson.Marshal(m)
+	if err != nil {
+		return fmt.Errorf("bson.Marshal: %s", err)
+	}
+
+	if err := bson.Unmarshal(bson_bytes, val); err != nil {
+		return fmt.Errorf("bson.Unmarshal: %s", err)
+	}
+	return nil
+}
