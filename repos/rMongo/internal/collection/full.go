@@ -30,7 +30,9 @@ func NewFull(inter InterBase) *Full {
 }
 
 func (c *Full) Clone() *Full {
-	return NewFull(c.InterBase)
+	full := NewFull(c.InterBase)
+	full.Limit(c.limit)
+	return full
 }
 
 func (c *Full) Pipeline(inter mongo.Pipeline) *Full {
