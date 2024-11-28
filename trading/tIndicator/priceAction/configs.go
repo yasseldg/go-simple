@@ -4,12 +4,12 @@ import (
 	"github.com/yasseldg/go-simple/trading/tCandle"
 )
 
-func (pa *Base) SetSwing(v bool) Inter {
+func (pa *base) SetSwing(v bool) Inter {
 	pa.swing = v
 	return pa
 }
 
-func (pa *Base) SetHighLow(v bool) Inter {
+func (pa *base) SetHighLow(v bool) Inter {
 	if v && pa.closes {
 		return pa
 	}
@@ -18,7 +18,7 @@ func (pa *Base) SetHighLow(v bool) Inter {
 	return pa
 }
 
-func (pa *Base) SetCloses(v bool) Inter {
+func (pa *base) SetCloses(v bool) Inter {
 	pa.closes = v
 
 	if v {
@@ -33,19 +33,19 @@ func (pa *Base) SetCloses(v bool) Inter {
 	return pa
 }
 
-func (pa *Base) Swing() bool {
+func (pa *base) Swing() bool {
 	return pa.swing
 }
 
-func (pa *Base) HighLow() bool {
+func (pa *base) HighLow() bool {
 	return pa.high_low
 }
 
-func (pa *Base) Closes() bool {
+func (pa *base) Closes() bool {
 	return pa.closes
 }
 
-func (pa *Base) ConfigNumber() int {
+func (pa *base) ConfigNumber() int {
 	switch {
 	case !pa.HighLow() && !pa.Swing() && !pa.Closes():
 		return 2

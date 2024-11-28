@@ -11,7 +11,7 @@ import (
 	"github.com/yasseldg/go-simple/types/sTime"
 )
 
-type Base struct {
+type base struct {
 	indicator.Inter
 
 	mu sync.Mutex
@@ -38,8 +38,8 @@ type Base struct {
 
 type funcHighLow func(candle tCandle.Inter) float64
 
-func New() *Base {
-	pa := &Base{
+func New() *base {
+	pa := &base{
 		Inter: indicator.NewBase(),
 
 		state:  neutral_up,
@@ -50,7 +50,7 @@ func New() *Base {
 	return pa
 }
 
-func (pa *Base) String() string {
+func (pa *base) String() string {
 	last_ts := int64(0)
 	if pa.last != nil {
 		last_ts = pa.last.Ts()
@@ -59,22 +59,22 @@ func (pa *Base) String() string {
 		pa.Count(), len(pa.values), pa.state.String(), pa.last_high, pa.last_low, sTime.ForLog(last_ts, 0))
 }
 
-func (pa *Base) Log() {
+func (pa *base) Log() {
 	sLog.Info(pa.String())
 }
 
-func (pa *Base) Values() []ind {
+func (pa *base) Values() []ind {
 	return pa.values
 }
 
-func (pa *Base) State() state {
+func (pa *base) State() state {
 	return pa.state
 }
 
-func (pa *Base) IsTrigger() bool {
+func (pa *base) IsTrigger() bool {
 	return pa.trigger
 }
 
-func (pa *Base) IsChange() bool {
+func (pa *base) IsChange() bool {
 	return pa.change
 }

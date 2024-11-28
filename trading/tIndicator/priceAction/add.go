@@ -2,7 +2,7 @@ package priceAction
 
 import "github.com/yasseldg/go-simple/trading/tCandle"
 
-func (pa *Base) Add(candle tCandle.Inter) {
+func (pa *base) Add(candle tCandle.Inter) {
 	pa.mu.Lock()
 	defer pa.mu.Unlock()
 
@@ -63,7 +63,7 @@ func (pa *Base) Add(candle tCandle.Inter) {
 
 // private methods
 
-func (pa *Base) neutral(candle tCandle.Inter) {
+func (pa *base) neutral(candle tCandle.Inter) {
 
 	if candle.Close() > pa.last_high {
 
@@ -108,7 +108,7 @@ func (pa *Base) neutral(candle tCandle.Inter) {
 	}
 }
 
-func (pa *Base) uptrend(candle tCandle.Inter) {
+func (pa *base) uptrend(candle tCandle.Inter) {
 
 	if candle.Close() > pa.last_high {
 
@@ -146,7 +146,7 @@ func (pa *Base) uptrend(candle tCandle.Inter) {
 	}
 }
 
-func (pa *Base) downtrend(candle tCandle.Inter) {
+func (pa *base) downtrend(candle tCandle.Inter) {
 
 	if candle.Close() < pa.last_low {
 

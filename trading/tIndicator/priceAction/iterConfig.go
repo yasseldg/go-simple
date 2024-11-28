@@ -7,7 +7,7 @@ import (
 	"github.com/yasseldg/go-simple/types/sInts"
 )
 
-type IterConfig struct {
+type iterConfig struct {
 	dIter.InterIterConfig
 
 	name     string
@@ -16,14 +16,14 @@ type IterConfig struct {
 	closes   sInts.InterIter
 }
 
-func NewIterConfig(name string) *IterConfig {
-	return &IterConfig{
+func NewIterConfig(name string) *iterConfig {
+	return &iterConfig{
 		InterIterConfig: dIter.NewIterConfig(fmt.Sprintf("PriceAction %s", name)),
 		name:            name,
 	}
 }
 
-func (pa *IterConfig) SetSwing(swing sInts.InterIter) InterIterConfig {
+func (pa *iterConfig) SetSwing(swing sInts.InterIter) InterIterConfig {
 	if pa.swing != nil {
 		return pa
 	}
@@ -33,7 +33,7 @@ func (pa *IterConfig) SetSwing(swing sInts.InterIter) InterIterConfig {
 	return pa
 }
 
-func (pa *IterConfig) SetHighLow(high_low sInts.InterIter) InterIterConfig {
+func (pa *iterConfig) SetHighLow(high_low sInts.InterIter) InterIterConfig {
 	if pa.high_low != nil {
 		return pa
 	}
@@ -43,7 +43,7 @@ func (pa *IterConfig) SetHighLow(high_low sInts.InterIter) InterIterConfig {
 	return pa
 }
 
-func (pa *IterConfig) SetCloses(closes sInts.InterIter) InterIterConfig {
+func (pa *iterConfig) SetCloses(closes sInts.InterIter) InterIterConfig {
 	if pa.closes != nil {
 		return pa
 	}
@@ -53,19 +53,19 @@ func (pa *IterConfig) SetCloses(closes sInts.InterIter) InterIterConfig {
 	return pa
 }
 
-func (pa *IterConfig) Swing() bool {
+func (pa *iterConfig) Swing() bool {
 	return pa.swing.Value() == 1
 }
 
-func (pa *IterConfig) HighLow() bool {
+func (pa *iterConfig) HighLow() bool {
 	return pa.high_low.Value() == 1
 }
 
-func (pa *IterConfig) Closes() bool {
+func (pa *iterConfig) Closes() bool {
 	return pa.closes.Value() == 1
 }
 
-func (pa *IterConfig) Get() Inter {
+func (pa *iterConfig) Get() Inter {
 	if pa.swing == nil || pa.high_low == nil || pa.closes == nil {
 		return nil
 	}
@@ -82,7 +82,7 @@ func (pa *IterConfig) Get() Inter {
 	return inter
 }
 
-func (pa *IterConfig) Clone() InterIterConfig {
+func (pa *iterConfig) Clone() InterIterConfig {
 
 	clone := NewIterConfig(pa.name)
 	clone.SetHighLow(pa.high_low.Clone())
