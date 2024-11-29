@@ -9,6 +9,10 @@ import (
 )
 
 func Fields(filter rFilter.Inter) (bson.D, error) {
+	if filter == nil {
+		return nil, fmt.Errorf("filter is nil")
+	}
+
 	f, ok := filter.Oper().(*Filter)
 	if !ok {
 		return nil, fmt.Errorf("filter is not rMongo.Filter")

@@ -11,6 +11,7 @@ import (
 
 	"github.com/yasseldg/mgm/v4"
 
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -48,7 +49,7 @@ func (c *Full) Upsert(model mgm.Model) error {
 }
 func (c *Full) UpsertWithCtx(ctx context.Context, model mgm.Model) error {
 
-	filter, err := filter.Fields(c.filter)
+	filter, _, err := c.getFilterSort()
 	if err != nil {
 		return fmt.Errorf("mongo: %s.Upsert(): %s", c.Prefix(), err)
 	}
@@ -66,7 +67,7 @@ func (c *Full) UpsertDoc(doc interface{}) error {
 }
 func (c *Full) UpsertDocWithCtx(ctx context.Context, doc interface{}) error {
 
-	filter, err := filter.Fields(c.filter)
+	filter, _, err := c.getFilterSort()
 	if err != nil {
 		return fmt.Errorf("mongo: %s.UpsertDoc(): %s", c.Prefix(), err)
 	}
@@ -99,7 +100,7 @@ func (c *Full) DeleteMany(models []mgm.Model) error {
 
 func (c *Full) DeleteManyWithCtx(ctx context.Context, models []mgm.Model) error {
 
-	filter, err := filter.Fields(c.filter)
+	filter, _, err := c.getFilterSort()
 	if err != nil {
 		return fmt.Errorf("mongo: %s.DeleteMany(): %s", c.Prefix(), err)
 	}
@@ -118,7 +119,7 @@ func (c *Full) Count() (int64, error) {
 
 func (c *Full) CountWithCtx(ctx context.Context) (int64, error) {
 
-	filter, err := filter.Fields(c.filter)
+	filter, _, err := c.getFilterSort()
 	if err != nil {
 		return 0, fmt.Errorf("mongo: %s.Count(): %s", c.Prefix(), err)
 	}
@@ -138,7 +139,7 @@ func (c *Full) Find(models interface{}) error {
 
 func (c *Full) FindWithCtx(ctx context.Context, models interface{}) error {
 
-	sort, err := sort.Fields(c.sort)
+	filter, sort, err := c.getFilterSort()
 	if err != nil {
 		return fmt.Errorf("mongo: %s.Find(): %s", c.Prefix(), err)
 	}
@@ -146,11 +147,6 @@ func (c *Full) FindWithCtx(ctx context.Context, models interface{}) error {
 	opts := options.Find().SetSort(sort)
 	if c.limit > 0 {
 		opts.SetLimit(c.limit)
-	}
-
-	filter, err := filter.Fields(c.filter)
-	if err != nil {
-		return fmt.Errorf("mongo: %s.Find(): %s", c.Prefix(), err)
 	}
 
 	err = c.Coll().SimpleFindWithCtx(ctx, models, filter, opts)
@@ -170,17 +166,12 @@ func (c *Full) FindOne(model mgm.Model) error {
 }
 
 func (c *Full) FindOneWithCtx(ctx context.Context, model mgm.Model) error {
-	sort, err := sort.Fields(c.sort)
+	filter, sort, err := c.getFilterSort()
 	if err != nil {
 		return fmt.Errorf("mongo: %s.FindOne(): %s", c.Prefix(), err)
 	}
 
 	opts := options.FindOne().SetSort(sort)
-
-	filter, err := filter.Fields(c.filter)
-	if err != nil {
-		return fmt.Errorf("mongo: %s.Upsert(): %s", c.Prefix(), err)
-	}
 
 	err = c.Coll().FirstWithCtx(ctx, filter, model, opts)
 	if err != nil {
@@ -209,4 +200,26 @@ func (c *Full) FindByIdWithCtx(ctx context.Context, id interface{}, model mgm.Mo
 		return err
 	}
 	return nil
+}
+
+func (c *Full) getFilterSort() (bson.D, bson.D, error) {
+	if c.filter == nil {
+		c.filter = filter.New()
+	}
+
+	filter_fields, err := filter.Fields(c.filter)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	if c.sort == nil {
+		c.sort = sort.New()
+	}
+
+	sort_fields, err := sort.Fields(c.sort)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return filter_fields, sort_fields, nil
 }

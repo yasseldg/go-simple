@@ -9,6 +9,10 @@ import (
 )
 
 func Fields(sort rSort.Inter) (bson.D, error) {
+	if sort == nil {
+		return nil, fmt.Errorf("sort is nil")
+	}
+
 	s, ok := sort.Oper().(*Sort)
 	if !ok {
 		return nil, fmt.Errorf("sort is not rMongo.Sort")

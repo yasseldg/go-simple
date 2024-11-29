@@ -8,7 +8,7 @@ import (
 	"github.com/yasseldg/go-simple/types/sFloats"
 )
 
-type Base struct {
+type base struct {
 	mu sync.Mutex
 
 	deviations float64
@@ -18,8 +18,8 @@ type Base struct {
 	std  float64
 }
 
-func New(periods int, deviations float64) *Base {
-	return &Base{
+func New(periods int, deviations float64) *base {
+	return &base{
 		mu: sync.Mutex{},
 
 		deviations: deviations,
@@ -27,7 +27,7 @@ func New(periods int, deviations float64) *Base {
 	}
 }
 
-func (bb *Base) String() string {
+func (bb *base) String() string {
 
 	mean, upper, lower := bb.get()
 
@@ -35,43 +35,43 @@ func (bb *Base) String() string {
 		bb.deviations, bb.closes.Periods(), bb.std, upper, mean, lower)
 }
 
-func (bb *Base) Log() {
+func (bb *base) Log() {
 	bb.mu.Lock()
 	defer bb.mu.Unlock()
 
 	sLog.Info("BBands: %s", bb.String())
 }
 
-func (bb *Base) Deviations() float64 {
+func (bb *base) Deviations() float64 {
 	return bb.deviations
 }
 
-func (bb *Base) Periods() int {
+func (bb *base) Periods() int {
 	return bb.closes.Periods()
 }
 
-func (bb *Base) Filled() bool {
+func (bb *base) Filled() bool {
 	bb.mu.Lock()
 	defer bb.mu.Unlock()
 
 	return bb.closes.Filled()
 }
 
-func (bb *Base) Get() (mean, upper, lower float64) {
+func (bb *base) Get() (mean, upper, lower float64) {
 	bb.mu.Lock()
 	defer bb.mu.Unlock()
 
 	return bb.get()
 }
 
-func (bb *Base) Calc(deviations float64) (mean, upper, lower float64) {
+func (bb *base) Calc(deviations float64) (mean, upper, lower float64) {
 	bb.mu.Lock()
 	defer bb.mu.Unlock()
 
 	return bb.calc(deviations)
 }
 
-func (bb *Base) Add(close float64) {
+func (bb *base) Add(close float64) {
 	bb.mu.Lock()
 	defer bb.mu.Unlock()
 
@@ -82,7 +82,7 @@ func (bb *Base) Add(close float64) {
 	bb.add(close)
 }
 
-func (bb *Base) add(close float64) {
+func (bb *base) add(close float64) {
 	bb.closes.Add(close)
 
 	if !bb.closes.Filled() {
@@ -92,11 +92,11 @@ func (bb *Base) add(close float64) {
 	bb.mean, bb.std = bb.closes.MeanStdDev()
 }
 
-func (bb *Base) get() (mean, upper, lower float64) {
+func (bb *base) get() (mean, upper, lower float64) {
 	return bb.calc(bb.deviations)
 }
 
-func (bb *Base) calc(deviations float64) (mean, upper, lower float64) {
+func (bb *base) calc(deviations float64) (mean, upper, lower float64) {
 	if !bb.closes.Filled() {
 		return 0, 0, 0
 	}

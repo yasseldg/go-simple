@@ -28,6 +28,8 @@ func format(t time.Time, prec int, separator string) (string, int64) {
 		return t.Format(fmt.Sprintf("%s 15:04:05.000", df)), t.UnixMilli()
 	case 5:
 		return t.Format(fmt.Sprintf("%s 15:04:05.000000", df)), t.UnixMicro()
+	case 6:
+		return t.Format(fmt.Sprintf("%s%s15:04:05", df, separator)), t.Unix()
 	default:
 		return t.Format(fmt.Sprintf("%s 15:04:05", df)), t.Unix()
 	}

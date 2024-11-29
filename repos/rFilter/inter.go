@@ -1,6 +1,8 @@
 package rFilter
 
 import (
+	"time"
+
 	"github.com/yasseldg/go-simple/trading/tSide"
 )
 
@@ -16,6 +18,12 @@ type Inter interface {
 	// ----- States Filters
 	States(...string) Inter
 	NotStates(...string) Inter
+
+	// ----- Dates Filters
+	CreatedAt_gt(time.Time) Inter
+	CreatedAt_lt(time.Time) Inter
+	UpdatedAt_gt(time.Time) Inter
+	UpdatedAt_lt(time.Time) Inter
 
 	// ----- Trading Filters
 	Sides(sides ...tSide.Side) Inter

@@ -6,12 +6,12 @@ import (
 )
 
 // TakeProfitStoploss: returns take_profit and stop_loss prices
-func TakeProfitStopLoss(entry_price, tp_perc, sl_perc float64, side tSide.Side) (tp_price, sl_price float64) {
+func TakeProfitStopLoss(entry_price, tp_perc, sl_perc float64, side tSide.Inter) (tp_price, sl_price float64) {
 
 	return TakeProfit(entry_price, tp_perc, side), StopLoss(entry_price, sl_perc, side)
 }
 
-func TakeProfit(entry_price, tp_perc float64, side tSide.Side) (take_profit float64) {
+func TakeProfit(entry_price, tp_perc float64, side tSide.Inter) (take_profit float64) {
 
 	if tp_perc == 0 {
 		return 0
@@ -25,7 +25,7 @@ func TakeProfit(entry_price, tp_perc float64, side tSide.Side) (take_profit floa
 	return sFloats.GetWithPercent(entry_price, tp_perc, adding)
 }
 
-func TakeProfitPerc(entry_price, tp_price float64, side tSide.Side) float64 {
+func TakeProfitPerc(entry_price, tp_price float64, side tSide.Inter) float64 {
 
 	perc := sFloats.GetDiffPercent(entry_price, tp_price)
 
@@ -35,7 +35,7 @@ func TakeProfitPerc(entry_price, tp_price float64, side tSide.Side) float64 {
 	return perc
 }
 
-func StopLoss(entry_price, sl_perc float64, side tSide.Side) float64 {
+func StopLoss(entry_price, sl_perc float64, side tSide.Inter) float64 {
 
 	if sl_perc == 0 {
 		return 0
@@ -49,7 +49,7 @@ func StopLoss(entry_price, sl_perc float64, side tSide.Side) float64 {
 	return sFloats.GetWithPercent(entry_price, sl_perc, adding)
 }
 
-func StopLossPerc(entry_price, sl_price float64, side tSide.Side) float64 {
+func StopLossPerc(entry_price, sl_price float64, side tSide.Inter) float64 {
 
 	perc := sFloats.GetDiffPercent(entry_price, sl_price)
 

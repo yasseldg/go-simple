@@ -16,8 +16,6 @@ type Inter interface {
 	Clone() Inter
 }
 
-// InterModel
-
 type InterModel interface {
 	rMongo.InterModelDateState
 
@@ -28,7 +26,6 @@ type InterModel interface {
 	SetPrecision(int)
 }
 
-// InterIterLimited
 type InterIterLimited interface {
 	dIter.InterLimited[Inter]
 }
@@ -36,7 +33,6 @@ type InterIterLimited interface {
 type InterRepo interface {
 	rMongo.InterRepo
 
-	GetAll() ([]Inter, error)
-	GetByName(name string) (Inter, error)
-	GetByExchangeName(exchange, name string) (Inter, error)
+	GetByID(rMongo.ObjectID) (Inter, error)
+	GetByExchangeNames(exchange string, names ...string) (InterIterLimited, error)
 }

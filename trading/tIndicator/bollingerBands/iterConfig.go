@@ -8,7 +8,7 @@ import (
 	"github.com/yasseldg/go-simple/types/sInts"
 )
 
-type IterConfig struct {
+type iterConfig struct {
 	dIter.InterIterConfig
 
 	name       string
@@ -16,14 +16,14 @@ type IterConfig struct {
 	deviations sFloats.InterIter
 }
 
-func NewIterConfig(name string) *IterConfig {
-	return &IterConfig{
-		InterIterConfig: dIter.NewIterConfig(fmt.Sprintf("SuperTrend %s", name)),
+func NewIterConfig(name string) *iterConfig {
+	return &iterConfig{
+		InterIterConfig: dIter.NewIterConfig(fmt.Sprintf("BBands %s", name)),
 		name:            name,
 	}
 }
 
-func (bb *IterConfig) SetPeriods(periods sInts.InterIter) {
+func (bb *iterConfig) SetPeriods(periods sInts.InterIter) {
 	if bb.periods != nil {
 		return
 	}
@@ -32,7 +32,7 @@ func (bb *IterConfig) SetPeriods(periods sInts.InterIter) {
 	bb.Add(dIter.NewNameConfig("Periods", bb.periods))
 }
 
-func (bb *IterConfig) SetDeviations(deviations sFloats.InterIter) {
+func (bb *iterConfig) SetDeviations(deviations sFloats.InterIter) {
 	if bb.deviations != nil {
 		return
 	}
@@ -41,7 +41,7 @@ func (bb *IterConfig) SetDeviations(deviations sFloats.InterIter) {
 	bb.Add(dIter.NewNameConfig("Deviations", bb.deviations))
 }
 
-func (bb *IterConfig) Get() Inter {
+func (bb *iterConfig) Get() Inter {
 	if bb.periods == nil || bb.deviations == nil {
 		return nil
 	}
@@ -51,7 +51,7 @@ func (bb *IterConfig) Get() Inter {
 		bb.deviations.Value())
 }
 
-func (bb *IterConfig) GetCandle() InterCandle {
+func (bb *iterConfig) GetCandle() InterCandle {
 	if bb.periods == nil || bb.deviations == nil {
 		return nil
 	}
@@ -61,7 +61,7 @@ func (bb *IterConfig) GetCandle() InterCandle {
 		bb.deviations.Value())
 }
 
-func (bb *IterConfig) Clone() InterIterConfig {
+func (bb *iterConfig) Clone() InterIterConfig {
 
 	clone := NewIterConfig(bb.name)
 	clone.SetPeriods(bb.periods.Clone())

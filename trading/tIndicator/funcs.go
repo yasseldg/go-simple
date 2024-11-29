@@ -15,6 +15,13 @@ func NewADX(period int) adx.Inter {
 }
 
 // ATR
+func NewATR(period int, smoothed bool) atr.Inter {
+	if smoothed {
+		return atr.NewSmoothed(period)
+	}
+	return atr.NewAvg(period)
+}
+
 func NewAvgATR(period int) atr.Inter {
 	return atr.NewAvg(period)
 }

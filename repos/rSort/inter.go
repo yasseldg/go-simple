@@ -7,6 +7,13 @@ type Inter interface {
 	IdAsc() Inter
 	TsAsc() Inter
 	TsDesc() Inter
+
+	CreateAtAsc() Inter
+	CreateAtDesc() Inter
+	UpdateAtAsc() Inter
+	UpdateAtDesc() Inter
+	StateAsc() Inter
+	StateDesc() Inter
 }
 
 type InterOper interface {
