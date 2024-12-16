@@ -66,8 +66,10 @@ type ModelDateState struct {
 	mgm.StateFields `bson:",inline"`
 }
 
-// Alias bson.M
+// Alias bson
 type M = bson.M
+type D = bson.D
+type A = bson.A
 
 // Alias ObjectID
 type ObjectID = primitive.ObjectID
