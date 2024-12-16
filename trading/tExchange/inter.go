@@ -12,7 +12,7 @@ type Inter interface {
 	Name() string
 	IsValid() bool
 
-	GetSymbols(symbols ...string) (tSymbol.InterIterLimited, error)
+	GetSymbols(...string) (tSymbol.InterIterLimited, error)
 
 	Clone() Inter
 	Model() InterModel
