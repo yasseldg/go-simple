@@ -43,7 +43,7 @@ func (i *Base) Log(name string) {
 }
 
 func (i *Base) Coll() rMongo.InterRepo {
-	return i.coll
+	return i.coll.Clone()
 }
 
 func (i *Base) Filter() rFilter.Inter {
