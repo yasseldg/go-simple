@@ -4,7 +4,7 @@ go 1.23.0
 
 require (
 	github.com/google/uuid v1.6.0
-	github.com/yasseldg/mgm/v4 v4.0.10
+	github.com/yasseldg/mgm/v4 v4.0.11
 	go.mongodb.org/mongo-driver v1.13.1
 	go.uber.org/zap v1.26.0
 	golang.org/x/net v0.10.0
