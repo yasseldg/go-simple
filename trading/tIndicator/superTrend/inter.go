@@ -29,6 +29,6 @@ type InterIterConfig interface {
 	SetMultiplier(sFloats.InterIter)
 	SetSmoothed(sInts.InterIter)
 
-	Get() Inter
+	Get() (Inter, error)
 	Clone() InterIterConfig
 }

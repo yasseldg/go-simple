@@ -29,7 +29,7 @@ type InterIterConfig interface {
 
 	Smoothed() bool
 
-	Get() Inter
+	Get() (Inter, error)
 
 	Clone() InterIterConfig
 }

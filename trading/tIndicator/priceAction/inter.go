@@ -47,7 +47,7 @@ type InterConfigs interface {
 type InterIterConfig interface {
 	dIter.InterIterConfig
 
-	Get() Inter
+	Get() (Inter, error)
 
 	SetSwing(sInts.InterIter) InterIterConfig
 	SetHighLow(sInts.InterIter) InterIterConfig

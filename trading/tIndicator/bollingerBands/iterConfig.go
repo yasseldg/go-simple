@@ -41,14 +41,18 @@ func (bb *iterConfig) SetDeviations(deviations sFloats.InterIter) {
 	bb.Add(dIter.NewNameConfig("Deviations", bb.deviations))
 }
 
-func (bb *iterConfig) Get() Inter {
-	if bb.periods == nil || bb.deviations == nil {
-		return nil
+func (bb *iterConfig) Get() (Inter, error) {
+	if bb.periods == nil {
+		return nil, fmt.Errorf("periods is required")
+	}
+
+	if bb.deviations == nil {
+		return nil, fmt.Errorf("deviations is required")
 	}
 
 	return New(
 		int(bb.periods.Value()),
-		bb.deviations.Value())
+		bb.deviations.Value()), nil
 }
 
 func (bb *iterConfig) GetCandle() InterCandle {
