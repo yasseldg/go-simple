@@ -11,7 +11,7 @@ import (
 	"github.com/yasseldg/go-simple/types/sTime"
 )
 
-type Base struct {
+type base struct {
 	atr.Inter
 
 	mu sync.Mutex
@@ -30,8 +30,8 @@ type Base struct {
 	ts_last int64
 }
 
-func New(periods int, multiplier float64, smoothed bool) *Base {
-	supertrend := &Base{
+func New(periods int, multiplier float64, smoothed bool) *base {
+	supertrend := &base{
 		multiplier: multiplier,
 	}
 
@@ -44,11 +44,11 @@ func New(periods int, multiplier float64, smoothed bool) *Base {
 	return supertrend
 }
 
-func (st *Base) Config() string {
+func (st *base) Config() string {
 	return fmt.Sprintf("period: %d  ..  multiplier: %.2f", st.Periods(), st.multiplier)
 }
 
-func (st *Base) String() string {
+func (st *base) String() string {
 	v := ""
 	if st.IsUptrend() {
 		v = sStrings.Colored(sStrings.Green, fmt.Sprintf("%f", st.value))
@@ -60,26 +60,26 @@ func (st *Base) String() string {
 		st.Inter.Count(), st.Periods(), st.multiplier, sTime.ForLog(st.Inter.Prev().Ts(), 0), v)
 }
 
-func (st *Base) Log() {
+func (st *base) Log() {
 	st.mu.Lock()
 	defer st.mu.Unlock()
 
 	sLog.Info(st.String())
 }
 
-func (st *Base) Multiplier() float64 {
+func (st *base) Multiplier() float64 {
 	return st.multiplier
 }
 
-func (st *Base) IsUptrend() bool {
+func (st *base) IsUptrend() bool {
 	return st.value == st.lower
 }
 
-func (st *Base) IsDowntrend() bool {
+func (st *base) IsDowntrend() bool {
 	return st.value == st.upper
 }
 
-func (st *Base) Add(candle tCandle.Inter) {
+func (st *base) Add(candle tCandle.Inter) {
 	st.mu.Lock()
 	defer st.mu.Unlock()
 
@@ -100,31 +100,21 @@ func (st *Base) Add(candle tCandle.Inter) {
 	basicUpper := hl2 + multAtr
 	basicLower := hl2 - multAtr
 
-	// sLog.Debug("SuperTrend %d: basicUpper: %f  ..  uper: %f  ..  basicLower: %f  ..  lower: %f  ..  close: %f  ..  prev_close: %f  ..  trend: %t  ..  value: %f",
-	// 	st.ATR.c, basicUpper, st.upper, basicLower, st.lower, candle.Close, st.prev_close, st.IsUptrend(), st.value)
-
-	// upperBand = basicUpperBand < prev upperBand or prev close > prev upperBand ? basicUpperBand : prev upperBand
 	if st.upper == 0 || basicUpper < st.upper || st.prev_close > st.upper {
 		st.upper = basicUpper
 	}
 
-	// lowerBand = basicLowerBand > prev lowerBand or prev close < prev lowerBand ? basicLowerBand : prev lowerBand
 	if st.lower == 0 || basicLower > st.lower || st.prev_close < st.lower {
 		st.lower = basicLower
 	}
 
-	//  hasta acá parece estar todo bien
-
-	// if prev superTrend == prev upperBand
 	if st.prev_value == st.prev_upper {
-		// 	trendDirection := close > upperBand ? isUpTrend : isDownTrend
 		if candle.Close() > st.upper {
 			st.value = st.lower
 		} else {
 			st.value = st.upper
 		}
 	} else {
-		// 	trendDirection := close < lowerBand ? isDownTrend : isUpTrend
 		if candle.Close() < st.lower {
 			st.value = st.upper
 		} else {
@@ -137,7 +127,7 @@ func (st *Base) Add(candle tCandle.Inter) {
 	st.prev_value = st.value
 }
 
-func (st *Base) Get() float64 {
+func (st *base) Get() float64 {
 	st.mu.Lock()
 	defer st.mu.Unlock()
 

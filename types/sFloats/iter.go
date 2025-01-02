@@ -3,20 +3,9 @@ package sFloats
 import (
 	"fmt"
 
-	"github.com/yasseldg/go-simple/data/dIter"
 	"github.com/yasseldg/go-simple/logs/sLog"
 	"github.com/yasseldg/go-simple/types/sInts"
 )
-
-type InterIter interface {
-	dIter.Inter
-
-	Value() float64
-	Count() int
-	Reset()
-
-	Clone() InterIter
-}
 
 type Iter struct {
 	sInts.InterIter

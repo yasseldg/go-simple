@@ -11,7 +11,7 @@ import (
 // RSIcandle is a RSI indicator for candles
 
 type Candle struct {
-	Base
+	base
 
 	c      int
 	candle tCandle.Inter
@@ -19,14 +19,14 @@ type Candle struct {
 
 func NewCandle(period int) *Candle {
 	return &Candle{
-		Base:   *New(period),
+		base:   *New(period),
 		candle: new(tCandle.Candle),
 	}
 }
 
 func (rsi *Candle) String() string {
 	return fmt.Sprintf("c: %d: %s  ..  %s",
-		rsi.c, sTime.ForLog(rsi.candle.Ts(), 0), rsi.Base.String())
+		rsi.c, sTime.ForLog(rsi.candle.Ts(), 0), rsi.base.String())
 }
 
 func (rsi *Candle) Log() {

@@ -8,44 +8,44 @@ import (
 	"github.com/yasseldg/go-simple/types/sFloats"
 )
 
-type Base struct {
+type base struct {
 	mu sync.Mutex
 
-	loss sFloats.SmoothedAverage
-	gain sFloats.SmoothedAverage
+	loss sFloats.InterSmoothedAverage
+	gain sFloats.InterSmoothedAverage
 
 	close float64
 }
 
-func New(period int) *Base {
-	return &Base{
+func New(period int) *base {
+	return &base{
 		mu: sync.Mutex{},
 
-		loss: *sFloats.NewSmoothedAverage(period),
-		gain: *sFloats.NewSmoothedAverage(period),
+		loss: sFloats.NewSmoothedAverage(period),
+		gain: sFloats.NewSmoothedAverage(period),
 	}
 }
 
-func (rsi *Base) String() string {
+func (rsi *base) String() string {
 	return fmt.Sprintf("calc: %f  ..  gain: %f  ..  loss: %f", rsi.calc(), rsi.gain.Value(), rsi.loss.Value())
 }
 
-func (rsi *Base) Log() {
+func (rsi *base) Log() {
 	rsi.mu.Lock()
 	defer rsi.mu.Unlock()
 
 	sLog.Info("RSI: %s", rsi.String())
 }
 
-func (rsi *Base) Periods() int {
+func (rsi *base) Periods() int {
 	return rsi.gain.Periods()
 }
 
-func (rsi *Base) Filled() bool {
+func (rsi *base) Filled() bool {
 	return rsi.gain.Filled()
 }
 
-func (rsi *Base) Get() float64 {
+func (rsi *base) Get() float64 {
 	rsi.mu.Lock()
 	defer rsi.mu.Unlock()
 
@@ -56,7 +56,7 @@ func (rsi *Base) Get() float64 {
 	return rsi.calc()
 }
 
-func (rsi *Base) Add(close float64) {
+func (rsi *base) Add(close float64) {
 	rsi.mu.Lock()
 	defer rsi.mu.Unlock()
 
@@ -67,7 +67,7 @@ func (rsi *Base) Add(close float64) {
 	rsi.add(close)
 }
 
-func (rsi *Base) add(close float64) {
+func (rsi *base) add(close float64) {
 
 	if rsi.close == 0 {
 		rsi.close = close
@@ -87,7 +87,7 @@ func (rsi *Base) add(close float64) {
 	rsi.close = close
 }
 
-func (rsi *Base) calc() float64 {
+func (rsi *base) calc() float64 {
 
 	temp := rsi.gain.Value() + rsi.loss.Value()
 	if !((-0.00000000000001 < temp) && (temp < 0.00000000000001)) {

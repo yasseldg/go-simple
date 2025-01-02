@@ -65,21 +65,29 @@ func (pa *iterConfig) Closes() bool {
 	return pa.closes.Value() == 1
 }
 
-func (pa *iterConfig) Get() Inter {
-	if pa.swing == nil || pa.high_low == nil || pa.closes == nil {
-		return nil
+func (pa *iterConfig) Get() (Inter, error) {
+	if pa.swing == nil {
+		return nil, fmt.Errorf("swing is required")
+	}
+
+	if pa.high_low == nil {
+		return nil, fmt.Errorf("high_low is required")
+	}
+
+	if pa.closes == nil {
+		return nil, fmt.Errorf("closes is required")
 	}
 
 	if pa.Closes() && pa.HighLow() {
-		return nil
+		return nil, fmt.Errorf("closes and high_low")
 	}
 
 	inter := New().SetSwing(pa.Swing()).SetHighLow(pa.HighLow()).SetCloses(pa.Closes())
 	if inter.ConfigNumber() == 0 {
-		return nil
+		return nil, fmt.Errorf("invalid config")
 	}
 
-	return inter
+	return inter, nil
 }
 
 func (pa *iterConfig) Clone() InterIterConfig {

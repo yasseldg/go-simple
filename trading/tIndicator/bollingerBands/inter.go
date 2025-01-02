@@ -28,7 +28,7 @@ type InterIterConfig interface {
 	SetPeriods(sInts.InterIter)
 	SetDeviations(sFloats.InterIter)
 
-	Get() Inter
+	Get() (Inter, error)
 	GetCandle() InterCandle
 	Clone() InterIterConfig
 }

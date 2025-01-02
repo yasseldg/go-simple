@@ -1,6 +1,10 @@
 package rsi
 
-import "github.com/yasseldg/go-simple/trading/tCandle"
+import (
+	"github.com/yasseldg/go-simple/data/dIter"
+	"github.com/yasseldg/go-simple/trading/tCandle"
+	"github.com/yasseldg/go-simple/types/sInts"
+)
 
 // RSI (Relative Strength Index)
 
@@ -15,6 +19,17 @@ type InterCandle interface {
 
 	Add(candle tCandle.Inter)
 	Candle() tCandle.Inter
+}
+
+type InterIterConfig interface {
+	dIter.InterIterConfig
+
+	Get() (Inter, error)
+
+	SetPeriods(sInts.InterIter) InterIterConfig
+	Periods() int64
+
+	Clone() InterIterConfig
 }
 
 // private

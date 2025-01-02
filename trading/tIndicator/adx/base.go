@@ -17,22 +17,22 @@ type Base struct {
 
 	mu sync.Mutex
 
-	plusDMs  sFloats.SmoothedAverage
-	minusDMs sFloats.SmoothedAverage
+	plusDMs  sFloats.InterSmoothedAverage
+	minusDMs sFloats.InterSmoothedAverage
 
-	value    sFloats.SmoothedAverage
-	historic sFloats.Average
+	value    sFloats.InterSmoothedAverage
+	historic sFloats.InterAverage
 }
 
 func New(period int) *Base {
 	return &Base{
 		Inter: atr.NewSmoothed(period),
 
-		plusDMs:  *sFloats.NewSmoothedAverage(period),
-		minusDMs: *sFloats.NewSmoothedAverage(period),
+		plusDMs:  sFloats.NewSmoothedAverage(period),
+		minusDMs: sFloats.NewSmoothedAverage(period),
 
-		value:    *sFloats.NewSmoothedAverage(period),
-		historic: *sFloats.NewAverage(),
+		value:    sFloats.NewSmoothedAverage(period),
+		historic: sFloats.NewAverage(),
 	}
 }
 
