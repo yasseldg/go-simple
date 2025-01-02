@@ -13,7 +13,7 @@ import (
 type Inter interface {
 	atr.Inter
 
-	Add(candle tCandle.Inter)
+	Add(tCandle.Inter)
 
 	Multiplier() float64
 	Config() string
@@ -28,6 +28,8 @@ type InterIterConfig interface {
 	SetPeriods(sInts.InterIter)
 	SetMultiplier(sFloats.InterIter)
 	SetSmoothed(sInts.InterIter)
+
+	Smoothed() bool
 
 	Get() (Inter, error)
 	Clone() InterIterConfig

@@ -51,6 +51,10 @@ func (st *iterConfig) SetSmoothed(smoothed sInts.InterIter) {
 	st.Add(dIter.NewNameConfig("Smoothed", st.smoothed))
 }
 
+func (st *iterConfig) Smoothed() bool {
+	return st.smoothed.Value() == 1
+}
+
 func (st *iterConfig) Get() (Inter, error) {
 	if st.periods == nil {
 		return nil, fmt.Errorf("periods is required")
@@ -67,7 +71,7 @@ func (st *iterConfig) Get() (Inter, error) {
 	return New(
 		int(st.periods.Value()),
 		st.multipliers.Value(),
-		st.smoothed.Value() == 1), nil
+		st.Smoothed()), nil
 }
 
 func (st *iterConfig) Clone() InterIterConfig {
