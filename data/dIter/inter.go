@@ -1,13 +1,13 @@
 package dIter
 
 type Inter interface {
-	String(name string) string
-	Log(name string)
+	String(string) string
+	Log(string)
 
-	SetError(e error)
+	SetError(error)
 	Error() error
 
-	SetEmpty(e bool)
+	SetEmpty(bool)
 	Empty() bool
 
 	Next() bool
@@ -42,5 +42,5 @@ type InterNameConfig interface {
 type InterIterConfig interface {
 	InterNameConfig
 
-	Add(config ...InterNameConfig)
+	Add(...InterNameConfig)
 }
