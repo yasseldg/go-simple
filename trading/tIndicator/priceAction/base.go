@@ -55,8 +55,8 @@ func (pa *base) String() string {
 	if pa.last != nil {
 		last_ts = pa.last.Ts()
 	}
-	return fmt.Sprintf("PriceAction %d: c: %d  ..  values: %d  ..  state: %s  ..  high: %f  ..  low: %f  ..  %s",
-		pa.ConfigNumber(), pa.Count(), len(pa.values), pa.state.String(), pa.last_high, pa.last_low, sTime.ForLog(last_ts, 0))
+	return fmt.Sprintf("PriceAction %d: c: %d  ..  values: %d  ..  state: %s  ..  trigger: %t ..  high: %f  ..  low: %f  ..  %s",
+		pa.ConfigNumber(), pa.Count(), len(pa.values), pa.state.String(), pa.trigger, pa.last_high, pa.last_low, sTime.ForLog(last_ts, 0))
 }
 
 func (pa *base) Log() {

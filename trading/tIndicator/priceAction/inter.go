@@ -14,7 +14,7 @@ type Inter interface {
 	String() string
 	Log()
 
-	Add(candle tCandle.Inter)
+	Add(tCandle.Inter)
 
 	State() state
 	IsTrigger() bool
