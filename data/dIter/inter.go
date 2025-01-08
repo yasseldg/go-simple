@@ -1,13 +1,14 @@
 package dIter
 
-type Inter interface {
-	String(name string) string
-	Log(name string)
+import "github.com/yasseldg/go-simple/logs/sLog"
 
-	SetError(e error)
+type Inter interface {
+	sLog.InterStringLogName
+
+	SetError(error)
 	Error() error
 
-	SetEmpty(e bool)
+	SetEmpty(bool)
 	Empty() bool
 
 	Next() bool
@@ -42,5 +43,5 @@ type InterNameConfig interface {
 type InterIterConfig interface {
 	InterNameConfig
 
-	Add(config ...InterNameConfig)
+	Add(...InterNameConfig)
 }

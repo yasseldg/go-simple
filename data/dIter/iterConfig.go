@@ -78,7 +78,7 @@ func (it *IterConfig) Next() bool {
 		}
 
 		if config.Next() {
-			config.Log(config.Name())
+			// config.Log(config.Name())
 
 			if i == i_first {
 				it.index++

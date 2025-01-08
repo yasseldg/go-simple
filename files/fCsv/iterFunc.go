@@ -3,15 +3,7 @@ package fCsv
 import (
 	"fmt"
 	"io"
-
-	"github.com/yasseldg/go-simple/files/fIter"
 )
-
-type InterIterFunc interface {
-	fIter.Inter
-
-	Run()
-}
 
 type IterFunc struct {
 	Iter

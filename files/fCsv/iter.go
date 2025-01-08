@@ -7,10 +7,6 @@ import (
 	"github.com/yasseldg/go-simple/files/fIter"
 )
 
-type InterIter interface {
-	fIter.Inter
-}
-
 type Iter struct {
 	fIter.Inter
 
