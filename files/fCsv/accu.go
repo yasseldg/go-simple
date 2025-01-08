@@ -9,13 +9,6 @@ import (
 	"github.com/yasseldg/go-simple/logs/sLog"
 )
 
-type InterAccu interface {
-	fAccu.Inter
-
-	AddHeader([]string)
-	AddData([]string)
-}
-
 type Accu struct {
 	fAccu.Inter
 
