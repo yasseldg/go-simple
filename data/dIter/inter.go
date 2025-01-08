@@ -1,8 +1,9 @@
 package dIter
 
+import "github.com/yasseldg/go-simple/logs/sLog"
+
 type Inter interface {
-	String(string) string
-	Log(string)
+	sLog.InterStringLogName
 
 	SetError(error)
 	Error() error
