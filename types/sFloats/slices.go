@@ -44,3 +44,25 @@ func Sort(values []float64, asc bool) {
 		return 0
 	})
 }
+
+func CompareSlices(s1, s2 []float64, prec int) bool {
+	if len(s1) != len(s2) {
+		return false
+	}
+
+	for i := range s1 {
+		if ComparePrec(s1[i], s2[i], prec) != 0 {
+			return false
+		}
+	}
+
+	return true
+}
+
+func SumSlice(s []float64) float64 {
+	var sum float64
+	for i := range s {
+		sum += s[i]
+	}
+	return sum
+}
