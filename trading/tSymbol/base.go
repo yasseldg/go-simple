@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/yasseldg/go-simple/logs/sLog"
+	"github.com/yasseldg/go-simple/types/sTime"
 )
 
 type base struct {
@@ -24,7 +25,8 @@ func (b *base) String() string {
 }
 
 func (b *base) Log() {
-	sLog.Info("%s .. prec: %d", b.String(), b.Precision())
+	sLog.Info("%s .. prec: %d ..  launch: %s",
+		b.String(), b.Precision(), sTime.ForLog(b.LaunchTime(), 2))
 }
 
 func (b *base) IsValid() bool {
