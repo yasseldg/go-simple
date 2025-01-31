@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/yasseldg/go-simple/logs/sLog"
+	"github.com/yasseldg/go-simple/repos/rMongo"
 	"github.com/yasseldg/go-simple/types/sTime"
 )
 
@@ -80,4 +81,17 @@ func (b *Candle) Volume() float64 {
 
 func (b *Candle) GetModel() *Candle {
 	return b
+}
+
+func (b *Candle) Fill(ts int64, repo rMongo.InterRepo) error {
+
+	var candle mCandle
+	err := repo.Clone().First(ts, (ts + 1), &candle)
+	if err != nil {
+		return fmt.Errorf("coll.First( %d ): %s", ts, err)
+	}
+
+	*b = candle.Candle
+
+	return nil
 }

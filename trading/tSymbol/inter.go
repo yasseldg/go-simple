@@ -2,14 +2,14 @@ package tSymbol
 
 import (
 	"github.com/yasseldg/go-simple/data/dIter"
+	"github.com/yasseldg/go-simple/logs/sLog"
 	"github.com/yasseldg/go-simple/repos/rMongo"
 )
 
 type Inter interface {
 	InterModel
 
-	String() string
-	Log()
+	sLog.InterStringLog
 
 	IsValid() bool
 	Model() InterModel

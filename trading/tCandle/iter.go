@@ -40,7 +40,7 @@ func (iter *Iter) Next() bool {
 	filter := iter.Filter().Ts(iter.TsFrom(), iter.TsTo())
 
 	var items Candles
-	err := iter.Coll().Filters(filter).Find(&items)
+	err := iter.Coll().Filters(filter).Sorts(iter.Sort()).Find(&items)
 	if err != nil {
 		iter.SetError(fmt.Errorf("next: coll.Find: %s", err))
 		sLog.Error(iter.Error().Error())

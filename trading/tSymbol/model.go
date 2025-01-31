@@ -12,9 +12,10 @@ import (
 type model struct {
 	rMongo.ModelDateState `bson:",inline"`
 
-	M_exchange  string `bson:"e" json:"e"`
-	M_name      string `bson:"n" json:"n"`
-	M_precision int    `bson:"p" json:"p"`
+	M_exchange    string `bson:"e" json:"e"`
+	M_name        string `bson:"n" json:"n"`
+	M_precision   int    `bson:"p" json:"p"`
+	M_launch_time int64  `bson:"l_t" json:"l_t"`
 }
 
 func (b *model) Exchange() string {
@@ -29,8 +30,16 @@ func (b *model) Precision() int {
 	return b.M_precision
 }
 
+func (b *model) LaunchTime() int64 {
+	return b.M_launch_time
+}
+
 func (s *model) SetPrecision(prec int) {
 	s.M_precision = prec
+}
+
+func (s *model) SetLaunchTime(launch_time int64) {
+	s.M_launch_time = launch_time
 }
 
 // filters

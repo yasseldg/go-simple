@@ -23,11 +23,10 @@ func NewTs(coll rMongo.InterRepo, filter rFilter.Inter, sort rSort.Inter) *IterT
 		sort = rMongo.NewSort().TsAsc()
 	}
 
-	coll.Sorts(sort)
 	coll.Limit(500)
 
 	return &IterTs{
-		Inter: New(coll, filter),
+		Inter: New(coll, filter, sort),
 	}
 }
 

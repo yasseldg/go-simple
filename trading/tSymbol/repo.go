@@ -6,6 +6,8 @@ import (
 	"github.com/yasseldg/go-simple/repos/rMongo"
 )
 
+type GetByIDFunc func(rMongo.ObjectID) (Inter, error)
+
 type repo struct {
 	rMongo.InterRepo
 }
