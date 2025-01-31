@@ -81,7 +81,7 @@ func ToTime(value any) (time.Time, error) {
 		// Convertir cadena a time.Time
 		// Comprobar si la cadena representa un timestamp
 		if t, err := strconv.ParseInt(v, 10, 64); err == nil {
-			return time.Unix(t, 0), nil
+			return fromInt64(t), nil
 		}
 		// Comprobar si la cadena representa una fecha y hora con segundos
 		if t, err := time.Parse("2006-01-02 15:04:05", v); err == nil {
