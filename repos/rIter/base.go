@@ -7,6 +7,7 @@ import (
 	"github.com/yasseldg/go-simple/logs/sLog"
 	"github.com/yasseldg/go-simple/repos/rFilter"
 	"github.com/yasseldg/go-simple/repos/rMongo"
+	"github.com/yasseldg/go-simple/repos/rSort"
 )
 
 // Base
@@ -15,9 +16,10 @@ type Base struct {
 
 	coll   rMongo.InterRepo
 	filter rFilter.Inter
+	sort   rSort.Inter
 }
 
-func New(coll rMongo.InterRepo, filter rFilter.Inter) *Base {
+func New(coll rMongo.InterRepo, filter rFilter.Inter, sort rSort.Inter) *Base {
 
 	if coll == nil {
 		return nil
@@ -27,10 +29,15 @@ func New(coll rMongo.InterRepo, filter rFilter.Inter) *Base {
 		filter = rMongo.NewFilter()
 	}
 
+	if sort == nil {
+		sort = rMongo.NewSort()
+	}
+
 	return &Base{
 		Inter:  dIter.New(),
 		coll:   coll,
 		filter: filter,
+		sort:   sort,
 	}
 }
 
@@ -48,4 +55,8 @@ func (i *Base) Coll() rMongo.InterRepo {
 
 func (i *Base) Filter() rFilter.Inter {
 	return i.filter.Clone()
+}
+
+func (i *Base) Sort() rSort.Inter {
+	return i.sort.Clone()
 }
