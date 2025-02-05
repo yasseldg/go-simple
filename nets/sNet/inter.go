@@ -17,6 +17,7 @@ type InterService interface {
 	GetUri() string
 	GetUrl() string
 	LocalAddr() string
+	User() string
 	Secret() string
 
 	HandlePath(string) string

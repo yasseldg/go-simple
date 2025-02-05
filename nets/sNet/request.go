@@ -85,7 +85,7 @@ func (r *Request) Call(ctx context.Context, service InterService, client InterCl
 	}
 
 	if service.Debug() {
-		sLog.Debug("Call: urlFull: %s  ..  body: %s", urlFull, r.body)
+		sLog.Debug("%s %s  ..  body: %s", r.method, urlFull, r.body)
 	}
 
 	request, err := http.NewRequest(r.method, urlFull, r.body)
