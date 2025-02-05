@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"path"
+	"time"
 
 	"github.com/yasseldg/go-simple/configs/sEnv"
 	"github.com/yasseldg/go-simple/logs/sLog"
@@ -20,6 +21,7 @@ type Service struct {
 	port        int
 	protocol    string
 	path_prefix string
+	user        string
 	secret      string
 
 	debug bool
@@ -74,6 +76,10 @@ func (c *Service) Secret() string {
 	return c.secret
 }
 
+func (c *Service) User() string {
+	return c.user
+}
+
 func (c *Service) LocalAddr() string {
 	port := 80
 	if c.port > 0 {
@@ -119,7 +125,10 @@ func (c *Service) SendObj(end_point string, obj interface{}) error {
 	request.SetBody(bytes.NewReader(byteObj))
 	request.SetEndPoint(end_point)
 
-	_, err = request.Call(context.TODO(), c, nil)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	_, err = request.Call(ctx, c, nil)
 	if err != nil {
 		return fmt.Errorf("request.Call(): %s", err)
 	}
@@ -135,6 +144,8 @@ func (c *Service) update() {
 	c.secure = sBool.Get(sEnv.Get(fmt.Sprintf("%s_Secure", c.env), sBool.ToString(c.secure)))
 	c.protocol = sEnv.Get(fmt.Sprintf("%s_Protocol", c.env), c.protocol)
 	c.path_prefix = sEnv.Get(fmt.Sprintf("%s_Path_Prefix", c.env), c.path_prefix)
+	c.user = sEnv.Get(fmt.Sprintf("%s_User", c.env), c.user)
+	c.secret = sEnv.Get(fmt.Sprintf("%s_Secret", c.env), c.secret)
 }
 
 // model for yaml
@@ -145,6 +156,7 @@ type model struct {
 	Port       int
 	Network    string
 	PathPrefix string
+	User       string
 	Secret     string
 }
 
@@ -155,6 +167,7 @@ func (c *model) Service() *Service {
 		port:        c.Port,
 		protocol:    c.Network,
 		path_prefix: c.PathPrefix,
+		user:        c.User,
 		secret:      c.Secret,
 	}
 }
