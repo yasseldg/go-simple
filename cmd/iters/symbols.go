@@ -2,18 +2,19 @@ package iters
 
 import (
 	"github.com/yasseldg/go-simple/logs/sLog"
+	"github.com/yasseldg/go-simple/trading/tExchange"
 	"github.com/yasseldg/go-simple/trading/tInterval"
 	"github.com/yasseldg/go-simple/trading/tSymbol"
 )
 
 func Symbols() {
-	iter := tSymbol.NewIterLimited()
 
-	iter.Add(tSymbol.New("Bybit", "BTCUSD"))
-	iter.Add(tSymbol.New("Bybit", "ETHUSD"))
-	iter.Add(tSymbol.New("Bybit", "XRPUSD"))
-	iter.Add(tSymbol.New("Bybit", "EOSUSD"))
-	iter.Add(tSymbol.New("Bybit", "LTCUSD"))
+	exchange := tExchange.New("Bybit")
+
+	iter, err := exchange.GetSymbols("BTCUSD", "ETHUSD", "XRPUSD", "EOSUSD", "LTCUSD")
+	if err != nil {
+		sLog.Error("exchange.GetSymbols(): %s", err)
+	}
 
 	println()
 	runSymbols(iter, "Original")
@@ -21,7 +22,12 @@ func Symbols() {
 	iter2 := iter.Clone()
 
 	iter2.Reset()
-	iter2.Add(tSymbol.New("Bybit", "BNBUSD"))
+	s, err := tSymbol.New("Bybit", "BNBUSD")
+	if err != nil {
+		sLog.Error("tSymbol.New(): %s", err)
+	} else {
+		iter2.Add(s)
+	}
 
 	for iter2.Next() {
 		iter2.Item().SetPrecision(6)

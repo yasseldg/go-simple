@@ -3,9 +3,9 @@ package iters
 import (
 	"github.com/yasseldg/go-simple/data/dIter"
 	"github.com/yasseldg/go-simple/logs/sLog"
+	"github.com/yasseldg/go-simple/trading/tExchange"
 	"github.com/yasseldg/go-simple/trading/tIndicator"
 	"github.com/yasseldg/go-simple/trading/tInterval"
-	"github.com/yasseldg/go-simple/trading/tSymbol"
 	"github.com/yasseldg/go-simple/types/sFloats"
 	"github.com/yasseldg/go-simple/types/sInts"
 )
@@ -134,15 +134,14 @@ func configInts() dIter.InterConfig {
 }
 
 func configSymbols() dIter.InterConfig {
-	symbs := tSymbol.NewIterLimited()
-	symbs.Log("Symbols 1 empty")
 
-	symbs.Add(tSymbol.New("Bybit", "BTCUSD"))
-	// symbs.Add(tSymbol.New("Bybit", "LTCUSD"))
-	// symbs.Add(tSymbol.New("Bybit", "ETHUSD"))
-	// symbs.Add(tSymbol.New("Bybit", "XRPUSD"))
-	// symbs.Add(tSymbol.New("Bybit", "EOSUSD"))
-	symbs.Log("Symbols 1")
+	exchange := tExchange.New("Bybit")
+
+	symbs, err := exchange.GetSymbols("BTCUSD")
+	if err != nil {
+		sLog.Error("exchange.GetSymbols(): %s", err)
+	}
+	symbs.Log("Symbols")
 
 	println()
 	runSymbols(symbs, "symbols run 1")
