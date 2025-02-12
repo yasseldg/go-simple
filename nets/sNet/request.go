@@ -79,16 +79,25 @@ func (r *Request) Call(ctx context.Context, service InterService, client InterCl
 		return nil, fmt.Errorf("service is nil")
 	}
 
-	urlFull, err := url.JoinPath(service.GetUrl(), r.getUri())
+	rawURL, err := url.JoinPath(service.GetUrl(), r.endpoint)
 	if err != nil {
 		return nil, fmt.Errorf("url.JoinPath(): %s ", err)
 	}
 
-	if service.Debug() {
-		sLog.Debug("%s %s  ..  body: %s", r.method, urlFull, r.body)
+	// Build the final URL securely
+	u, err := url.Parse(rawURL)
+	if err != nil {
+		return nil, fmt.Errorf("parsing URL: %s", err)
 	}
 
-	request, err := http.NewRequest(r.method, urlFull, r.body)
+	// Add correctly coded parameters to the URL
+	u.RawQuery = r.query.Encode()
+
+	if service.Debug() {
+		sLog.Debug("%s %s  ..  body: %s", r.method, u.String(), r.body)
+	}
+
+	request, err := http.NewRequest(r.method, u.String(), r.body)
 	if err != nil {
 		return nil, fmt.Errorf("http.NewRequest(): %s ", err)
 	}
@@ -127,11 +136,4 @@ func (r *Request) Call(ctx context.Context, service InterService, client InterCl
 	}
 
 	return data, nil
-}
-
-func (r *Request) getUri() string {
-	if len(r.query) == 0 {
-		return r.endpoint
-	}
-	return fmt.Sprintf("%s?%s", r.endpoint, r.query.Encode())
 }
