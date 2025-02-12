@@ -14,7 +14,8 @@ type Inter interface {
 
 	SetDebug(bool)
 
-	GetColl(ctx context.Context, env, conn_name, db_name, coll_name string, indexes ...rIndex.Inter) (collection.Inter, error)
+	GetColl(ctx context.Context, env, conn_name, db_name, coll_name string,
+		indexes ...rIndex.Inter) (collection.Inter, error)
 }
 
 type InterRepo interface {
@@ -34,3 +35,6 @@ type InterAdminClient interface {
 type InterAdminDatabase interface {
 	database.InterAdmin
 }
+
+type GetRepoFunc func(ctx context.Context, env, conn_name, db_name, coll_name string,
+	indexes ...rIndex.Inter) (collection.Inter, error)

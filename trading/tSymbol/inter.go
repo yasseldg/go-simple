@@ -11,7 +11,6 @@ type Inter interface {
 
 	sLog.InterStringLog
 
-	IsValid() bool
 	Model() InterModel
 	Clone() Inter
 }
@@ -32,6 +31,8 @@ type InterIterLimited interface {
 
 type InterRepo interface {
 	rMongo.InterRepo
+
+	GroupsRepo() rMongo.InterRepo
 
 	GetByID(rMongo.ObjectID) (Inter, error)
 	GetByExchangeNames(exchange string, names ...string) (InterIterLimited, error)
