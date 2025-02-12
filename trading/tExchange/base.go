@@ -45,8 +45,8 @@ func (e *Base) GetSymbols(symbols ...string) (tSymbol.InterIterLimited, error) {
 	iter := tSymbol.NewIterLimited()
 
 	for _, name := range symbols {
-		symbol := tSymbol.New(e.Name(), name)
-		if !symbol.IsValid() {
+		symbol, err := tSymbol.New(name, e.Name())
+		if err != nil {
 			errs = fmt.Sprintf(" %s %s, ", errs, name)
 			continue
 		}
