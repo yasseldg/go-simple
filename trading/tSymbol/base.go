@@ -41,7 +41,7 @@ func (b *base) Log() {
 		b.String(), b.Precision(), sTime.ForLog(b.LaunchTime(), 2))
 }
 
-func (b *base) Model() InterModel {
+func (b *base) InterModel() InterModel {
 	return &b.model
 }
 
