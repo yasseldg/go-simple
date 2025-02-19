@@ -26,6 +26,22 @@ func NewRequest() *Request {
 	}
 }
 
+func (r *Request) Clone() InterRequest {
+
+	query := make(url.Values, len(r.query))
+	for k, v := range r.query {
+		query[k] = append([]string{}, v...)
+	}
+
+	return &Request{
+		method:   r.method,
+		endpoint: r.endpoint,
+		query:    query,
+		header:   r.header.Clone(),
+		body:     nil,
+	}
+}
+
 func (r *Request) String() string {
 	return fmt.Sprintf("Request: method: %s  ..  endpoint: %s  ..  query: %s  ..  header: %s  ..  body: %s",
 		r.method, r.endpoint, r.query, r.header, r.body)
@@ -94,7 +110,7 @@ func (r *Request) Call(ctx context.Context, service InterService, client InterCl
 	u.RawQuery = r.query.Encode()
 
 	if service.Debug() {
-		sLog.Debug("%s %s  ..  body: %s", r.method, u.String(), r.body)
+		sLog.Debug("%s .. %s", u.String(), r.String())
 	}
 
 	request, err := http.NewRequest(r.method, u.String(), r.body)
@@ -132,7 +148,7 @@ func (r *Request) Call(ctx context.Context, service InterService, client InterCl
 	}()
 
 	if response.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("StatusCode: %d ", response.StatusCode)
+		return nil, fmt.Errorf("%d", response.StatusCode)
 	}
 
 	return data, nil
