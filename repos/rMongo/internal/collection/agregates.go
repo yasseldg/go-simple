@@ -22,14 +22,16 @@ func (c *Full) AgregatesWithCtx(ctx context.Context, docs interface{}) error {
 
 	cursor, err := c.Coll().Aggregate(ctx, c.pipeline)
 	if err != nil {
-		sLog.Error("sMongo: %s.AgregatesWithCtx: %s", c.Prefix(), err.Error())
-	} else {
-		err = cursor.All(ctx, docs)
-		if err != nil {
-			sLog.Error("sMongo: %s.AgregatesWithCtx: cursor.All(): %s", c.Prefix(), err.Error())
-		}
+		sLog.Error("rMongo: %s.AgregatesWithCtx: %s", c.Prefix(), err.Error())
+		return err
 	}
-	return err
+
+	if err := cursor.All(ctx, docs); err != nil {
+		sLog.Error("rMongo: %s.AgregatesWithCtx: cursor.All(): %s", c.Prefix(), err.Error())
+		return err
+	}
+
+	return nil
 }
 
 func (c *Full) AgregatesCount() ([]bson.M, error) {
@@ -37,20 +39,23 @@ func (c *Full) AgregatesCount() ([]bson.M, error) {
 }
 
 func (c *Full) AgregatesCountWithCtx(ctx context.Context) ([]bson.M, error) {
-	var result []bson.M
 
 	if c.pipeline == nil {
-		return result, fmt.Errorf("no pipeline")
+		return nil, fmt.Errorf("no pipeline")
 	}
 
 	cursor, err := c.Coll().Aggregate(mgm.Ctx(), c.pipeline)
 	if err != nil {
-		sLog.Error("sMongo: %s.AgregatesCountWithCtx: %s", c.Prefix(), err.Error())
-	} else {
-		err = cursor.All(mgm.Ctx(), &result)
-		if err != nil {
-			sLog.Error("sMongo: %s.AgregatesCountWithCtx: cursor.All(): %s", c.Prefix(), err.Error())
-		}
+		sLog.Error("rMongo: %s.AgregatesCountWithCtx: %s", c.Prefix(), err.Error())
+		return nil, err
 	}
-	return result, err
+
+	var result []bson.M
+
+	if err := cursor.All(mgm.Ctx(), &result); err != nil {
+		sLog.Error("rMongo: %s.AgregatesCountWithCtx: cursor.All(): %s", c.Prefix(), err.Error())
+		return nil, err
+	}
+
+	return result, nil
 }

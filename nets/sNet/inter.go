@@ -28,6 +28,8 @@ type InterService interface {
 type InterRequest interface {
 	String() string
 
+	Clone() InterRequest
+
 	// Options
 	MethodGet() InterRequest
 	MethodPost() InterRequest

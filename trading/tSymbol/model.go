@@ -8,6 +8,8 @@ type model struct {
 	M_precision   int     `bson:"p" json:"p"`
 	M_launch_time int64   `bson:"l_t" json:"l_t"`
 	M_min_order   float64 `bson:"m_o" json:"m_o"`
+
+	M_supabase_id string `bson:"sb_id"`
 }
 
 func (b *model) Precision() int {
@@ -20,6 +22,10 @@ func (b *model) LaunchTime() int64 {
 
 func (m *model) MinOrder() float64 {
 	return m.M_min_order
+}
+
+func (m *model) SupabaseId() string {
+	return m.M_supabase_id
 }
 
 // set methods

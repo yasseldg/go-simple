@@ -66,3 +66,34 @@ func SumSlice(s []float64) float64 {
 	}
 	return sum
 }
+
+func ModifySlice(s []float64, f func(float64) float64) {
+	for i := range s {
+		s[i] = f(s[i])
+	}
+}
+
+func CountValues(values []float64) map[float64]int {
+
+	counts := make(map[float64]int)
+
+	for _, v := range values {
+		counts[v]++
+	}
+
+	return counts
+}
+
+func WeightValues(values []float64, prec int) map[float64]float64 {
+
+	weights := make(map[float64]float64)
+
+	counts := CountValues(values)
+
+	l := float64(len(values))
+	for v, c := range counts {
+		weights[v] = GetPrec((float64(c) / l), prec)
+	}
+
+	return weights
+}
