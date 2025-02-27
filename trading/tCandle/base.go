@@ -85,7 +85,7 @@ func (b *Candle) GetModel() *Candle {
 
 func (b *Candle) Fill(ts int64, repo rMongo.InterRepo) error {
 
-	var candle mCandle
+	var candle model
 	err := repo.Clone().First(ts, (ts + 1), &candle)
 	if err != nil {
 		return fmt.Errorf("coll.First( %d ): %s", ts, err)

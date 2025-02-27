@@ -10,7 +10,7 @@ type Accu struct {
 	rAccu.Inter
 }
 
-type mCandle struct {
+type model struct {
 	rMongo.Model `bson:",inline"`
 
 	Candle `bson:",inline"`
@@ -23,7 +23,7 @@ func NewAccu(coll rMongo.InterRepo, limit int) (*Accu, error) {
 }
 
 func (accu *Accu) AddCandle(candle *Candle) {
-	accu.Inter.Add(&mCandle{Candle: *candle})
+	accu.Inter.Add(&model{Candle: *candle})
 }
 
 // indexes
