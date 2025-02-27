@@ -1,9 +1,6 @@
 package tSymbol
 
 import (
-	"fmt"
-	"strings"
-
 	"github.com/yasseldg/go-simple/types/sStrings"
 )
 
@@ -15,19 +12,13 @@ type Group struct {
 
 func NewGroup(name, exchange string, symbols ...string) (*Group, error) {
 
-	if len(name) == 0 {
-		return nil, fmt.Errorf("name is empty")
-	}
-
-	if len(exchange) == 0 {
-		return nil, fmt.Errorf("exchange is empty")
+	common, err := newCommon(name, exchange)
+	if err != nil {
+		return nil, err
 	}
 
 	return &Group{
-		Common: Common{
-			M_name:     strings.ToUpper(name),
-			M_exchange: strings.ToUpper(exchange),
-		},
+		Common:    *common,
 		M_symbols: sStrings.ToUpper(symbols),
 	}, nil
 }

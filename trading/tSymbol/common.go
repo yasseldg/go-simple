@@ -1,6 +1,9 @@
 package tSymbol
 
 import (
+	"fmt"
+	"strings"
+
 	"github.com/yasseldg/go-simple/repos/rFilter"
 	"github.com/yasseldg/go-simple/repos/rIndex"
 	"github.com/yasseldg/go-simple/repos/rMongo"
@@ -12,6 +15,22 @@ type Common struct {
 
 	M_exchange string `bson:"e" json:"e"`
 	M_name     string `bson:"n" json:"n"`
+}
+
+func newCommon(name, exchange string) (*Common, error) {
+
+	if len(name) == 0 {
+		return nil, fmt.Errorf("name is empty")
+	}
+
+	if len(exchange) == 0 {
+		return nil, fmt.Errorf("exchange is empty")
+	}
+
+	return &Common{
+		M_name:     strings.ToUpper(name),
+		M_exchange: strings.ToUpper(exchange),
+	}, nil
 }
 
 func (b *Common) Exchange() string {

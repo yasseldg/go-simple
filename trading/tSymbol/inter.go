@@ -11,7 +11,7 @@ type Inter interface {
 
 	sLog.InterStringLog
 
-	InterModel() InterModel
+	GetInterModel() InterModel
 	Clone() Inter
 }
 
@@ -21,9 +21,13 @@ type InterModel interface {
 	Exchange() string
 	Name() string
 	Precision() int
-	SupabaseId() string
+	LaunchTime() int64
+	MinOrder() float64
 
 	SetPrecision(int)
+
+	GetConfig(any) error
+	SetConfig(any) error
 }
 
 type InterIterLimited interface {

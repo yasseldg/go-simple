@@ -1,5 +1,7 @@
 package tSymbol
 
+import "github.com/yasseldg/go-simple/repos/rMongo"
+
 // Model
 
 type model struct {
@@ -9,7 +11,7 @@ type model struct {
 	M_launch_time int64   `bson:"l_t" json:"l_t"`
 	M_min_order   float64 `bson:"m_o" json:"m_o"`
 
-	M_supabase_id string `bson:"sb_id"`
+	M_config rMongo.M `bson:"cfg" json:"cfg"`
 }
 
 func (b *model) Precision() int {
@@ -24,8 +26,8 @@ func (m *model) MinOrder() float64 {
 	return m.M_min_order
 }
 
-func (m *model) SupabaseId() string {
-	return m.M_supabase_id
+func (m *model) GetConfig(config any) error {
+	return rMongo.BsonUnmarshal(m.M_config, config)
 }
 
 // set methods
@@ -40,4 +42,15 @@ func (s *model) SetLaunchTime(launch_time int64) {
 
 func (s *model) SetMinOrder(min_order float64) {
 	s.M_min_order = min_order
+}
+
+func (m *model) SetConfig(config any) error {
+
+	bson_config, err := rMongo.BsonMarshal(config)
+	if err != nil {
+		return err
+	}
+	m.M_config = bson_config
+
+	return nil
 }
