@@ -10,14 +10,15 @@ import (
 	"github.com/yasseldg/go-simple/types/sTime"
 )
 
-type IterTs struct {
+type iterTs struct {
 	Inter
 
 	ts_from int64
 	ts_to   int64
 }
 
-func NewTs(coll rMongo.InterRepo, filter rFilter.Inter, sort rSort.Inter) *IterTs {
+// by default coll.limit = 500
+func NewTs(coll rMongo.InterRepo, filter rFilter.Inter, sort rSort.Inter) *iterTs {
 
 	if sort == nil {
 		sort = rMongo.NewSort().TsAsc()
@@ -25,32 +26,32 @@ func NewTs(coll rMongo.InterRepo, filter rFilter.Inter, sort rSort.Inter) *IterT
 
 	coll.Limit(500)
 
-	return &IterTs{
+	return &iterTs{
 		Inter: New(coll, filter, sort),
 	}
 }
 
-func (iter *IterTs) String(name string) string {
-	return fmt.Sprintf("%s ts_from: %s  ..  ts_to: %s",
-		iter.Inter.String(name), sTime.ForLog(iter.ts_from, 0), sTime.ForLog(iter.ts_to, 0))
+func (it *iterTs) String(name string) string {
+	return fmt.Sprintf("%s ts_from: %s  ..  ts_to: %s", it.Inter.String(name),
+		sTime.ForLog(it.ts_from, 0), sTime.ForLog(it.ts_to, 0))
 }
 
-func (iter *IterTs) Log(name string) {
-	sLog.Info(iter.String(name))
+func (it *iterTs) Log(name string) {
+	sLog.Info(it.String(name))
 }
 
-func (iter *IterTs) TsFrom() int64 {
-	return iter.ts_from
+func (it *iterTs) TsFrom() int64 {
+	return it.ts_from
 }
 
-func (iter *IterTs) TsTo() int64 {
-	return iter.ts_to
+func (it *iterTs) TsTo() int64 {
+	return it.ts_to
 }
 
-func (iter *IterTs) SetTsFrom(ts_from int64) {
-	iter.ts_from = ts_from
+func (it *iterTs) SetTsFrom(ts_from int64) {
+	it.ts_from = ts_from
 }
 
-func (iter *IterTs) SetTsTo(ts_to int64) {
-	iter.ts_to = ts_to
+func (it *iterTs) SetTsTo(ts_to int64) {
+	it.ts_to = ts_to
 }
