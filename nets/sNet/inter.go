@@ -30,6 +30,9 @@ type InterRequest interface {
 
 	Clone() InterRequest
 
+	Method() string
+	EndPoint() string
+
 	// Options
 	MethodGet() InterRequest
 	MethodPost() InterRequest
