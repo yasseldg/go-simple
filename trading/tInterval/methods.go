@@ -78,11 +78,12 @@ func (i Interval) MilliSeconds() int64 {
 	return i.Seconds() * 1000
 }
 
-func (i Interval) IsClosing(ts int64) bool {
-	if i.IsDefault() {
+// IsClosing returns true if the timestamp in inter is the closing time of the interval
+func (i Interval) IsClosing(ts int64, inter Inter) bool {
+	if i.IsDefault() || inter.IsDefault() {
 		return false
 	}
-	return (ts % i.Seconds()) == 0
+	return i.Next(ts) == inter.Next(ts)
 }
 
 func (i Interval) Prev(ts int64) int64 {

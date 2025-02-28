@@ -36,7 +36,6 @@ type InterIter interface {
 	rIter.InterTs
 
 	Item() Inter
-
 	Clone() InterIter
 }
 

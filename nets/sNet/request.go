@@ -47,6 +47,14 @@ func (r *Request) String() string {
 		r.method, r.endpoint, r.query, r.header, r.body)
 }
 
+func (r *Request) Method() string {
+	return r.method
+}
+
+func (r *Request) EndPoint() string {
+	return r.endpoint
+}
+
 func (r *Request) MethodGet() InterRequest {
 	r.method = http.MethodGet
 	return r

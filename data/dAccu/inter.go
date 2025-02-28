@@ -3,10 +3,10 @@ package dAccu
 import "github.com/yasseldg/go-simple/data/dTs"
 
 type Inter interface {
-	String(name string) string
-	Log(name string)
+	String(string) string
+	Log(string)
 
-	SetError(e error)
+	SetError(error)
 	Error() error
 
 	Increase()
@@ -20,5 +20,5 @@ type Inter interface {
 type InterTs interface {
 	Inter
 
-	Add(inter dTs.Inter)
+	Add(dTs.Inter)
 }

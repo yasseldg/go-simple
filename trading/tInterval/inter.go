@@ -10,7 +10,7 @@ type Inter interface {
 
 	ForLog() string
 	IsDefault() bool
-	IsClosing(int64) bool
+	IsClosing(int64, Inter) bool
 
 	Minutes() int64
 	Seconds() int64

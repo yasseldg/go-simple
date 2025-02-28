@@ -7,6 +7,7 @@ import (
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 // mgm interfaces
@@ -15,6 +16,11 @@ type InterModel interface {
 	mgm.Model
 
 	ID() ObjectID
+}
+
+type InterModelTs interface {
+	InterModel
+	Ts() int64
 }
 
 type InterDate interface {
@@ -70,6 +76,8 @@ type ModelDateState struct {
 type M = bson.M
 type D = bson.D
 type A = bson.A
+
+type Pipeline = mongo.Pipeline
 
 // Alias ObjectID
 type ObjectID = primitive.ObjectID
