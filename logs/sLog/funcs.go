@@ -4,6 +4,7 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/go-anon/simple/configs/env"
 	"github.com/yasseldg/go-simple/logs/sZap"
 )
 
@@ -48,7 +49,8 @@ func SetByName(name Name, level Level, timeformat string) func() error {
 	default:
 		_indentation += 10
 
-		zap, clean := sZap.New(timeformat, string(level))
+		zap, clean := sZap.New(timeformat,
+			string(GetLevel(env.Get("LogLevel", string(level)))))
 		SetLogger(zap)
 		return clean
 	}
@@ -56,6 +58,23 @@ func SetByName(name Name, level Level, timeformat string) func() error {
 
 func SetLevel(level Level) {
 	_logger.SetLevel(string(level))
+}
+
+func GetLevel(level string) Level {
+	switch level {
+	case "fatal":
+		return LevelFatal
+	case "error":
+		return LevelError
+	case "panic":
+		return LevelPanic
+	case "warn":
+		return LevelWarn
+	case "debug":
+		return LevelDebug
+	default:
+		return LevelInfo
+	}
 }
 
 func Fatal(template string, args ...interface{}) {

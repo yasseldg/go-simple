@@ -75,7 +75,7 @@ func GetFloat64(env_name string, defaults float64) float64 {
 }
 
 // LoadYaml
-func LoadYaml(file_path string, obj interface{}) error {
+func LoadYaml(file_path string, obj any) error {
 	data, err := os.ReadFile(file_path)
 	if err != nil {
 		return err
