@@ -4,7 +4,6 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/go-anon/simple/configs/env"
 	"github.com/yasseldg/go-simple/logs/sZap"
 )
 
@@ -49,8 +48,7 @@ func SetByName(name Name, level Level, timeformat string) func() error {
 	default:
 		_indentation += 10
 
-		zap, clean := sZap.New(timeformat,
-			string(GetLevel(env.Get("LogLevel", string(level)))))
+		zap, clean := sZap.New(timeformat, string(level))
 		SetLogger(zap)
 		return clean
 	}
