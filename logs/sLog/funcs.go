@@ -58,6 +58,13 @@ func SetLevel(level Level) {
 	_logger.SetLevel(string(level))
 }
 
+func GetName(name string) Name {
+	switch name {
+	default:
+		return Zap
+	}
+}
+
 func GetLevel(level string) Level {
 	switch level {
 	case "fatal":
