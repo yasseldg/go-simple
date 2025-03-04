@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"time"
 
 	"github.com/yasseldg/go-simple/logs/sLog"
 )
@@ -126,9 +127,13 @@ func (r *Request) Call(ctx context.Context, service InterService, client InterCl
 		return nil, fmt.Errorf("http.NewRequest(): %s ", err)
 	}
 
-	if ctx != nil {
-		request = request.WithContext(ctx)
+	if ctx == nil {
+		ctx_to, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+
+		ctx = ctx_to
 	}
+	request = request.WithContext(ctx)
 
 	request.Header = r.header
 
@@ -138,6 +143,9 @@ func (r *Request) Call(ctx context.Context, service InterService, client InterCl
 
 	response, err := client.Do(request)
 	if err != nil {
+		if err == context.DeadlineExceeded {
+			return nil, err
+		}
 		return nil, fmt.Errorf("client.Do(): %s ", err)
 	}
 
