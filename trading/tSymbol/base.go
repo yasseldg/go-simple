@@ -46,6 +46,7 @@ func (b *base) Clone() Inter {
 				ModelDateState: b.ModelDateState,
 				M_exchange:     b.M_exchange,
 				M_name:         b.M_name,
+				M_owner:        b.M_owner,
 			},
 			M_precision:   b.M_precision,
 			M_launch_time: b.M_launch_time,

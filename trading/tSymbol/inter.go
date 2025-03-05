@@ -20,10 +20,12 @@ type InterModel interface {
 
 	Exchange() string
 	Name() string
+	OwnerName() string
 	Precision() int
 	LaunchTime() int64
 	MinOrder() float64
 
+	ModifyName(string)
 	SetPrecision(int)
 
 	GetConfig(any) error
