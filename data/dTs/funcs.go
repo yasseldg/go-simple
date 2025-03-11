@@ -2,12 +2,12 @@ package dTs
 
 import "reflect"
 
-func GetInters(slice interface{}) []Inter {
+func GetInters(slice any) []Inter {
 	val := reflect.ValueOf(slice)
 
 	inters := make([]Inter, 0, val.Len())
 
-	for i := 0; i < val.Len(); i++ {
+	for i := range val.Len() {
 		v := val.Index(i).Interface()
 
 		if v == nil {
