@@ -13,6 +13,8 @@ type ModelTs[T rMongo.InterModelTs] struct {
 
 	Item  T
 	items []T
+
+	count int
 }
 
 func NewModelTs[T rMongo.InterModelTs](coll rMongo.InterRepo, filter rFilter.Inter, sort rSort.Inter) *ModelTs[T] {
@@ -29,6 +31,7 @@ func (it *ModelTs[T]) Next() bool {
 	if len(it.items) > 0 {
 		it.Item = it.items[0]
 		it.items = it.items[1:]
+		it.count++
 		return true
 	}
 
@@ -50,4 +53,8 @@ func (it *ModelTs[T]) Next() bool {
 	it.SetTsFrom(items[len(items)-1].Ts() + 1)
 
 	return it.Next()
+}
+
+func (it *ModelTs[T]) Count() int {
+	return it.count
 }

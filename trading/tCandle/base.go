@@ -8,24 +8,6 @@ import (
 	"github.com/yasseldg/go-simple/types/sTime"
 )
 
-type OHLC struct {
-	M_open  float64 `bson:"o" json:"o"`
-	M_high  float64 `bson:"h" json:"h"`
-	M_low   float64 `bson:"l" json:"l"`
-	M_close float64 `bson:"c" json:"c"`
-}
-
-type OHLCV struct {
-	OHLC     `bson:",inline"`
-	M_volume float64 `bson:"v" json:"v"`
-}
-
-type Candle struct {
-	OHLCV `bson:",inline"`
-	M_ts  int64 `bson:"ts" json:"ts"`
-}
-type Candles []*Candle
-
 func New(ts int64, open, high, low, close, volume float64) *Candle {
 	return &Candle{
 		M_ts: ts,
