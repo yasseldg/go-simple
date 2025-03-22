@@ -32,6 +32,10 @@ func New(coll rMongo.InterRepo, limit int) *Base {
 	return b
 }
 
+func (a *Base) Coll() rMongo.InterRepo {
+	return a.coll.Clone()
+}
+
 func (a *Base) String(name string) string {
 	s := fmt.Sprintf("%s  ..  items: %d  ..  %s", a.Inter.String(name), len(a.items), a.coll.String())
 	if a.Error() != nil {
