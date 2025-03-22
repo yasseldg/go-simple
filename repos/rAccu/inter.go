@@ -8,8 +8,9 @@ import (
 type Inter interface {
 	dAccu.Inter
 
-	Log(name string)
+	Log(string)
 
+	Coll() rMongo.InterRepo
 	Clone() Inter
 
 	Add(rMongo.InterModel)
