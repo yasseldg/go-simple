@@ -68,6 +68,10 @@ func (c *Service) Log() {
 	sLog.Info(c.String())
 }
 
+func (c *Service) Url() string {
+	return c.url
+}
+
 func (c *Service) Port() int {
 	return c.port
 }

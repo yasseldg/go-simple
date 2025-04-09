@@ -38,7 +38,7 @@ func CreateManyWithCtx[T []InterModel](ctx context.Context, inters T, coll Inter
 	return nil
 }
 
-func GetID(id interface{}) primitive.ObjectID {
+func GetID(id any) primitive.ObjectID {
 	if strId, ok := id.(string); ok {
 		objId, _ := primitive.ObjectIDFromHex(strId)
 		return objId
@@ -54,7 +54,7 @@ func SortFields(inter rSort.Inter) (bson.D, error) {
 	return sort.Fields(inter)
 }
 
-func GetInterID(id interface{}) rFilter.InterID {
+func GetInterID(id any) rFilter.InterID {
 
 	field := new(mgm.IDField)
 
@@ -63,7 +63,7 @@ func GetInterID(id interface{}) rFilter.InterID {
 	return field
 }
 
-func BsonMarshal(val interface{}) (M, error) {
+func BsonMarshal(val any) (M, error) {
 
 	bson_bytes, err := bson.Marshal(val)
 	if err != nil {
@@ -77,7 +77,7 @@ func BsonMarshal(val interface{}) (M, error) {
 	return m, nil
 }
 
-func BsonUnmarshal(m M, val interface{}) error {
+func BsonUnmarshal(m M, val any) error {
 
 	bson_bytes, err := bson.Marshal(m)
 	if err != nil {
