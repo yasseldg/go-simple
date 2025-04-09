@@ -13,6 +13,7 @@ type InterService interface {
 	SetDebug(bool)
 	Debug() bool
 
+	Url() string
 	Port() int
 	GetUri() string
 	GetUrl() string
