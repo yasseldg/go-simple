@@ -52,6 +52,24 @@ func NewService(env, file_path string) (*Service, error) {
 	return conf, nil
 }
 
+func (c *Service) Clone() InterService {
+	return &Service{
+		env:         c.env,
+		url:         c.url,
+		secure:      c.secure,
+		port:        c.port,
+		protocol:    c.protocol,
+		path_prefix: c.path_prefix,
+		user:        c.user,
+		secret:      c.secret,
+		debug:       c.debug,
+	}
+}
+
+func (c *Service) SetPathPrefix(path_prefix string) {
+	c.path_prefix = path_prefix
+}
+
 func (c *Service) SetDebug(debug bool) {
 	c.debug = debug
 }
@@ -118,7 +136,7 @@ func (c *Service) HandlePath(handler string) string {
 	return fmt.Sprintf("/%s", handler)
 }
 
-func (c *Service) SendObj(end_point string, obj interface{}) error {
+func (c *Service) SendObj(end_point string, obj any) error {
 
 	byteObj, err := sJson.ToByte(obj)
 	if err != nil {
