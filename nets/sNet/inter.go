@@ -10,6 +10,10 @@ type InterService interface {
 	String() string
 	Log()
 
+	Clone() InterService
+
+	SetPathPrefix(string)
+
 	SetDebug(bool)
 	Debug() bool
 
@@ -23,7 +27,7 @@ type InterService interface {
 
 	HandlePath(string) string
 
-	SendObj(end_point string, obj interface{}) error
+	SendObj(end_point string, obj any) error
 }
 
 type InterRequest interface {
