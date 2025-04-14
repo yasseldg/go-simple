@@ -53,16 +53,13 @@ func (r *repo) GetByID(id rMongo.ObjectID) (Inter, error) {
 
 func (r *repo) GetByExchangeNames(exchange string, names ...string) (InterIterLimited, error) {
 
-	if len(names) == 0 {
-		return NewIterLimited(), fmt.Errorf("names is empty")
+	if len(names) > 0 {
+		s_names, err := r.getByExchangeGroupsNames(exchange, names...)
+		if err != nil && err != rMongo.ErrNoDocuments {
+			return NewIterLimited(), err
+		}
+		names = append(names, s_names...)
 	}
-
-	s_names, err := r.getByExchangeGroupsNames(exchange, names...)
-	if err != nil && err != rMongo.ErrNoDocuments {
-		return NewIterLimited(), err
-	}
-
-	names = append(names, s_names...)
 
 	return r.getSymbolsByExchangeNames(exchange, names...)
 }
@@ -71,8 +68,14 @@ func (r *repo) getSymbolsByExchangeNames(exchange string, names ...string) (Inte
 
 	iter := NewIterLimited()
 
+	filter := NewFilters().Exchange(exchange)
+
+	if len(names) > 0 {
+		filter.Name_In(names...)
+	}
+
 	var symbols []model
-	err := r.Clone().Filters(NewFilters().Exchange(exchange).Name_In(names...)).
+	err := r.Clone().Filters(filter).
 		Sorts(NewSorts().NameAsc()).Find(&symbols)
 	if err != nil {
 		return iter, fmt.Errorf("coll.Find(): %s", err)
@@ -87,8 +90,14 @@ func (r *repo) getSymbolsByExchangeNames(exchange string, names ...string) (Inte
 
 func (r *repo) getByExchangeGroupsNames(exchange string, names ...string) ([]string, error) {
 
+	filter := NewFilters().Exchange(exchange)
+
+	if len(names) > 0 {
+		filter.Name_In(names...)
+	}
+
 	var groups []Group
-	err := r.groups.Clone().Filters(NewFilters().Exchange(exchange).Name_In(names...)).
+	err := r.groups.Clone().Filters(filter).
 		Sorts(NewSorts().NameAsc()).Find(&groups)
 	if err != nil {
 		return nil, fmt.Errorf("coll.Find(): %s", err)
