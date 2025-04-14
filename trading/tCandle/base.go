@@ -22,15 +22,18 @@ func New(ts int64, open, high, low, close, volume float64) *Candle {
 }
 
 func (b *OHLC) String(prec int) string {
-	return fmt.Sprintf("o: %.*f  ..  h: %.*f  ..  l: %.*f  ..  c: %.*f", prec, b.M_open, prec, b.M_high, prec, b.M_low, prec, b.M_close)
+	return fmt.Sprintf("o: %.*f  ..  h: %.*f  ..  l: %.*f  ..  c: %.*f",
+		prec, b.M_open, prec, b.M_high, prec, b.M_low, prec, b.M_close)
 }
 
 func (b *OHLCV) String(prec int) string {
-	return fmt.Sprintf("%s  ..  v: %.*f", b.OHLC.String(prec), prec, b.M_volume)
+	return fmt.Sprintf("%s  ..  v: %.*f",
+		b.OHLC.String(prec), prec, b.M_volume)
 }
 
 func (b *Candle) String(prec int) string {
-	return fmt.Sprintf("%s  ..  %s", sTime.ForLog(b.M_ts, 0), b.OHLCV.String(prec))
+	return fmt.Sprintf("%s  ..  %s",
+		sTime.ForLog(b.M_ts, 0), b.OHLCV.String(prec))
 }
 
 func (b *Candle) Log(prec int) {
@@ -63,6 +66,11 @@ func (b *Candle) Volume() float64 {
 
 func (b *Candle) GetModel() *Candle {
 	return b
+}
+
+func (b *Candle) Clone() *Candle {
+	return New(b.M_ts, b.M_open, b.M_high,
+		b.M_low, b.M_close, b.M_volume)
 }
 
 func (b *Candle) Fill(ts int64, repo rMongo.InterRepo) error {
