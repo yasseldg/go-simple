@@ -43,6 +43,7 @@ type InterAccu interface {
 	rAccu.Inter
 
 	AddCandle(*Candle)
+	Upsert(*Candle) error
 }
 
 type InterRepo interface {

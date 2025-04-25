@@ -17,7 +17,8 @@ type ModelTs[T rMongo.InterModelTs] struct {
 	count int
 }
 
-func NewModelTs[T rMongo.InterModelTs](coll rMongo.InterRepo, filter rFilter.Inter, sort rSort.Inter) *ModelTs[T] {
+func NewModelTs[T rMongo.InterModelTs](coll rMongo.InterRepo,
+	filter rFilter.Inter, sort rSort.Inter) *ModelTs[T] {
 	return &ModelTs[T]{
 		InterTs: NewTs(coll, filter, sort),
 	}

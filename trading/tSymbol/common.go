@@ -49,6 +49,10 @@ func (b *Common) OwnerName() string {
 	return b.M_owner
 }
 
+func (b *Common) SetOwnerName(name string) {
+	b.M_owner = name
+}
+
 func (b *Common) ModifyName(name string) {
 	b.M_owner = b.M_name
 	b.M_name = name
