@@ -26,6 +26,7 @@ type InterModel interface {
 	MinOrder() float64
 
 	ModifyName(string)
+	SetOwnerName(string)
 	SetPrecision(int)
 
 	GetConfig(any) error
