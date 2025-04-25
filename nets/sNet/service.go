@@ -49,6 +49,9 @@ func NewService(env, file_path string) (*Service, error) {
 	conf.env = env
 	conf.update()
 
+	conf.SetDebug(sEnv.GetBool(
+		fmt.Sprintf("%s_Debug", env), false))
+
 	return conf, nil
 }
 
