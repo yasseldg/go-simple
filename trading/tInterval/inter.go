@@ -1,6 +1,10 @@
 package tInterval
 
-import "github.com/yasseldg/go-simple/data/dIter"
+import (
+	"time"
+
+	"github.com/yasseldg/go-simple/data/dIter"
+)
 
 type Inter interface {
 	String() string
@@ -15,6 +19,7 @@ type Inter interface {
 	Minutes() int64
 	Seconds() int64
 	MilliSeconds() int64
+	Duration() time.Duration
 
 	Prev(int64) int64
 	Next(int64) int64
