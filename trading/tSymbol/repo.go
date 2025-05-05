@@ -59,6 +59,12 @@ func (r *repo) GetByExchangeNames(exchange string, names ...string) (InterIterLi
 			return NewIterLimited(), err
 		}
 		names = append(names, s_names...)
+
+		s_names, err = r.getByExchangeOwnerNames(exchange, names...)
+		if err != nil && err != rMongo.ErrNoDocuments {
+			return NewIterLimited(), err
+		}
+		names = append(names, s_names...)
 	}
 
 	return r.getSymbolsByExchangeNames(exchange, names...)
@@ -106,6 +112,29 @@ func (r *repo) getByExchangeGroupsNames(exchange string, names ...string) ([]str
 	s_names := []string{}
 	for _, group := range groups {
 		s_names = append(s_names, group.Names()...)
+	}
+
+	return s_names, nil
+}
+
+func (r *repo) getByExchangeOwnerNames(exchange string, names ...string) ([]string, error) {
+
+	filter := NewFilters().Exchange(exchange)
+
+	if len(names) > 0 {
+		filter.OwnerName_In(names...)
+	}
+
+	var symbols []model
+	err := r.Clone().Filters(filter).
+		Sorts(NewSorts().NameAsc()).Find(&symbols)
+	if err != nil {
+		return nil, fmt.Errorf("coll.Find(): %s", err)
+	}
+
+	s_names := []string{}
+	for _, symbol := range symbols {
+		s_names = append(s_names, symbol.Name())
 	}
 
 	return s_names, nil
