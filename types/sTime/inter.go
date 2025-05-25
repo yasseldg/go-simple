@@ -16,3 +16,7 @@ type InterProvider interface {
 	LayoutDate() string
 	LayoutTime() string
 }
+
+type InterCron interface {
+	Next(int64) int64
+}
