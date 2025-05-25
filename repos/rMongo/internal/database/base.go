@@ -50,7 +50,14 @@ func (db *Base) Drop(ctx context.Context) error {
 	return db.database.Drop(ctx)
 }
 
-func (db *Base) ListCollectionNames(ctx context.Context, filter interface{}) ([]string, error) {
+func (db *Base) RunCommand(ctx context.Context, command any) error {
+
+	result := db.database.RunCommand(ctx, command)
+
+	return result.Err()
+}
+
+func (db *Base) ListCollectionNames(ctx context.Context, filter any) ([]string, error) {
 	return db.database.ListCollectionNames(ctx, filter)
 }
 
