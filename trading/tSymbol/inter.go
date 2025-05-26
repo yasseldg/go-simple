@@ -17,17 +17,15 @@ type Inter interface {
 
 type InterModel interface {
 	rMongo.InterModelDateState
+	interCommon
 
-	Exchange() string
-	Name() string
-	OwnerName() string
 	Precision() int
 	LaunchTime() int64
 	MinOrder() float64
+	Location() string
 
-	ModifyName(string)
-	SetOwnerName(string)
 	SetPrecision(int)
+	SetLocation(string)
 
 	GetConfig(any) error
 	SetConfig(any) error
@@ -44,4 +42,15 @@ type InterRepo interface {
 
 	GetByID(rMongo.ObjectID) (Inter, error)
 	GetByExchangeNames(exchange string, names ...string) (InterIterLimited, error)
+}
+
+// privates
+
+type interCommon interface {
+	Exchange() string
+	Name() string
+	OwnerName() string
+
+	SetOwnerName(string)
+	ModifyName(string)
 }

@@ -51,6 +51,7 @@ func (b *base) Clone() Inter {
 			M_precision:   b.M_precision,
 			M_launch_time: b.M_launch_time,
 			M_min_order:   b.M_min_order,
+			M_location:    b.M_location,
 			M_config:      b.M_config,
 		},
 	}
