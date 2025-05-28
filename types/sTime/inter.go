@@ -18,5 +18,17 @@ type InterProvider interface {
 }
 
 type InterCron interface {
+	IsActive() bool
+	Active() error
+	Inactive()
+
+	SetLocation(string) error
+	SetMinute(string) error
+	SetHour(string) error
+	SetDay(string) error
+	SetMonth(string) error
+	SetDayOfWeek(string) error
+	SetSchedule(string) error
+
 	Next(int64) int64
 }
