@@ -19,12 +19,24 @@ func TestNewCron(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			cron, err := NewCron(tt.location)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("NewCron() error = %v, wantErr %v", err, tt.wantErr)
-				return
+			var loc *time.Location
+			var err error
+
+			if tt.location == "" {
+				loc = time.UTC
+			} else {
+				loc, err = time.LoadLocation(tt.location)
+				if (err != nil) != tt.wantErr {
+					t.Errorf("time.LoadLocation() error = %v, wantErr %v", err, tt.wantErr)
+					return
+				}
+				if tt.wantErr {
+					return
+				}
 			}
-			if !tt.wantErr && cron == nil {
+
+			cron := NewCron(loc)
+			if cron == nil {
 				t.Error("NewCron() returned nil when no error expected")
 			}
 		})
@@ -32,7 +44,8 @@ func TestNewCron(t *testing.T) {
 }
 
 func TestCronSetFields(t *testing.T) {
-	cron, _ := NewCron("UTC")
+	loc, _ := time.LoadLocation("UTC")
+	cron := NewCron(loc)
 
 	tests := []struct {
 		name    string
@@ -63,7 +76,8 @@ func TestCronSetFields(t *testing.T) {
 }
 
 func TestCronActive(t *testing.T) {
-	cron, _ := NewCron("UTC")
+	loc, _ := time.LoadLocation("UTC")
+	cron := NewCron(loc)
 
 	// Intentar activar sin configurar campos
 	err := cron.Active()
@@ -90,7 +104,8 @@ func TestCronActive(t *testing.T) {
 }
 
 func TestCronNext(t *testing.T) {
-	cron, _ := NewCron("UTC")
+	loc, _ := time.LoadLocation("UTC")
+	cron := NewCron(loc)
 
 	// Configurar para ejecutar cada minuto
 	cron.SetMinute("*")
@@ -113,7 +128,7 @@ func TestCronNext(t *testing.T) {
 	}
 
 	// Probar con cron inactivo
-	inactiveCron, _ := NewCron("UTC")
+	inactiveCron := NewCron(loc)
 	if inactiveCron.Next(now) != 0 {
 		t.Error("Next() should return 0 for inactive cron")
 	}
@@ -170,10 +185,12 @@ func TestNextValidValue(t *testing.T) {
 }
 
 func TestCronNextWithNewYorkLocation(t *testing.T) {
-	cron, err := NewCron("America/New_York")
+	loc, err := time.LoadLocation("America/New_York")
 	if err != nil {
-		t.Fatalf("Error creating cron with New York location: %v", err)
+		t.Fatalf("Error loading New York location: %v", err)
 	}
+
+	cron := NewCron(loc)
 
 	// Configurar para ejecutar a las 22:05 todos los días
 	cron.SetMinute("5")
@@ -258,7 +275,8 @@ func TestCronNextWithNewYorkLocation(t *testing.T) {
 }
 
 func TestCronSetSchedule(t *testing.T) {
-	cron, _ := NewCron("UTC")
+	loc, _ := time.LoadLocation("UTC")
+	cron := NewCron(loc)
 
 	tests := []struct {
 		name    string

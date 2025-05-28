@@ -20,19 +20,15 @@ type cron struct {
 	location *time.Location
 }
 
-func NewCron(location string) (*cron, error) {
-	c := &cron{
+func NewCron(location *time.Location) *cron {
+	return &cron{
 		minute:    []int{}, // Will be validated in Active
 		hour:      []int{},
 		day:       []int{},
 		month:     []int{},
 		dayOfWeek: []int{},
+		location:  location,
 	}
-
-	if err := c.SetLocation(location); err != nil {
-		return nil, err
-	}
-	return c, nil
 }
 
 func (c *cron) SetLocation(name string) error {
@@ -59,6 +55,10 @@ func (c *cron) IsActive() bool {
 func (c *cron) Active() error {
 	if c.active {
 		return nil
+	}
+
+	if c.location == nil {
+		return fmt.Errorf("location is nil")
 	}
 
 	if len(c.minute) == 0 {
