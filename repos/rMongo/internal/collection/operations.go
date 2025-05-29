@@ -34,6 +34,7 @@ func (c *Full) CreateWithCtx(ctx context.Context, model mgm.Model) error {
 func (c *Full) Update(model mgm.Model) error {
 	return c.UpdateWithCtx(mgm.Ctx(), model)
 }
+
 func (c *Full) UpdateWithCtx(ctx context.Context, model mgm.Model) error {
 
 	err := c.Coll().UpdateWithCtx(ctx, model)
@@ -47,6 +48,7 @@ func (c *Full) UpdateWithCtx(ctx context.Context, model mgm.Model) error {
 func (c *Full) Upsert(model mgm.Model) error {
 	return c.UpsertWithCtx(mgm.Ctx(), model)
 }
+
 func (c *Full) UpsertWithCtx(ctx context.Context, model mgm.Model) error {
 
 	filter, _, err := c.getFilterSort()
@@ -62,10 +64,11 @@ func (c *Full) UpsertWithCtx(ctx context.Context, model mgm.Model) error {
 }
 
 // Upsert
-func (c *Full) UpsertDoc(doc interface{}) error {
+func (c *Full) UpsertDoc(doc any) error {
 	return c.UpsertDocWithCtx(mgm.Ctx(), doc)
 }
-func (c *Full) UpsertDocWithCtx(ctx context.Context, doc interface{}) error {
+
+func (c *Full) UpsertDocWithCtx(ctx context.Context, doc any) error {
 
 	filter, _, err := c.getFilterSort()
 	if err != nil {
@@ -133,11 +136,11 @@ func (c *Full) CountWithCtx(ctx context.Context) (int64, error) {
 }
 
 // Find
-func (c *Full) Find(models interface{}) error {
+func (c *Full) Find(models any) error {
 	return c.FindWithCtx(mgm.Ctx(), models)
 }
 
-func (c *Full) FindWithCtx(ctx context.Context, models interface{}) error {
+func (c *Full) FindWithCtx(ctx context.Context, models any) error {
 
 	filter, sort, err := c.getFilterSort()
 	if err != nil {
@@ -185,11 +188,11 @@ func (c *Full) FindOneWithCtx(ctx context.Context, model mgm.Model) error {
 }
 
 // FindById
-func (c *Full) FindById(id interface{}, model mgm.Model) error {
+func (c *Full) FindById(id any, model mgm.Model) error {
 	return c.FindByIdWithCtx(mgm.Ctx(), id, model)
 }
 
-func (c *Full) FindByIdWithCtx(ctx context.Context, id interface{}, model mgm.Model) error {
+func (c *Full) FindByIdWithCtx(ctx context.Context, id any, model mgm.Model) error {
 
 	err := c.Coll().FindByIDWithCtx(ctx, id, model)
 	if err != nil {

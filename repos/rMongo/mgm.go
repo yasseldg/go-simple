@@ -77,6 +77,8 @@ type M = bson.M
 type D = bson.D
 type A = bson.A
 
+type Null = primitive.Null
+
 type Pipeline = mongo.Pipeline
 
 // Alias ObjectID
