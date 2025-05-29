@@ -11,11 +11,11 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-func (c *Full) Agregates(docs interface{}) error {
+func (c *Full) Agregates(docs any) error {
 	return c.AgregatesWithCtx(mgm.Ctx(), docs)
 }
 
-func (c *Full) AgregatesWithCtx(ctx context.Context, docs interface{}) error {
+func (c *Full) AgregatesWithCtx(ctx context.Context, docs any) error {
 	if c.pipeline == nil {
 		return fmt.Errorf("no pipeline")
 	}

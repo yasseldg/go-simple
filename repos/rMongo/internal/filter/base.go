@@ -34,15 +34,15 @@ func (f Filter) Log(msg string) {
 	sLog.Info("%s: %s", msg, f.String())
 }
 
-func (f *Filter) Append(field string, value interface{}) {
+func (f *Filter) Append(field string, value any) {
 	f.fields = append(f.fields, bson.E{Key: field, Value: value})
 }
 
-func (f *Filter) In(field string, values interface{}) {
+func (f *Filter) In(field string, values any) {
 	f.Append(field, bson.D{{Key: "$in", Value: values}})
 }
 
-func (f *Filter) Nin(field string, values interface{}) {
+func (f *Filter) Nin(field string, values any) {
 	f.Append(field, bson.D{{Key: "$nin", Value: values}})
 }
 
@@ -54,38 +54,38 @@ func (f *Filter) NotNull(field string) {
 	f.Append(field, bson.D{{Key: "$ne", Value: primitive.Null{}}})
 }
 
-func (f *Filter) NotEqual(field string, value interface{}) {
+func (f *Filter) NotEqual(field string, value any) {
 	f.Append(field, bson.D{{Key: "$ne", Value: value}})
 }
 
-func (f *Filter) Gt(field string, value interface{}) {
+func (f *Filter) Gt(field string, value any) {
 	f.Append(field, bson.D{{Key: "$gt", Value: value}})
 }
 
-func (f *Filter) Gte(field string, value interface{}) {
+func (f *Filter) Gte(field string, value any) {
 	f.Append(field, bson.D{{Key: "$gte", Value: value}})
 }
 
-func (f *Filter) Lt(field string, value interface{}) {
+func (f *Filter) Lt(field string, value any) {
 	f.Append(field, bson.D{{Key: "$lt", Value: value}})
 }
 
-func (f *Filter) Lte(field string, value interface{}) {
+func (f *Filter) Lte(field string, value any) {
 	f.Append(field, bson.D{{Key: "$lte", Value: value}})
 }
 
-func (f *Filter) GtLt(field string, value_1, value_2 interface{}) {
+func (f *Filter) GtLt(field string, value_1, value_2 any) {
 	f.Append(field, bson.D{{Key: "$gt", Value: value_1}, {Key: "$lt", Value: value_2}})
 }
 
-func (f *Filter) GtLte(field string, value_1, value_2 interface{}) {
+func (f *Filter) GtLte(field string, value_1, value_2 any) {
 	f.Append(field, bson.D{{Key: "$gt", Value: value_1}, {Key: "$lte", Value: value_2}})
 }
 
-func (f *Filter) GteLt(field string, value_1, value_2 interface{}) {
+func (f *Filter) GteLt(field string, value_1, value_2 any) {
 	f.Append(field, bson.D{{Key: "$gte", Value: value_1}, {Key: "$lt", Value: value_2}})
 }
 
-func (f *Filter) GteLte(field string, value_1, value_2 interface{}) {
+func (f *Filter) GteLte(field string, value_1, value_2 any) {
 	f.Append(field, bson.D{{Key: "$gte", Value: value_1}, {Key: "$lte", Value: value_2}})
 }

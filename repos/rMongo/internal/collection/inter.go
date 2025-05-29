@@ -38,38 +38,45 @@ type InterBase interface {
 }
 
 type InterOper interface {
-	Create(model mgm.Model) error
-	Update(model mgm.Model) error
-	Upsert(model mgm.Model) error
-	UpsertDoc(doc interface{}) error
+	Create(mgm.Model) error
+	Update(mgm.Model) error
+	Upsert(mgm.Model) error
+	UpsertDoc(any) error
 	Count() (int64, error)
-	Find(models interface{}) error
-	FindOne(model mgm.Model) error
-	FindById(id interface{}, model mgm.Model) error
+	Find(any) error
+	FindOne(mgm.Model) error
+	// FindById(id, model) error
+	FindById(any, mgm.Model) error
 }
 
 type InterOperWithCtx interface {
-	CreateWithCtx(ctx context.Context, model mgm.Model) error
-	UpdateWithCtx(ctx context.Context, model mgm.Model) error
-	UpsertWithCtx(ctx context.Context, model mgm.Model) error
-	UpsertDocWithCtx(ctx context.Context, doc interface{}) error
-	CountWithCtx(ctx context.Context) (int64, error)
-	FindWithCtx(ctx context.Context, models interface{}) error
-	FindOneWithCtx(ctx context.Context, model mgm.Model) error
-	FindByIdWithCtx(ctx context.Context, id interface{}, model mgm.Model) error
+	CreateWithCtx(context.Context, mgm.Model) error
+	UpdateWithCtx(context.Context, mgm.Model) error
+	UpsertWithCtx(context.Context, mgm.Model) error
+	UpsertDocWithCtx(context.Context, any) error
+	CountWithCtx(context.Context) (int64, error)
+	// FindWithCtx(ctx, models) error
+	FindWithCtx(context.Context, any) error
+	FindOneWithCtx(context.Context, mgm.Model) error
+	// FindByIdWithCtx(ctx, id, models) error
+	FindByIdWithCtx(context.Context, any, mgm.Model) error
 }
 
 type InterAgregate interface {
-	Agregates(docs interface{}) error
-	AgregatesWithCtx(ctx context.Context, docs interface{}) error
+	Agregates(any) error
+	AgregatesWithCtx(context.Context, any) error
 	AgregatesCount() ([]bson.M, error)
-	AgregatesCountWithCtx(ctx context.Context) ([]bson.M, error)
+	AgregatesCountWithCtx(context.Context) ([]bson.M, error)
 }
 
 type InterTs interface {
-	First(tsFrom, tsTo int64, obj mgm.Model) error
-	FirstTs(tsFrom, tsTo int64) int64
+	// First(ts_from, ts_to, model) error
+	First(int64, int64, mgm.Model) error
+	// FirstTs(ts_from, ts_to) int64
+	FirstTs(int64, int64) int64
 
-	Last(tsFrom, tsTo int64, obj mgm.Model) error
-	LastTs(tsFrom, tsTo int64) int64
+	// Last(ts_from, ts_to, model) error
+	Last(int64, int64, mgm.Model) error
+	// LastTs(ts_from, ts_to) int64
+	LastTs(int64, int64) int64
 }

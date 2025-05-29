@@ -10,10 +10,10 @@ type TsModel struct {
 }
 
 // First, $gte: ts_from  $lt: ts_to, ts_from = ts_to = 0 for "ts" first object,
-func (c *Full) First(ts_from, ts_to int64, obj mgm.Model) error {
+func (c *Full) First(ts_from, ts_to int64, model mgm.Model) error {
 	c.sort.TsAsc()
 	c.filter.Ts(ts_from, ts_to)
-	return c.FindOne(obj)
+	return c.FindOne(model)
 }
 
 // Last, $gte: ts_from  $lt: ts_to, ts_from = ts_to = 0 for first
@@ -27,20 +27,20 @@ func (c *Full) FirstTs(ts_from, ts_to int64) int64 {
 }
 
 // Last, $gte: ts_from  $lt: ts_to, ts_from = ts_to = 0 for "ts" Last object,
-func (c *Full) Last(ts_from, ts_to int64, obj mgm.Model) error {
+func (c *Full) Last(ts_from, ts_to int64, model mgm.Model) error {
 	c.sort.TsDesc()
 	c.filter.Ts(ts_from, ts_to)
-	return c.FindOne(obj)
+	return c.FindOne(model)
 }
 
 // Last, $gte: ts_from  $lt: ts_to, ts_from = ts_to = 0 for last
 func (c *Full) LastTs(ts_from, ts_to int64) int64 {
-	var obj TsModel
-	err := c.Last(ts_from, ts_to, &obj)
+	var model TsModel
+	err := c.Last(ts_from, ts_to, &model)
 	if err != nil {
 		return 0
 	}
-	return int64(obj.Ts)
+	return model.Ts
 }
 
 // func (c *Full) GetTss() ([]int64, error) {
