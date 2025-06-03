@@ -13,19 +13,21 @@ import (
 type Full struct {
 	InterBase
 
-	pipeline mongo.Pipeline
-	filter   rFilter.Inter
-	sort     rSort.Inter
-	limit    int64
+	pipeline   mongo.Pipeline
+	filter     rFilter.Inter
+	sort       rSort.Inter
+	projection rSort.Inter
+	limit      int64
 }
 
 func NewFull(inter InterBase) *Full {
 	return &Full{
 		InterBase: inter,
 
-		pipeline: mongo.Pipeline{},
-		filter:   filter.New(),
-		sort:     sort.New(),
+		pipeline:   mongo.Pipeline{},
+		filter:     filter.New(),
+		sort:       sort.New(),
+		projection: sort.New(),
 	}
 }
 
@@ -47,6 +49,11 @@ func (c *Full) Filters(inter rFilter.Inter) *Full {
 
 func (c *Full) Sorts(inter rSort.Inter) *Full {
 	c.sort = inter
+	return c
+}
+
+func (c *Full) Projections(inter rSort.Inter) *Full {
+	c.projection = inter
 	return c
 }
 

@@ -1,6 +1,8 @@
 package collection
 
 import (
+	"context"
+
 	"github.com/yasseldg/mgm/v4"
 )
 
@@ -11,32 +13,52 @@ type TsModel struct {
 
 // First, $gte: ts_from  $lt: ts_to, ts_from = ts_to = 0 for "ts" first object,
 func (c *Full) First(ts_from, ts_to int64, model mgm.Model) error {
+	return c.FirstWithCtx(mgm.Ctx(), ts_from, ts_to, model)
+}
+
+func (c *Full) FirstWithCtx(ctx context.Context,
+	ts_from, ts_to int64, model mgm.Model) error {
 	c.sort.TsAsc()
 	c.filter.Ts(ts_from, ts_to)
-	return c.FindOne(model)
+	return c.FindOneWithCtx(ctx, model)
 }
 
 // Last, $gte: ts_from  $lt: ts_to, ts_from = ts_to = 0 for first
 func (c *Full) FirstTs(ts_from, ts_to int64) int64 {
-	var obj TsModel
-	err := c.First(ts_from, ts_to, &obj)
+	return c.FirstTsWithCtx(mgm.Ctx(), ts_from, ts_to)
+}
+
+func (c *Full) FirstTsWithCtx(ctx context.Context,
+	ts_from, ts_to int64) int64 {
+	var model TsModel
+	err := c.FirstWithCtx(ctx, ts_from, ts_to, &model)
 	if err != nil {
 		return 0
 	}
-	return int64(obj.Ts)
+	return int64(model.Ts)
 }
 
 // Last, $gte: ts_from  $lt: ts_to, ts_from = ts_to = 0 for "ts" Last object,
 func (c *Full) Last(ts_from, ts_to int64, model mgm.Model) error {
+	return c.LastWithCtx(mgm.Ctx(), ts_from, ts_to, model)
+}
+
+func (c *Full) LastWithCtx(ctx context.Context,
+	ts_from, ts_to int64, model mgm.Model) error {
 	c.sort.TsDesc()
 	c.filter.Ts(ts_from, ts_to)
-	return c.FindOne(model)
+	return c.FindOneWithCtx(ctx, model)
 }
 
 // Last, $gte: ts_from  $lt: ts_to, ts_from = ts_to = 0 for last
 func (c *Full) LastTs(ts_from, ts_to int64) int64 {
+	return c.LastTsWithCtx(mgm.Ctx(), ts_from, ts_to)
+}
+
+func (c *Full) LastTsWithCtx(ctx context.Context,
+	ts_from, ts_to int64) int64 {
 	var model TsModel
-	err := c.Last(ts_from, ts_to, &model)
+	err := c.LastWithCtx(ctx, ts_from, ts_to, &model)
 	if err != nil {
 		return 0
 	}

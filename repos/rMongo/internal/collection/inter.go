@@ -24,6 +24,7 @@ type Inter interface {
 	Pipeline(mongo.Pipeline) *Full
 	Filters(rFilter.Inter) *Full
 	Sorts(rSort.Inter) *Full
+	Projections(rSort.Inter) *Full
 	Limit(int64) *Full
 }
 

@@ -51,7 +51,7 @@ func (c *Full) Upsert(model mgm.Model) error {
 
 func (c *Full) UpsertWithCtx(ctx context.Context, model mgm.Model) error {
 
-	filter, _, err := c.getFilterSort()
+	filter, _, _, err := c.getFilterSortProjection()
 	if err != nil {
 		return fmt.Errorf("mongo: %s.Upsert(): %s", c.Prefix(), err)
 	}
@@ -70,7 +70,7 @@ func (c *Full) UpsertDoc(doc any) error {
 
 func (c *Full) UpsertDocWithCtx(ctx context.Context, doc any) error {
 
-	filter, _, err := c.getFilterSort()
+	filter, _, _, err := c.getFilterSortProjection()
 	if err != nil {
 		return fmt.Errorf("mongo: %s.UpsertDoc(): %s", c.Prefix(), err)
 	}
@@ -103,7 +103,7 @@ func (c *Full) DeleteMany(models []mgm.Model) error {
 
 func (c *Full) DeleteManyWithCtx(ctx context.Context, models []mgm.Model) error {
 
-	filter, _, err := c.getFilterSort()
+	filter, _, _, err := c.getFilterSortProjection()
 	if err != nil {
 		return fmt.Errorf("mongo: %s.DeleteMany(): %s", c.Prefix(), err)
 	}
@@ -122,7 +122,7 @@ func (c *Full) Count() (int64, error) {
 
 func (c *Full) CountWithCtx(ctx context.Context) (int64, error) {
 
-	filter, _, err := c.getFilterSort()
+	filter, _, _, err := c.getFilterSortProjection()
 	if err != nil {
 		return 0, fmt.Errorf("mongo: %s.Count(): %s", c.Prefix(), err)
 	}
@@ -142,12 +142,12 @@ func (c *Full) Find(models any) error {
 
 func (c *Full) FindWithCtx(ctx context.Context, models any) error {
 
-	filter, sort, err := c.getFilterSort()
+	filter, sort, projection, err := c.getFilterSortProjection()
 	if err != nil {
 		return fmt.Errorf("mongo: %s.Find(): %s", c.Prefix(), err)
 	}
 
-	opts := options.Find().SetSort(sort)
+	opts := options.Find().SetSort(sort).SetProjection(projection)
 	if c.limit > 0 {
 		opts.SetLimit(c.limit)
 	}
@@ -169,12 +169,12 @@ func (c *Full) FindOne(model mgm.Model) error {
 }
 
 func (c *Full) FindOneWithCtx(ctx context.Context, model mgm.Model) error {
-	filter, sort, err := c.getFilterSort()
+	filter, sort, projection, err := c.getFilterSortProjection()
 	if err != nil {
 		return fmt.Errorf("mongo: %s.FindOne(): %s", c.Prefix(), err)
 	}
 
-	opts := options.FindOne().SetSort(sort)
+	opts := options.FindOne().SetSort(sort).SetProjection(projection)
 
 	err = c.Coll().FirstWithCtx(ctx, filter, model, opts)
 	if err != nil {
@@ -205,14 +205,14 @@ func (c *Full) FindByIdWithCtx(ctx context.Context, id any, model mgm.Model) err
 	return nil
 }
 
-func (c *Full) getFilterSort() (bson.D, bson.D, error) {
+func (c *Full) getFilterSortProjection() (bson.D, bson.D, bson.D, error) {
 	if c.filter == nil {
 		c.filter = filter.New()
 	}
 
 	filter_fields, err := filter.Fields(c.filter)
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, nil, err
 	}
 
 	if c.sort == nil {
@@ -221,8 +221,13 @@ func (c *Full) getFilterSort() (bson.D, bson.D, error) {
 
 	sort_fields, err := sort.Fields(c.sort)
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, nil, err
 	}
 
-	return filter_fields, sort_fields, nil
+	projection_fields, err := sort.Fields(c.projection)
+	if err != nil {
+		return nil, nil, nil, err
+	}
+
+	return filter_fields, sort_fields, projection_fields, nil
 }
