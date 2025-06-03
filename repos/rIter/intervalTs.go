@@ -26,10 +26,11 @@ type IntervalTs[T any] struct {
 
 type FuncGetItems[T any] func(rMongo.D) ([]*T, int64)
 
-func NewIntervalTs[T any](coll rMongo.InterRepo, filter rFilter.Inter, sort rSort.Inter,
-	interval tInterval.Inter, limit int, getItems FuncGetItems[T]) *IntervalTs[T] {
+func NewIntervalTs[T any](coll rMongo.InterRepo, filter rFilter.Inter,
+	sort rSort.Inter, project rSort.Inter, interval tInterval.Inter,
+	limit int, getItems FuncGetItems[T]) *IntervalTs[T] {
 	it := &IntervalTs[T]{
-		InterTs:  NewTs(coll, filter, sort),
+		InterTs:  NewTs(coll, filter, sort, project),
 		interval: interval,
 		limit:    int64(limit),
 		getItems: getItems,
@@ -107,7 +108,8 @@ func (it *IntervalTs[T]) next() bool {
 
 	ts_filter, err := rMongo.FilterFields(filter)
 	if err != nil {
-		it.SetError(fmt.Errorf("iter: rMongo.FilterFields(): %s", err))
+		it.SetError(fmt.Errorf(
+			"iter: rMongo.FilterFields(): %s", err))
 		return false
 	}
 

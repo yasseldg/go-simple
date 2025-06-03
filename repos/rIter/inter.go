@@ -13,6 +13,7 @@ type Inter interface {
 	Coll() rMongo.InterRepo
 	Filter() rFilter.Inter
 	Sort() rSort.Inter
+	Project() rSort.Inter
 }
 
 type InterTs interface {

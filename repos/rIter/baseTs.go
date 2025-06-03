@@ -18,7 +18,8 @@ type iterTs struct {
 }
 
 // by default coll.limit = 500
-func NewTs(coll rMongo.InterRepo, filter rFilter.Inter, sort rSort.Inter) *iterTs {
+func NewTs(coll rMongo.InterRepo, filter rFilter.Inter,
+	sort rSort.Inter, project rSort.Inter) *iterTs {
 
 	if sort == nil {
 		sort = rMongo.NewSort().TsAsc()
@@ -27,13 +28,15 @@ func NewTs(coll rMongo.InterRepo, filter rFilter.Inter, sort rSort.Inter) *iterT
 	coll.Limit(500)
 
 	return &iterTs{
-		Inter: New(coll, filter, sort),
+		Inter: New(coll, filter, sort, project),
 	}
 }
 
 func (it *iterTs) String(name string) string {
-	return fmt.Sprintf("%s ts_from: %s  ..  ts_to: %s", it.Inter.String(name),
-		sTime.ForLog(it.ts_from, 0), sTime.ForLog(it.ts_to, 0))
+	return fmt.Sprintf("%s ts_from: %s  ..  ts_to: %s",
+		it.Inter.String(name),
+		sTime.ForLog(it.ts_from, 0),
+		sTime.ForLog(it.ts_to, 0))
 }
 
 func (it *iterTs) Log(name string) {

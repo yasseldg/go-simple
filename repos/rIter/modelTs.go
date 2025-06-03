@@ -18,9 +18,10 @@ type ModelTs[T rMongo.InterModelTs] struct {
 }
 
 func NewModelTs[T rMongo.InterModelTs](coll rMongo.InterRepo,
-	filter rFilter.Inter, sort rSort.Inter) *ModelTs[T] {
+	filter rFilter.Inter, sort rSort.Inter,
+	project rSort.Inter) *ModelTs[T] {
 	return &ModelTs[T]{
-		InterTs: NewTs(coll, filter, sort),
+		InterTs: NewTs(coll, filter, sort, project),
 	}
 }
 
@@ -39,7 +40,8 @@ func (it *ModelTs[T]) Next() bool {
 	filter := it.Filter().Ts(it.TsFrom(), it.TsTo())
 
 	var items []T
-	err := it.Coll().Filters(filter).Sorts(it.Sort()).Find(&items)
+	err := it.Coll().Filters(filter).Sorts(it.Sort()).
+		Projections(it.Project()).Find(&items)
 	if err != nil {
 		it.SetError(fmt.Errorf("next: coll.Find: %s", err))
 		return false
