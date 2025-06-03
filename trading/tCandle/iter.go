@@ -12,7 +12,7 @@ type Iter struct {
 
 func NewIter(coll rMongo.InterRepo, filter rFilter.Inter) *Iter {
 	return &Iter{
-		ModelTs: rIter.NewModelTs[*model](coll, filter, nil),
+		ModelTs: rIter.NewModelTs[*model](coll, filter, nil, nil),
 	}
 }
 
