@@ -14,12 +14,14 @@ import (
 type Base struct {
 	dIter.Inter
 
-	coll   rMongo.InterRepo
-	filter rFilter.Inter
-	sort   rSort.Inter
+	coll    rMongo.InterRepo
+	filter  rFilter.Inter
+	sort    rSort.Inter
+	project rSort.Inter
 }
 
-func New(coll rMongo.InterRepo, filter rFilter.Inter, sort rSort.Inter) *Base {
+func New(coll rMongo.InterRepo,
+	filter rFilter.Inter, sort rSort.Inter, project rSort.Inter) *Base {
 
 	if coll == nil {
 		return nil
@@ -34,15 +36,17 @@ func New(coll rMongo.InterRepo, filter rFilter.Inter, sort rSort.Inter) *Base {
 	}
 
 	return &Base{
-		Inter:  dIter.New(),
-		coll:   coll,
-		filter: filter,
-		sort:   sort,
+		Inter:   dIter.New(),
+		coll:    coll,
+		filter:  filter,
+		sort:    sort,
+		project: project,
 	}
 }
 
 func (i *Base) String(name string) string {
-	return fmt.Sprintf("%s %s  ..  filter: %s", i.Inter.String(name), i.coll.String(), i.filter.Oper().String())
+	return fmt.Sprintf("%s %s  ..  filter: %s",
+		i.Inter.String(name), i.coll.String(), i.filter.Oper().String())
 }
 
 func (i *Base) Log(name string) {
@@ -59,4 +63,8 @@ func (i *Base) Filter() rFilter.Inter {
 
 func (i *Base) Sort() rSort.Inter {
 	return i.sort.Clone()
+}
+
+func (i *Base) Project() rSort.Inter {
+	return i.project.Clone()
 }
