@@ -2,6 +2,7 @@ package sLog
 
 type InterLogger interface {
 	SetLevel(string)
+	SetWriteSyncer(func(string))
 
 	// template, ...args
 	Fatalf(string, ...interface{})
