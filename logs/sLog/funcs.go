@@ -58,6 +58,10 @@ func SetLevel(level Level) {
 	_logger.SetLevel(string(level))
 }
 
+func SetWriteSyncer(callback func(string)) {
+	_logger.SetWriteSyncer(callback)
+}
+
 func GetName(name string) Name {
 	switch name {
 	default:
