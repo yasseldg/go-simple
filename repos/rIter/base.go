@@ -35,6 +35,10 @@ func New(coll rMongo.InterRepo,
 		sort = rMongo.NewSort()
 	}
 
+	if project == nil {
+		project = rMongo.NewSort()
+	}
+
 	return &Base{
 		Inter:   dIter.New(),
 		coll:    coll,
