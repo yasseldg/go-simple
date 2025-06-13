@@ -66,6 +66,11 @@ func (r *Request) MethodPost() InterRequest {
 	return r
 }
 
+func (r *Request) MethodDelete() InterRequest {
+	r.method = http.MethodDelete
+	return r
+}
+
 func (r *Request) SetEndPoint(endpoint string) InterRequest {
 	r.endpoint = endpoint
 	return r
