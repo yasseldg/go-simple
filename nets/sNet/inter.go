@@ -41,6 +41,7 @@ type InterRequest interface {
 	// Options
 	MethodGet() InterRequest
 	MethodPost() InterRequest
+	MethodDelete() InterRequest
 	SetEndPoint(string) InterRequest
 
 	SetParam(string, string)
