@@ -87,6 +87,10 @@ func (i Interval) IsClosing(ts int64, inter Inter) bool {
 }
 
 func (i Interval) Prev(ts int64) int64 {
+	if ts <= 0 {
+		return 0
+	}
+
 	switch i {
 	case DEFAULT:
 		return 0
@@ -103,6 +107,10 @@ func (i Interval) Prev(ts int64) int64 {
 }
 
 func (i Interval) Next(ts int64) int64 {
+	if ts <= 0 {
+		return 0
+	}
+
 	switch i {
 	case DEFAULT:
 		return 0
