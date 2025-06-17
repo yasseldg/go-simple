@@ -56,16 +56,6 @@ func (p *Provider) SetTimeDiff(diff time.Duration) {
 	p.time_diff = diff
 }
 
-func (p *Provider) GetUTC(str string) (int64, error) {
-
-	t, err := time.ParseInLocation(p.layout, str, p.location)
-	if err != nil {
-		return 0, fmt.Errorf("time.ParseInLocation( %s )", str)
-	}
-
-	return t.Add(p.time_diff).UTC().Unix(), nil
-}
-
 func (p *Provider) Comma() rune {
 	return p.comma
 }
@@ -76,4 +66,32 @@ func (p *Provider) LayoutDate() string {
 
 func (p *Provider) LayoutTime() string {
 	return p.layout_time
+}
+
+func (p *Provider) GetUTC(str string) (int64, error) {
+
+	t, err := time.ParseInLocation(p.layout, str, p.location)
+	if err != nil {
+		return 0, fmt.Errorf("time.ParseInLocation( %s )", str)
+	}
+
+	return t.Add(p.time_diff).UTC().Unix(), nil
+}
+
+func (p *Provider) GetDate(ts int64) string {
+	t := time.Unix(ts, 0).In(p.location)
+
+	return t.Format(p.layout_date)
+}
+
+func (p *Provider) GetTime(ts int64) string {
+	t := time.Unix(ts, 0).In(p.location)
+
+	return t.Format(p.layout_time)
+}
+
+func (p *Provider) GetDateAndTime(ts int64) (string, string) {
+	t := time.Unix(ts, 0).In(p.location)
+
+	return t.Format(p.layout_date), t.Format(p.layout_time)
 }

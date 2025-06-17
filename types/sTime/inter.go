@@ -10,11 +10,14 @@ type InterProvider interface {
 	SetLocation(string) error
 	SetTimeDiff(time.Duration)
 
-	GetUTC(string) (int64, error)
-
 	Comma() rune
 	LayoutDate() string
 	LayoutTime() string
+
+	GetUTC(string) (int64, error)
+	GetDate(int64) string
+	GetTime(int64) string
+	GetDateAndTime(int64) (string, string)
 }
 
 type InterCron interface {
